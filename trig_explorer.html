@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit Circle & Trig Ratios Explorer — FEIA</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: #f8f6f1;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0ddd6;
+    padding: 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: normal;
+    letter-spacing: -0.02em;
+    color: #111;
+    margin-bottom: 0.2rem;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+    color: #999;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 1.5rem;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    width: fit-content;
+  }
+
+  .tab-btn {
+    padding: 8px 28px;
+    border: none;
+    background: #f0ede8;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: 'Courier New', monospace;
+    color: #666;
+    border-right: 1px solid #ccc;
+    transition: all 0.15s;
+  }
+  .tab-btn:last-child { border-right: none; }
+  .tab-btn:hover { background: #e8e5e0; }
+  .tab-btn.active { background: #185FA5; color: white; }
+
+  .angle-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 1.5rem;
+  }
+  .angle-ctrl label {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    white-space: nowrap;
+  }
+  .angle-ctrl input[type=range] {
+    flex: 1;
+    accent-color: #185FA5;
+    cursor: pointer;
+  }
+  .angle-val {
+    font-family: 'Courier New', monospace;
+    font-size: 20px;
+    font-weight: bold;
+    min-width: 100px;
+    text-align: right;
+    color: #111;
+  }
+
+  .layout {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .circle-wrap { flex: 0 0 auto; }
+
+  canvas {
+    border-radius: 8px;
+    border: 1px solid #e5e2da;
+    display: block;
+  }
+
+  .point-label {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #777;
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  .info-panel { flex: 1; min-width: 220px; }
+
+  .ratio-card {
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: #f5f3ee;
+    border: 1px solid #e5e2da;
+    margin-bottom: 10px;
+  }
+  .ratio-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 2px;
+  }
+  .ratio-label { font-size: 12px; color: #888; font-family: 'Courier New', monospace; }
+  .ratio-desc { font-size: 11px; color: #aaa; font-family: 'Courier New', monospace; }
+  .ratio-val {
+    font-size: 24px;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+  }
+  .ratio-val.sin-color { color: #185FA5; }
+  .ratio-val.cos-color { color: #0F6E56; }
+  .ratio-val.tan-color { color: #993C1D; }
+
+  .exact-val {
+    font-size: 13px;
+    color: #555;
+    font-family: 'Courier New', monospace;
+    margin-top: 2px;
+  }
+
+  .special-box {
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: #f5f3ee;
+    border: 1px solid #e5e2da;
+    margin-top: 4px;
+  }
+  .special-box h3 {
+    font-size: 13px;
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 6px;
+    font-family: 'Courier New', monospace;
+  }
+  .special-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+    color: #555;
+    padding: 2px 0;
+  }
+  .quad-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  .q1 { background: #e6f1fb; color: #0C447C; }
+  .q2 { background: #e1f5ee; color: #085041; }
+  .q3 { background: #faece7; color: #712B13; }
+  .q4 { background: #faeeda; color: #633806; }
+
+  .legend {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+    color: #777;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 10px; height: 3px; border-radius: 1px; }
+
+  .footer {
+    margin-top: 1.5rem;
+    font-size: 11px;
+    color: #bbb;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Unit Circle &amp; Primary Trig Ratios</h1>
+  <div class="subtitle">sin θ = y &nbsp;·&nbsp; cos θ = x &nbsp;·&nbsp; tan θ = y/x &nbsp;·&nbsp; Drag the slider to explore</div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="btnDeg" onclick="setMode('deg')">Degrees</button>
+    <button class="tab-btn" id="btnRad" onclick="setMode('rad')">Radians</button>
+  </div>
+
+  <div class="angle-ctrl">
+    <label>Angle (θ):</label>
+    <input type="range" id="angleSlider" min="0" max="360" step="1" value="45">
+    <span class="angle-val" id="angleDisplay">45°</span>
+  </div>
+
+  <div class="layout">
+    <div class="circle-wrap">
+      <canvas id="circleCanvas" width="340" height="340"></canvas>
+      <div class="point-label" id="pointLabel">(cos θ, sin θ) = (0.707, 0.707)</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#c0392b;height:3px;width:16px;"></div> radius</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#185FA5;height:3px;width:16px;border-top:2px dashed #185FA5;"></div> sin θ</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#0F6E56;height:3px;width:16px;border-top:2px dashed #0F6E56;"></div> cos θ</div>
+      </div>
+    </div>
+
+    <div class="info-panel">
+      <div class="ratio-card">
+        <div class="ratio-top">
+          <span class="ratio-label">sin θ</span>
+          <span class="ratio-desc">opposite / hypotenuse · y-coord</span>
+        </div>
+        <div class="ratio-val sin-color" id="sinVal">0.7071</div>
+        <div class="exact-val" id="sinExact">= √2/2</div>
+      </div>
+
+      <div class="ratio-card">
+        <div class="ratio-top">
+          <span class="ratio-label">cos θ</span>
+          <span class="ratio-desc">adjacent / hypotenuse · x-coord</span>
+        </div>
+        <div class="ratio-val cos-color" id="cosVal">0.7071</div>
+        <div class="exact-val" id="cosExact">= √2/2</div>
+      </div>
+
+      <div class="ratio-card">
+        <div class="ratio-top">
+          <span class="ratio-label">tan θ</span>
+          <span class="ratio-desc">sin θ / cos θ · slope of radius</span>
+        </div>
+        <div class="ratio-val tan-color" id="tanVal">1.0000</div>
+        <div class="exact-val" id="tanExact">= 1</div>
+      </div>
+
+      <div class="special-box">
+        <div id="quadBadge" class="quad-badge q1">Quadrant I — All positive</div>
+        <h3 id="specialTitle">Special angle: 45°</h3>
+        <div class="special-row"><span>sin θ =</span><span id="spSin">√2/2</span></div>
+        <div class="special-row"><span>cos θ =</span><span id="spCos">√2/2</span></div>
+        <div class="special-row"><span>tan θ =</span><span id="spTan">1</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">FEIA · Unit Circle Explorer · Built with AI-integrated learning</div>
+</div>
+
+<script>
+let mode = 'deg';
+let angleDeg = 45;
+
+const SPECIAL = {
+  0:   { sin:'0',     cos:'1',     tan:'0',         rad:'0' },
+  30:  { sin:'1/2',   cos:'√3/2',  tan:'1/√3',      rad:'π/6' },
+  45:  { sin:'√2/2',  cos:'√2/2',  tan:'1',         rad:'π/4' },
+  60:  { sin:'√3/2',  cos:'1/2',   tan:'√3',        rad:'π/3' },
+  90:  { sin:'1',     cos:'0',     tan:'undefined',  rad:'π/2' },
+  120: { sin:'√3/2',  cos:'−1/2',  tan:'−√3',       rad:'2π/3' },
+  135: { sin:'√2/2',  cos:'−√2/2', tan:'−1',        rad:'3π/4' },
+  150: { sin:'1/2',   cos:'−√3/2', tan:'−1/√3',     rad:'5π/6' },
+  180: { sin:'0',     cos:'−1',    tan:'0',          rad:'π' },
+  210: { sin:'−1/2',  cos:'−√3/2', tan:'1/√3',      rad:'7π/6' },
+  225: { sin:'−√2/2', cos:'−√2/2', tan:'1',         rad:'5π/4' },
+  240: { sin:'−√3/2', cos:'−1/2',  tan:'√3',        rad:'4π/3' },
+  270: { sin:'−1',    cos:'0',     tan:'undefined',  rad:'3π/2' },
+  300: { sin:'−√3/2', cos:'1/2',   tan:'−√3',       rad:'5π/3' },
+  315: { sin:'−√2/2', cos:'√2/2',  tan:'−1',        rad:'7π/4' },
+  330: { sin:'−1/2',  cos:'√3/2',  tan:'−1/√3',     rad:'11π/6' },
+  360: { sin:'0',     cos:'1',     tan:'0',          rad:'2π' },
+};
+
+function radStr(deg) {
+  const sp = SPECIAL[deg];
+  if (sp) return sp.rad;
+  return (deg * Math.PI / 180).toFixed(4) + ' rad';
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('btnDeg').classList.toggle('active', m === 'deg');
+  document.getElementById('btnRad').classList.toggle('active', m === 'rad');
+  update();
+}
+
+function getQuadInfo(deg) {
+  const d = deg % 360;
+  if (d === 0 || d === 90 || d === 180 || d === 270 || d === 360)
+    return { label: 'Axis', cls: 'q1', desc: 'On axis' };
+  if (d < 90)  return { label: 'Quadrant I',   cls: 'q1', desc: 'sin +, cos +, tan +' };
+  if (d < 180) return { label: 'Quadrant II',  cls: 'q2', desc: 'sin +, cos −, tan −' };
+  if (d < 270) return { label: 'Quadrant III', cls: 'q3', desc: 'sin −, cos −, tan +' };
+  return             { label: 'Quadrant IV',  cls: 'q4', desc: 'sin −, cos +, tan −' };
+}
+
+function update() {
+  const rad = angleDeg * Math.PI / 180;
+  const sinV = Math.sin(rad);
+  const cosV = Math.cos(rad);
+  const tanV = Math.tan(rad);
+  const isUndef = Math.abs(cosV) < 0.0001;
+  const tanStr = isUndef ? 'undef.' : tanV.toFixed(4);
+
+  const angleStr = mode === 'deg' ? angleDeg + '°' : radStr(angleDeg);
+  document.getElementById('angleDisplay').textContent = angleStr;
+  document.getElementById('sinVal').textContent = sinV.toFixed(4);
+  document.getElementById('cosVal').textContent = cosV.toFixed(4);
+  document.getElementById('tanVal').textContent = tanStr;
+  document.getElementById('pointLabel').textContent =
+    '(cos θ, sin θ) = (' + cosV.toFixed(3) + ', ' + sinV.toFixed(3) + ')';
+
+  const sp = SPECIAL[angleDeg];
+  const angleLabel = mode === 'deg' ? angleDeg + '°' : (sp ? sp.rad : radStr(angleDeg));
+
+  if (sp) {
+    document.getElementById('sinExact').textContent = '= ' + sp.sin;
+    document.getElementById('cosExact').textContent = '= ' + sp.cos;
+    document.getElementById('tanExact').textContent = '= ' + sp.tan;
+    document.getElementById('specialTitle').textContent = 'Special angle: ' + angleLabel;
+    document.getElementById('spSin').textContent = sp.sin;
+    document.getElementById('spCos').textContent = sp.cos;
+    document.getElementById('spTan').textContent = sp.tan;
+  } else {
+    document.getElementById('sinExact').textContent = '';
+    document.getElementById('cosExact').textContent = '';
+    document.getElementById('tanExact').textContent = '';
+    document.getElementById('specialTitle').textContent = angleLabel + ' — not a standard angle';
+    document.getElementById('spSin').textContent = sinV.toFixed(4);
+    document.getElementById('spCos').textContent = cosV.toFixed(4);
+    document.getElementById('spTan').textContent = isUndef ? 'undefined' : tanV.toFixed(4);
+  }
+
+  const q = getQuadInfo(angleDeg);
+  const badge = document.getElementById('quadBadge');
+  badge.textContent = q.label + ' — ' + q.desc;
+  badge.className = 'quad-badge ' + q.cls;
+
+  drawCircle(rad, sinV, cosV);
+}
+
+function drawCircle(rad, sinV, cosV) {
+  const canvas = document.getElementById('circleCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  const R = W * 0.37;
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, W, H);
+
+  // grid
+  ctx.strokeStyle = 'rgba(0,0,0,0.06)'; ctx.lineWidth = 0.5;
+  ctx.beginPath(); ctx.moveTo(cx, 10); ctx.lineTo(cx, H - 10); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(10, cy); ctx.lineTo(W - 10, cy); ctx.stroke();
+
+  // unit circle
+  ctx.strokeStyle = 'rgba(0,0,0,0.18)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
+
+  // axis labels
+  ctx.fillStyle = '#888'; ctx.font = '11px Courier New'; ctx.textAlign = 'center';
+  ctx.fillText('(0,1)', cx + 26, cy - R - 5);
+  ctx.fillText('(0,−1)', cx + 30, cy + R + 14);
+  ctx.textAlign = 'left'; ctx.fillText('(1,0)', cx + R + 5, cy - 4);
+  ctx.textAlign = 'right'; ctx.fillText('(−1,0)', cx - R - 5, cy - 4);
+
+  // special angle markers
+  const specialAngles = [0,30,45,60,90,120,135,150,180,210,225,240,270,300,315,330];
+  specialAngles.forEach(a => {
+    const r = a * Math.PI / 180;
+    const mx = cx + Math.cos(r) * R;
+    const my = cy - Math.sin(r) * R;
+    ctx.beginPath(); ctx.arc(mx, my, 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.fill();
+  });
+
+  const px = cx + cosV * R;
+  const py = cy - sinV * R;
+
+  // angle arc
+  ctx.strokeStyle = '#854F0B'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(cx, cy, R * 0.2, 0, -rad, true); ctx.stroke();
+
+  // angle label
+  const midAngle = -rad / 2;
+  const labelR = R * 0.3;
+  ctx.fillStyle = '#854F0B'; ctx.font = '11px Courier New'; ctx.textAlign = 'center';
+  ctx.fillText('θ', cx + Math.cos(midAngle) * labelR, cy + Math.sin(midAngle) * labelR);
+
+  // cos projection (horizontal) — green dashed
+  ctx.strokeStyle = '#0F6E56'; ctx.lineWidth = 2;
+  ctx.setLineDash([5, 3]);
+  ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(px, cy); ctx.stroke();
+
+  // sin projection (vertical) — blue dashed
+  ctx.strokeStyle = '#185FA5'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(px, cy); ctx.lineTo(px, py); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // right angle box at (px, cy)
+  const boxS = 7;
+  const sx = cosV >= 0 ? 1 : -1;
+  const sy2 = sinV >= 0 ? -1 : 1;
+  ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 1;
+  ctx.strokeRect(px, cy, sx * boxS, sy2 * boxS);
+
+  // radius line
+  ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2.5;
+  ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(px, py); ctx.stroke();
+
+  // cos label
+  ctx.fillStyle = '#0F6E56'; ctx.font = 'bold 12px Courier New'; ctx.textAlign = 'center';
+  ctx.fillText('cos θ', cx + (px - cx) / 2, cy + (sinV >= 0 ? 16 : -7));
+
+  // sin label
+  ctx.fillStyle = '#185FA5'; ctx.textAlign = cosV >= 0 ? 'left' : 'right';
+  ctx.fillText('sin θ', px + (cosV >= 0 ? 6 : -6), cy + (py - cy) / 2 + 4);
+
+  // point on circle — red
+  ctx.beginPath(); ctx.arc(px, py, 6, 0, Math.PI * 2);
+  ctx.fillStyle = '#e24b4a'; ctx.fill();
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // coordinate label near point
+  ctx.fillStyle = '#333'; ctx.font = '11px Courier New';
+  const lx = cosV >= 0 ? px + 8 : px - 8;
+  const ly = sinV >= 0 ? py - 10 : py + 18;
+  ctx.textAlign = cosV >= 0 ? 'left' : 'right';
+  ctx.fillText('(' + cosV.toFixed(2) + ', ' + sinV.toFixed(2) + ')', lx, ly);
+
+  // origin dot
+  ctx.beginPath(); ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.fill();
+}
+
+document.getElementById('angleSlider').addEventListener('input', e => {
+  angleDeg = +e.target.value;
+  update();
+});
+
+update();
+</script>
+</body>
+</html>

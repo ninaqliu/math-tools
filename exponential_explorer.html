@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exponential Function Explorer — y = a · bˣ</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: #f8f6f1;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0ddd6;
+    padding: 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: normal;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+    color: #111;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 1.8rem;
+    font-family: 'Courier New', monospace;
+  }
+
+  .cat-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .cat-btn {
+    padding: 7px 16px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: transparent;
+    cursor: pointer;
+    font-size: 13px;
+    color: #555;
+    font-family: 'Courier New', monospace;
+    transition: all 0.15s;
+  }
+  .cat-btn:hover { background: #f0ede8; }
+  .cat-btn.active { color: white; border-color: transparent; }
+  .cat-btn[data-cat="gt1"].active   { background: #185FA5; }
+  .cat-btn[data-cat="bt01"].active  { background: #0F6E56; }
+  .cat-btn[data-cat="agt1"].active  { background: #993C1D; }
+  .cat-btn[data-cat="abt01"].active { background: #854F0B; }
+
+  .eq-display {
+    font-family: 'Courier New', monospace;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 1.2rem;
+    padding: 10px 16px;
+    background: #f5f3ee;
+    border-radius: 8px;
+    border-left: 4px solid #185FA5;
+  }
+
+  .sliders { margin-bottom: 1rem; }
+
+  .ctrl {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 0.8rem;
+  }
+  .ctrl label {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    min-width: 50px;
+  }
+  .ctrl input[type=range] {
+    flex: 1;
+    accent-color: #185FA5;
+    height: 4px;
+    cursor: pointer;
+  }
+  .val-display {
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    font-weight: bold;
+    min-width: 58px;
+    text-align: right;
+    color: #111;
+  }
+
+  .info-box {
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: #f5f3ee;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 1.2rem;
+    line-height: 1.6;
+    border: 1px solid #e5e2da;
+  }
+  .info-box strong { color: #111; }
+
+  canvas {
+    width: 100% !important;
+    border-radius: 8px;
+    border: 1px solid #e5e2da;
+  }
+
+  .footer {
+    margin-top: 1.2rem;
+    font-size: 11px;
+    color: #aaa;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Exponential Function Explorer</h1>
+  <div class="subtitle">y = a · bˣ &nbsp;|&nbsp; Adjust sliders to explore each case</div>
+
+  <div class="cat-tabs">
+    <button class="cat-btn active" data-cat="gt1">b &gt; 1, a &gt; 0</button>
+    <button class="cat-btn" data-cat="bt01">0 &lt; b &lt; 1, a &gt; 0</button>
+    <button class="cat-btn" data-cat="agt1">b &gt; 1, a &lt; 0</button>
+    <button class="cat-btn" data-cat="abt01">0 &lt; b &lt; 1, a &lt; 0</button>
+  </div>
+
+  <div class="eq-display" id="eqLabel">y = 1.00 · 2.00^x</div>
+
+  <div class="sliders">
+    <div class="ctrl">
+      <label>a =</label>
+      <input type="range" id="slA" min="-500" max="500" step="1" value="100">
+      <span class="val-display" id="aLabel">1.00</span>
+    </div>
+    <div class="ctrl">
+      <label>b =</label>
+      <input type="range" id="slB" min="1" max="999" step="1" value="500">
+      <span class="val-display" id="bLabel">2.00</span>
+    </div>
+  </div>
+
+  <div class="info-box" id="info"></div>
+
+  <canvas id="c"></canvas>
+
+  <div class="footer">FEIA · Exponential Explorer · Built with AI-integrated learning</div>
+</div>
+
+<script>
+const catConfig = {
+  gt1:   { bMin:1.001, bMax:4.0,   aMin:0.01,  aMax:5.0,  color:'#185FA5',
+           desc:(a,b)=>`<strong>Exponential Growth</strong> — a > 0, b > 1. The curve rises steeply as x increases. y-intercept: <strong>(0, ${a.toFixed(2)})</strong>. Horizontal asymptote: y = 0 as x → −∞.` },
+  bt01:  { bMin:0.001, bMax:0.999, aMin:0.01,  aMax:5.0,  color:'#0F6E56',
+           desc:(a,b)=>`<strong>Exponential Decay</strong> — a > 0, 0 < b < 1. The curve falls toward 0 as x increases. y-intercept: <strong>(0, ${a.toFixed(2)})</strong>. Horizontal asymptote: y = 0 as x → +∞.` },
+  agt1:  { bMin:1.001, bMax:4.0,   aMin:-5.0,  aMax:-0.01,color:'#993C1D',
+           desc:(a,b)=>`<strong>Reflected Growth</strong> — a < 0, b > 1. Curve falls steeply (below x-axis) as x increases. y-intercept: <strong>(0, ${a.toFixed(2)})</strong>. Horizontal asymptote: y = 0 as x → −∞.` },
+  abt01: { bMin:0.001, bMax:0.999, aMin:-5.0,  aMax:-0.01,color:'#854F0B',
+           desc:(a,b)=>`<strong>Reflected Decay</strong> — a < 0, 0 < b < 1. Curve rises toward 0 from below as x increases. y-intercept: <strong>(0, ${a.toFixed(2)})</strong>. Horizontal asymptote: y = 0 as x → +∞.` },
+};
+
+let cat = 'gt1';
+let chart = null;
+
+function getA() { return +document.getElementById('slA').value / 100; }
+function getB() {
+  const c = catConfig[cat];
+  const t = +document.getElementById('slB').value / 1000;
+  return c.bMin + t * (c.bMax - c.bMin);
+}
+
+function clampSliders() {
+  const c = catConfig[cat];
+  const slA = document.getElementById('slA');
+  slA.min = c.aMin * 100; slA.max = c.aMax * 100;
+  slA.value = Math.max(c.aMin * 100, Math.min(c.aMax * 100, +slA.value));
+}
+
+function update() {
+  clampSliders();
+  const a = getA(), b = getB();
+  document.getElementById('aLabel').textContent = a.toFixed(2);
+  document.getElementById('bLabel').textContent = b.toFixed(3);
+  document.getElementById('eqLabel').textContent = `y = ${a.toFixed(2)} · ${b.toFixed(3)}^x`;
+  document.getElementById('info').innerHTML = catConfig[cat].desc(a, b);
+
+  const xMin = -8, xMax = 8;
+  const steps = 300;
+  const labels = [];
+  const data = [];
+
+  for (let i = 0; i <= steps; i++) {
+    const x = xMin + i * (xMax - xMin) / steps;
+    const v = a * Math.pow(b, x);
+    labels.push(parseFloat(x.toFixed(2)));
+    data.push((!isFinite(v) || Math.abs(v) > 25) ? null : parseFloat(v.toFixed(4)));
+  }
+
+  const col = catConfig[cat].color;
+
+  if (chart) {
+    chart.data.labels = labels;
+    chart.data.datasets[0].data = data;
+    chart.data.datasets[0].borderColor = col;
+    chart.data.datasets[0].pointBackgroundColor = labels.map(x => Math.abs(x) < 0.02 ? '#e24b4a' : 'transparent');
+    chart.data.datasets[0].pointRadius = labels.map(x => Math.abs(x) < 0.02 ? 6 : 0);
+    chart.update('none');
+  } else {
+    chart = new Chart(document.getElementById('c'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data,
+          borderColor: col,
+          borderWidth: 2.5,
+          pointBackgroundColor: labels.map(x => Math.abs(x) < 0.02 ? '#e24b4a' : 'transparent'),
+          pointBorderColor: labels.map(x => Math.abs(x) < 0.02 ? '#e24b4a' : 'transparent'),
+          pointRadius: labels.map(x => Math.abs(x) < 0.02 ? 6 : 0),
+          tension: 0.3,
+          fill: false,
+          spanGaps: false,
+        }]
+      },
+      options: {
+        responsive: true,
+        animation: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: ctx => `x = ${ctx[0].label}`,
+              label: ctx => ctx.parsed.y !== null ? `y = ${ctx.parsed.y.toFixed(3)}` : 'undefined'
+            }
+          }
+        },
+        scales: {
+          x: {
+            type: 'linear',
+            min: xMin, max: xMax,
+            title: { display: true, text: 'x', font: { size: 13, family: 'Georgia' } },
+            grid: { color: 'rgba(0,0,0,0.06)' },
+            ticks: { stepSize: 1, font: { size: 11, family: 'Courier New' } }
+          },
+          y: {
+            min: -20, max: 20,
+            title: { display: true, text: 'y = a · bˣ', font: { size: 13, family: 'Georgia' } },
+            grid: { color: 'rgba(0,0,0,0.06)' },
+            ticks: { stepSize: 5, font: { size: 11, family: 'Courier New' } }
+          }
+        }
+      }
+    });
+  }
+}
+
+document.querySelectorAll('.cat-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    cat = btn.dataset.cat;
+    update();
+  });
+});
+document.getElementById('slA').addEventListener('input', update);
+document.getElementById('slB').addEventListener('input', update);
+update();
+</script>
+</body>
+</html>

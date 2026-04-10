@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quadratic Transformation Explorer — y = a(k(x−d))² + c</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: #f8f6f1;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0ddd6;
+    padding: 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: normal;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+    color: #111;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 1.8rem;
+    font-family: 'Courier New', monospace;
+  }
+
+  .eq-display {
+    font-family: 'Courier New', monospace;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 1.4rem;
+    padding: 10px 16px;
+    background: #f5f3ee;
+    border-radius: 8px;
+    border-left: 4px solid #185FA5;
+  }
+
+  .group { margin-bottom: 1rem; }
+
+  .sign-label {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 4px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .sign-tabs { display: flex; gap: 6px; margin-bottom: 6px; }
+
+  .sign-btn {
+    padding: 4px 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: transparent;
+    cursor: pointer;
+    font-size: 12px;
+    color: #555;
+    font-family: 'Courier New', monospace;
+    transition: all 0.15s;
+  }
+  .sign-btn:hover { background: #f0ede8; }
+  .sign-btn.active { background: #185FA5; color: white; border-color: transparent; }
+
+  .ctrl {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .ctrl label {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: bold;
+    color: #333;
+    min-width: 150px;
+  }
+
+  .ctrl input[type=range] {
+    flex: 1;
+    accent-color: #185FA5;
+    cursor: pointer;
+  }
+
+  .val-display {
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    font-weight: bold;
+    min-width: 56px;
+    text-align: right;
+    color: #111;
+  }
+
+  .reset-btn {
+    padding: 7px 18px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: transparent;
+    cursor: pointer;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 1rem;
+    font-family: 'Courier New', monospace;
+    transition: all 0.15s;
+  }
+  .reset-btn:hover { background: #f0ede8; }
+
+  .info-box {
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: #f5f3ee;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 1.2rem;
+    line-height: 1.7;
+    border: 1px solid #e5e2da;
+  }
+  .info-box strong { color: #111; }
+
+  canvas {
+    width: 100% !important;
+    border-radius: 8px;
+    border: 1px solid #e5e2da;
+  }
+
+  .footer {
+    margin-top: 1.2rem;
+    font-size: 11px;
+    color: #aaa;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Quadratic Transformation Explorer</h1>
+  <div class="subtitle">y = a(k(x − d))² + c &nbsp;|&nbsp; Adjust sliders to explore each transformation</div>
+
+  <div class="eq-display" id="eqLabel">y = 1.00(1.00(x − 0.00))² + 0.00</div>
+
+  <!-- a -->
+  <div class="group">
+    <div class="sign-label">Sign of a:</div>
+    <div class="sign-tabs">
+      <button class="sign-btn active" data-param="a" data-sign="pos">a &gt; 0 (opens up)</button>
+      <button class="sign-btn" data-param="a" data-sign="neg">a &lt; 0 (opens down)</button>
+    </div>
+    <div class="ctrl">
+      <label>a &nbsp;(0.1 to 5)</label>
+      <input type="range" id="slA" min="10" max="500" step="1" value="100">
+      <span class="val-display" id="vA">1.00</span>
+    </div>
+  </div>
+
+  <!-- k -->
+  <div class="group">
+    <div class="sign-label">Sign of k:</div>
+    <div class="sign-tabs">
+      <button class="sign-btn active" data-param="k" data-sign="pos">k &gt; 0</button>
+      <button class="sign-btn" data-param="k" data-sign="neg">k &lt; 0</button>
+    </div>
+    <div class="ctrl">
+      <label>k &nbsp;(0.1 to 5)</label>
+      <input type="range" id="slK" min="10" max="500" step="1" value="100">
+      <span class="val-display" id="vK">1.00</span>
+    </div>
+  </div>
+
+  <!-- d -->
+  <div class="group">
+    <div class="ctrl">
+      <label>d &nbsp;(−5 to 5)</label>
+      <input type="range" id="slD" min="-500" max="500" step="1" value="0">
+      <span class="val-display" id="vD">0.00</span>
+    </div>
+  </div>
+
+  <!-- c -->
+  <div class="group">
+    <div class="ctrl">
+      <label>c &nbsp;(−5 to 5)</label>
+      <input type="range" id="slC" min="-500" max="500" step="1" value="0">
+      <span class="val-display" id="vC">0.00</span>
+    </div>
+  </div>
+
+  <button class="reset-btn" id="resetBtn">↺ Reset to default</button>
+
+  <div class="info-box" id="info"></div>
+  <canvas id="c"></canvas>
+
+  <div class="footer">FEIA · Quadratic Transformation Explorer · Built with AI-integrated learning</div>
+</div>
+
+<script>
+let signA = 1, signK = 1;
+
+const canvas = document.getElementById('c');
+const DPR = window.devicePixelRatio || 1;
+const CW = 720, CH = 500;
+canvas.width = CW * DPR;
+canvas.height = CH * DPR;
+canvas.style.width = '100%';
+canvas.style.height = CH + 'px';
+
+function getA() { return signA * (+document.getElementById('slA').value / 100); }
+function getK() { return signK * (+document.getElementById('slK').value / 100); }
+function getD() { return +document.getElementById('slD').value / 100; }
+function getC() { return +document.getElementById('slC').value / 100; }
+
+function fmt(v) { return (v >= 0 ? '+' : '') + v.toFixed(2); }
+
+function updateLabels() {
+  const a = getA(), k = getK(), d = getD(), c = getC();
+  document.getElementById('vA').textContent = a.toFixed(2);
+  document.getElementById('vK').textContent = k.toFixed(2);
+  document.getElementById('vD').textContent = d.toFixed(2);
+  document.getElementById('vC').textContent = c.toFixed(2);
+
+  const dSign = d >= 0 ? '−' : '+';
+  const dAbs = Math.abs(d).toFixed(2);
+  document.getElementById('eqLabel').textContent =
+    `y = ${a.toFixed(2)}(${k.toFixed(2)}(x ${dSign} ${dAbs}))² ${fmt(c)}`;
+
+  const opens = a > 0 ? 'opens upward ↑' : 'opens downward ↓';
+  const aDesc = Math.abs(a) > 1 ? 'vertical stretch' : 'vertical compression';
+  const kDesc = Math.abs(k) > 1 ? 'horizontal compression' : 'horizontal stretch';
+  const reflected = a < 0 ? ' · reflected over x-axis' : '';
+  const hshift = d > 0 ? `right ${d.toFixed(2)}` : d < 0 ? `left ${Math.abs(d).toFixed(2)}` : 'no horizontal shift';
+  const vshift = c > 0 ? `up ${c.toFixed(2)}` : c < 0 ? `down ${Math.abs(c).toFixed(2)}` : 'no vertical shift';
+
+  document.getElementById('info').innerHTML =
+    `<strong>Vertex:</strong> (${d.toFixed(2)}, ${c.toFixed(2)}) &nbsp;·&nbsp; <strong>Axis of symmetry:</strong> x = ${d.toFixed(2)}<br>` +
+    `${opens}${reflected} &nbsp;·&nbsp; ${aDesc} (|a| = ${Math.abs(a).toFixed(2)}) &nbsp;·&nbsp; ${kDesc} (|k| = ${Math.abs(k).toFixed(2)})<br>` +
+    `Horizontal shift: ${hshift} &nbsp;·&nbsp; Vertical shift: ${vshift}`;
+}
+
+function draw() {
+  const a = getA(), k = getK(), d = getD(), c = getC();
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.clearRect(0, 0, CW, CH);
+
+  const pad = { l:56, r:28, t:28, b:48 };
+  const xMin=-8, xMax=8, yMin=-10, yMax=10;
+  const W = CW - pad.l - pad.r, H = CH - pad.t - pad.b;
+
+  function sx(x) { return pad.l + (x - xMin) / (xMax - xMin) * W; }
+  function sy(y) { return pad.t + (yMax - y) / (yMax - yMin) * H; }
+
+  const gridCol = 'rgba(0,0,0,0.06)';
+  const axisCol = 'rgba(0,0,0,0.5)';
+  const tickCol = '#666';
+
+  // grid
+  ctx.strokeStyle = gridCol; ctx.lineWidth = 0.5;
+  for (let x = xMin; x <= xMax; x++) {
+    ctx.beginPath(); ctx.moveTo(sx(x), sy(yMin)); ctx.lineTo(sx(x), sy(yMax)); ctx.stroke();
+  }
+  for (let y = yMin; y <= yMax; y++) {
+    ctx.beginPath(); ctx.moveTo(sx(xMin), sy(y)); ctx.lineTo(sx(xMax), sy(y)); ctx.stroke();
+  }
+
+  // axes
+  ctx.strokeStyle = axisCol; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(sx(xMin), sy(0)); ctx.lineTo(sx(xMax), sy(0)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(sx(0), sy(yMin)); ctx.lineTo(sx(0), sy(yMax)); ctx.stroke();
+
+  // tick labels x
+  ctx.fillStyle = tickCol; ctx.font = '11px Courier New'; ctx.textAlign = 'center';
+  for (let x = xMin; x <= xMax; x++) {
+    if (x === 0) continue;
+    ctx.fillText(x, sx(x), sy(0) + 16);
+  }
+  ctx.textAlign = 'right';
+  for (let y = yMin; y <= yMax; y += 2) {
+    if (y === 0) continue;
+    ctx.fillText(y, sx(0) - 7, sy(y) + 4);
+  }
+  ctx.font = '13px Georgia';
+  ctx.textAlign = 'left'; ctx.fillText('y', sx(0) + 6, sy(yMax) + 4);
+  ctx.textAlign = 'center'; ctx.fillText('x', sx(xMax) + 14, sy(0) + 4);
+
+  // axis of symmetry
+  if (d >= xMin && d <= xMax) {
+    ctx.strokeStyle = 'rgba(180,120,0,0.4)';
+    ctx.lineWidth = 1; ctx.setLineDash([5, 4]);
+    ctx.beginPath(); ctx.moveTo(sx(d), sy(yMin)); ctx.lineTo(sx(d), sy(yMax)); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // ghost base parabola y = x²
+  ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+  ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+  ctx.beginPath(); let penDown = false;
+  for (let i = 0; i <= 600; i++) {
+    const x = xMin + i * (xMax - xMin) / 600;
+    const v = x * x;
+    if (v > yMax + 1 || v < yMin - 1) { penDown = false; continue; }
+    const cv = Math.max(yMin, Math.min(yMax, v));
+    if (!penDown) { ctx.moveTo(sx(x), sy(cv)); penDown = true; }
+    else ctx.lineTo(sx(x), sy(cv));
+  }
+  ctx.stroke(); ctx.setLineDash([]);
+
+  // main parabola
+  ctx.strokeStyle = '#185FA5'; ctx.lineWidth = 2.5; ctx.lineJoin = 'round';
+  ctx.beginPath(); penDown = false;
+  for (let i = 0; i <= 800; i++) {
+    const x = xMin + i * (xMax - xMin) / 800;
+    const inner = k * (x - d);
+    const v = a * inner * inner + c;
+    if (!isFinite(v) || v > yMax + 1 || v < yMin - 1) { penDown = false; continue; }
+    const cv = Math.max(yMin, Math.min(yMax, v));
+    if (!penDown) { ctx.moveTo(sx(x), sy(cv)); penDown = true; }
+    else ctx.lineTo(sx(x), sy(cv));
+  }
+  ctx.stroke();
+
+  // vertex dot
+  if (d >= xMin && d <= xMax) {
+    const vc = Math.max(yMin, Math.min(yMax, c));
+    ctx.beginPath(); ctx.arc(sx(d), sy(vc), 6, 0, Math.PI * 2);
+    ctx.fillStyle = '#e24b4a'; ctx.fill();
+    ctx.fillStyle = '#222'; ctx.font = '12px Georgia'; ctx.textAlign = 'left';
+    const lbl = `(${d.toFixed(1)}, ${c.toFixed(1)})`;
+    const lx = d < xMax - 2 ? sx(d) + 10 : sx(d) - 100;
+    const ly = a >= 0 ? sy(vc) - 10 : sy(vc) + 18;
+    ctx.fillText(lbl, lx, ly);
+  }
+}
+
+function update() { updateLabels(); draw(); }
+
+document.querySelectorAll('.sign-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const param = btn.dataset.param;
+    const sign = btn.dataset.sign;
+    document.querySelectorAll(`.sign-btn[data-param="${param}"]`).forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (param === 'a') signA = sign === 'pos' ? 1 : -1;
+    if (param === 'k') signK = sign === 'pos' ? 1 : -1;
+    update();
+  });
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  signA = 1; signK = 1;
+  document.querySelectorAll('.sign-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.sign-btn[data-param="a"][data-sign="pos"]').classList.add('active');
+  document.querySelector('.sign-btn[data-param="k"][data-sign="pos"]').classList.add('active');
+  document.getElementById('slA').value = 100;
+  document.getElementById('slK').value = 100;
+  document.getElementById('slD').value = 0;
+  document.getElementById('slC').value = 0;
+  update();
+});
+
+['slA','slK','slD','slC'].forEach(id =>
+  document.getElementById(id).addEventListener('input', update)
+);
+update();
+</script>
+</body>
+</html>
