@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Linear Function Explorer — Ms. Liu</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: #f8f6f1;
+    color: #1a1a1a;
+    padding: 1rem;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0ddd6;
+    padding: 1.2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  h1 { font-size: 1.2rem; font-weight: normal; color: #111; margin-bottom: 0.15rem; }
+
+  .subtitle {
+    font-size: 0.8rem; color: #999;
+    font-family: 'Courier New', monospace; margin-bottom: 1rem;
+  }
+
+  .eq-display {
+    font-family: 'Courier New', monospace;
+    font-size: 1.2rem; font-weight: bold; color: #111;
+    margin-bottom: 1rem; padding: 8px 14px;
+    background: #f5f3ee; border-radius: 8px;
+    border-left: 4px solid #185FA5;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+  @media (max-width: 480px) { .controls { grid-template-columns: 1fr; } }
+
+  .group {
+    background: #f9f8f5; border-radius: 8px;
+    border: 1px solid #e5e2da; padding: 10px 12px;
+  }
+
+  .group-label {
+    font-size: 11px; color: #888;
+    font-family: 'Courier New', monospace; margin-bottom: 6px;
+  }
+
+  .ctrl-row { display: flex; align-items: center; gap: 8px; }
+
+  .ctrl-row label {
+    font-family: 'Courier New', monospace;
+    font-size: 14px; font-weight: bold; color: #333; min-width: 18px;
+  }
+
+  .ctrl-row input[type=range] {
+    flex: 1; accent-color: #185FA5;
+    cursor: pointer; touch-action: manipulation; height: 22px;
+  }
+
+  .val-display {
+    font-family: 'Courier New', monospace;
+    font-size: 14px; font-weight: bold;
+    min-width: 48px; text-align: right; color: #111;
+  }
+
+  .reset-btn {
+    padding: 7px 18px; border-radius: 6px;
+    border: 1px solid #ccc; background: transparent;
+    cursor: pointer; font-size: 13px; color: #555;
+    margin-bottom: 0.8rem; font-family: 'Courier New', monospace;
+    touch-action: manipulation;
+  }
+  .reset-btn:hover { background: #f0ede8; }
+
+  .info-box {
+    padding: 8px 12px; border-radius: 8px;
+    background: #f5f3ee; font-size: 12px; color: #555;
+    margin-bottom: 0.8rem; line-height: 1.7;
+    border: 1px solid #e5e2da;
+  }
+  .info-box strong { color: #111; }
+
+  canvas {
+    width: 100% !important; border-radius: 8px;
+    border: 1px solid #e5e2da; display: block;
+    touch-action: none;
+  }
+
+  .footer {
+    margin-top: 0.8rem; font-size: 11px; color: #bbb;
+    text-align: center; font-family: 'Courier New', monospace;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Linear Function Explorer</h1>
+  <div class="subtitle">y = mx + b &nbsp;·&nbsp; Use sliders to explore slope and y-intercept</div>
+  <div class="eq-display" id="eqLabel">y = 1.00x + 0.00</div>
+
+  <div class="controls">
+    <div class="group">
+      <div class="group-label">m — slope (−5 to 5)</div>
+      <div class="ctrl-row">
+        <label>m</label>
+        <input type="range" id="slM" min="-500" max="500" step="1" value="100">
+        <span class="val-display" id="vM">1.00</span>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-label">b — y-intercept (−5 to 5)</div>
+      <div class="ctrl-row">
+        <label>b</label>
+        <input type="range" id="slB" min="-500" max="500" step="1" value="0">
+        <span class="val-display" id="vB">0.00</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="reset-btn" id="resetBtn">↺ Reset</button>
+  <div class="info-box" id="info"></div>
+  <canvas id="c"></canvas>
+  <div class="footer">Ms. Liu · Linear Explorer · AI-integrated learning</div>
+</div>
+
+<script>
+const canvas = document.getElementById('c');
+const DPR = window.devicePixelRatio || 1;
+
+function resizeCanvas() {
+  const w = canvas.parentElement.clientWidth - 40;
+  const h = Math.min(Math.round(w * 0.7), 380);
+  canvas.width = w * DPR;
+  canvas.height = h * DPR;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  draw(getM(), getB());
+}
+
+function getM() { return +document.getElementById('slM').value / 100; }
+function getB() { return +document.getElementById('slB').value / 100; }
+function fmt(v) { return (v >= 0 ? '+' : '') + v.toFixed(2); }
+
+function updateLabels() {
+  const m = getM(), b = getB();
+  document.getElementById('vM').textContent = m.toFixed(2);
+  document.getElementById('vB').textContent = b.toFixed(2);
+  document.getElementById('eqLabel').textContent =
+    `y = ${m.toFixed(2)}x ${fmt(b)}`;
+
+  const slopeDesc = m > 0 ? 'positive slope — rising left to right'
+    : m < 0 ? 'negative slope — falling left to right'
+    : 'zero slope — horizontal line';
+  const steepDesc = Math.abs(m) > 1 ? 'steep' : Math.abs(m) < 1 && m !== 0 ? 'gentle' : '';
+
+  const xIntercept = m !== 0 ? (-b / m).toFixed(2) : 'none';
+  const yIntercept = b.toFixed(2);
+  const bDesc = b > 0 ? `crosses y-axis above origin at (0, ${yIntercept})`
+    : b < 0 ? `crosses y-axis below origin at (0, ${yIntercept})`
+    : 'passes through the origin (0, 0)';
+
+  document.getElementById('info').innerHTML =
+    `<strong>Slope:</strong> m = ${m.toFixed(2)} &nbsp;·&nbsp; ${steepDesc ? steepDesc + ', ' : ''}${slopeDesc}<br>` +
+    `<strong>y-intercept:</strong> (0, ${yIntercept}) &nbsp;·&nbsp; ${bDesc}<br>` +
+    `<strong>x-intercept:</strong> (${xIntercept}, 0) &nbsp;·&nbsp; <strong>Rise/Run:</strong> ${m.toFixed(2)} per unit`;
+}
+
+function draw(m, b) {
+  const ctx = canvas.getContext('2d');
+  const CW = canvas.width / DPR, CH = canvas.height / DPR;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.clearRect(0, 0, CW, CH);
+
+  const pad = { l:40, r:16, t:16, b:32 };
+  const xMin=-8, xMax=8, yMin=-8, yMax=8;
+  const W = CW - pad.l - pad.r, H = CH - pad.t - pad.b;
+
+  function sx(x) { return pad.l + (x - xMin) / (xMax - xMin) * W; }
+  function sy(y) { return pad.t + (yMax - y) / (yMax - yMin) * H; }
+
+  // grid
+  ctx.strokeStyle = 'rgba(0,0,0,0.06)'; ctx.lineWidth = 0.5;
+  for (let x = xMin; x <= xMax; x++) {
+    ctx.beginPath(); ctx.moveTo(sx(x), sy(yMin)); ctx.lineTo(sx(x), sy(yMax)); ctx.stroke();
+  }
+  for (let y = yMin; y <= yMax; y++) {
+    ctx.beginPath(); ctx.moveTo(sx(xMin), sy(y)); ctx.lineTo(sx(xMax), sy(y)); ctx.stroke();
+  }
+
+  // axes
+  ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(sx(xMin), sy(0)); ctx.lineTo(sx(xMax), sy(0)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(sx(0), sy(yMin)); ctx.lineTo(sx(0), sy(yMax)); ctx.stroke();
+
+  // tick labels
+  ctx.fillStyle = '#888'; ctx.font = '10px Courier New'; ctx.textAlign = 'center';
+  for (let x = xMin; x <= xMax; x++) {
+    if (x === 0) continue;
+    if (x % 2 === 0) ctx.fillText(x, sx(x), sy(0) + 14);
+  }
+  ctx.textAlign = 'right';
+  for (let y = yMin; y <= yMax; y += 2) {
+    if (y === 0) continue;
+    ctx.fillText(y, sx(0) - 4, sy(y) + 4);
+  }
+  ctx.font = '12px Georgia';
+  ctx.textAlign = 'left'; ctx.fillText('y', sx(0) + 5, sy(yMax) + 4);
+  ctx.textAlign = 'center'; ctx.fillText('x', sx(xMax) + 12, sy(0) + 4);
+
+  // rise/run triangle (show slope visually)
+  if (m !== 0 && Math.abs(m) < 8) {
+    const rx = 1;
+    const ry = m;
+    const startX = 0, startY = b;
+    if (startX >= xMin && startX <= xMax - rx && Math.abs(startY) < yMax) {
+      ctx.strokeStyle = 'rgba(180,120,0,0.4)'; ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 2]);
+      ctx.beginPath();
+      ctx.moveTo(sx(startX), sy(startY));
+      ctx.lineTo(sx(startX + rx), sy(startY));
+      ctx.lineTo(sx(startX + rx), sy(startY + ry));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = 'rgba(140,90,0,0.6)'; ctx.font = '10px Courier New';
+      ctx.textAlign = 'center';
+      ctx.fillText('run=1', sx(startX + rx / 2), sy(startY) + 13);
+      ctx.textAlign = 'left';
+      ctx.fillText(`rise=${m.toFixed(2)}`, sx(startX + rx) + 4, sy(startY + ry / 2));
+    }
+  }
+
+  // main line
+  const x1 = xMin, y1 = m * x1 + b;
+  const x2 = xMax, y2 = m * x2 + b;
+  ctx.strokeStyle = '#185FA5'; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.moveTo(sx(x1), sy(y1)); ctx.lineTo(sx(x2), sy(y2)); ctx.stroke();
+
+  // y-intercept dot
+  if (b >= yMin && b <= yMax) {
+    ctx.beginPath(); ctx.arc(sx(0), sy(b), 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#e24b4a'; ctx.fill();
+    ctx.fillStyle = '#222'; ctx.font = '11px Georgia';
+    ctx.textAlign = 'left';
+    ctx.fillText(`(0, ${b.toFixed(2)})`, sx(0) + 8, sy(b) - 8);
+  }
+
+  // x-intercept dot
+  if (m !== 0) {
+    const xi = -b / m;
+    if (xi >= xMin && xi <= xMax) {
+      ctx.beginPath(); ctx.arc(sx(xi), sy(0), 5, 0, Math.PI * 2);
+      ctx.fillStyle = '#0F6E56'; ctx.fill();
+      ctx.fillStyle = '#222'; ctx.font = '11px Georgia';
+      ctx.textAlign = xi < xMax - 2 ? 'left' : 'right';
+      ctx.fillText(`(${xi.toFixed(2)}, 0)`, sx(xi) + (xi < xMax - 2 ? 8 : -8), sy(0) - 8);
+    }
+  }
+}
+
+function update() { updateLabels(); draw(getM(), getB()); }
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  document.getElementById('slM').value = 100;
+  document.getElementById('slB').value = 0;
+  update();
+});
+
+['slM', 'slB'].forEach(id =>
+  document.getElementById(id).addEventListener('input', update)
+);
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+update();
+</script>
+</body>
+</html>
