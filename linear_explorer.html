@@ -14,237 +14,217 @@
     --red:    #e24b4a;
     --bg:     #f7f5f0;
     --card:   #ffffff;
-    --border: #e4e0d8;
+    --border: #d8d4cc;
     --text:   #1a1814;
-    --muted:  #7a7670;
+    --muted:  #4a4844;
   }
 
   body {
     font-family: 'DM Sans', sans-serif;
     background: var(--bg);
     color: var(--text);
-    padding: 0;
     min-height: 100vh;
   }
 
-  /* Top bar */
+  /* ── NAV ── */
   .topbar {
     background: var(--text);
-    padding: 0.9rem 1.2rem;
+    padding: 0;
+    position: relative;
+  }
+
+  .topbar-main {
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: space-between;
+    padding: 0.85rem 1.2rem;
   }
-  .back-btn {
-    color: #9a9690;
-    text-decoration: none;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.04em;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  .back-btn:hover { color: #f7f5f0; }
-  .topbar-title {
+
+  .site-title {
     font-family: 'Playfair Display', serif;
     font-size: 1rem;
     color: #f7f5f0;
     font-weight: 400;
+    text-decoration: none;
   }
 
+  .hamburger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    touch-action: manipulation;
+  }
+  .hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #c8c4bc;
+    border-radius: 1px;
+    transition: all 0.2s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .nav-menu {
+    display: none;
+    flex-direction: column;
+    border-top: 1px solid #2e2c28;
+    padding: 0.5rem 0;
+  }
+  .nav-menu.open { display: flex; }
+
+  .nav-menu a {
+    display: block;
+    padding: 0.65rem 1.4rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: #c8c4bc;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: background 0.12s;
+  }
+  .nav-menu a:hover { background: #2a2620; color: #f7f5f0; }
+  .nav-menu a.active { color: #f7f5f0; border-left: 2px solid #f7f5f0; padding-left: calc(1.4rem - 2px); }
+
+  /* ── CONTENT ── */
   .container {
     max-width: 720px;
     margin: 0 auto;
     padding: 1.2rem;
   }
 
-  /* Collapsible readme */
   .readme {
-    background: var(--card);
-    border: 1px solid var(--border);
+    background: #2a2620;
+    border: 1px solid #3a3630;
     border-radius: 10px;
     margin-bottom: 1.2rem;
     overflow: hidden;
   }
-
   .readme-toggle {
-    width: 100%;
-    padding: 10px 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #faf8f4;
-    border: none;
-    cursor: pointer;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    color: var(--muted);
-    text-align: left;
-    touch-action: manipulation;
+    width: 100%; padding: 11px 14px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: #2a2620; border: none; cursor: pointer;
+    font-family: 'DM Mono', monospace; font-size: 0.75rem;
+    letter-spacing: 0.06em; color: #c8c4bc;
+    text-align: left; touch-action: manipulation;
   }
-  .readme-toggle:hover { background: #f2efe8; }
-  .readme-arrow { transition: transform 0.2s; display: inline-block; }
+  .readme-toggle:hover { background: #333028; }
+  .readme-arrow { transition: transform 0.2s; display: inline-block; color: #888480; }
   .readme.open .readme-arrow { transform: rotate(180deg); }
-
-  .readme-body {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-  }
+  .readme-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
   .readme.open .readme-body { max-height: 600px; }
-
   .readme-inner {
-    padding: 1rem 1.2rem;
-    border-top: 1px solid var(--border);
-    font-size: 0.85rem;
-    color: var(--muted);
-    line-height: 1.75;
+    padding: 1rem 1.2rem; border-top: 1px solid #3a3630;
+    font-size: 0.85rem; color: #b8b4ac; line-height: 1.75;
   }
-
   .readme-inner h3 {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text);
-    margin-bottom: 6px;
-    margin-top: 12px;
+    font-family: 'DM Mono', monospace; font-size: 0.7rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: #e8e4dc; margin-bottom: 5px; margin-top: 12px;
   }
   .readme-inner h3:first-child { margin-top: 0; }
-
   .readme-inner ul { padding-left: 1.1rem; }
   .readme-inner li { margin-bottom: 3px; }
-
   .readme-inner .param {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.78rem;
-    background: #f2efe8;
-    padding: 1px 6px;
-    border-radius: 4px;
-    color: var(--text);
+    font-family: 'DM Mono', monospace; font-size: 0.78rem;
+    background: #3a3630; padding: 1px 6px;
+    border-radius: 4px; color: #e8e4dc;
   }
 
-  /* Equation display */
   .eq-display {
-    font-family: 'DM Mono', monospace;
-    font-size: 1.1rem;
-    font-weight: 400;
-    color: var(--text);
-    margin-bottom: 1rem;
-    padding: 10px 14px;
-    background: var(--card);
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--blue);
+    font-family: 'DM Mono', monospace; font-size: 1rem;
+    color: var(--text); margin-bottom: 1rem; padding: 10px 14px;
+    background: var(--card); border-radius: 10px;
+    border: 1px solid var(--border); border-left: 4px solid var(--blue);
   }
+  .eq-formula { font-size: 1.1rem; font-weight: 400; color: #555; }
+  .eq-current { font-size: 0.85rem; color: var(--muted); margin-top: 2px; }
 
-  /* Controls */
   .controls {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 1rem;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin-bottom: 1rem;
   }
   @media (max-width: 440px) { .controls { grid-template-columns: 1fr; } }
 
   .group {
-    background: var(--card);
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    padding: 10px 12px;
+    background: var(--card); border-radius: 10px;
+    border: 1px solid var(--border); padding: 10px 12px;
   }
-
   .group-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.06em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 7px;
+    font-family: 'DM Mono', monospace; font-size: 0.7rem;
+    letter-spacing: 0.06em; color: var(--muted);
+    text-transform: uppercase; margin-bottom: 7px;
   }
-
   .ctrl-row { display: flex; align-items: center; gap: 8px; }
-
   .ctrl-row label {
-    font-family: 'DM Mono', monospace;
-    font-size: 1rem;
-    font-weight: 400;
-    color: var(--text);
-    min-width: 18px;
+    font-family: 'DM Mono', monospace; font-size: 1rem;
+    color: var(--text); min-width: 18px;
   }
-
   .ctrl-row input[type=range] {
     flex: 1; accent-color: var(--blue);
     cursor: pointer; touch-action: manipulation; height: 22px;
   }
-
   .val-display {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.88rem;
-    font-weight: 400;
-    min-width: 46px;
-    text-align: right;
-    color: var(--text);
+    font-family: 'DM Mono', monospace; font-size: 0.88rem;
+    min-width: 46px; text-align: right; color: var(--text);
   }
 
   .reset-btn {
-    padding: 7px 16px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: transparent;
-    cursor: pointer;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-bottom: 0.9rem;
-    touch-action: manipulation;
+    padding: 7px 16px; border-radius: 8px;
+    border: 1px solid var(--border); background: transparent;
+    cursor: pointer; font-family: 'DM Mono', monospace;
+    font-size: 0.75rem; color: var(--muted);
+    margin-bottom: 0.9rem; touch-action: manipulation;
     letter-spacing: 0.04em;
   }
   .reset-btn:hover { background: var(--card); }
 
   .info-box {
-    padding: 9px 13px;
-    border-radius: 10px;
-    background: var(--card);
-    font-size: 0.82rem;
-    color: var(--muted);
-    margin-bottom: 0.9rem;
-    line-height: 1.7;
-    border: 1px solid var(--border);
+    padding: 9px 13px; border-radius: 10px; background: var(--card);
+    font-size: 0.83rem; color: var(--muted); margin-bottom: 0.9rem;
+    line-height: 1.7; border: 1px solid var(--border);
   }
   .info-box strong { color: var(--text); font-weight: 500; }
 
   canvas {
-    width: 100% !important;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    display: block;
-    touch-action: none;
-    background: var(--card);
+    width: 100% !important; border-radius: 10px;
+    border: 1px solid var(--border); display: block;
+    touch-action: none; background: var(--card);
   }
 
   .footer {
-    margin-top: 1rem;
-    font-size: 0.68rem;
-    color: #c0bdb6;
-    text-align: center;
-    font-family: 'DM Mono', monospace;
+    margin-top: 1rem; font-size: 0.7rem; color: #888480;
+    text-align: center; font-family: 'DM Mono', monospace;
     letter-spacing: 0.06em;
   }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <a class="back-btn" href="index.html">← Back</a>
-  <span class="topbar-title">Linear Functions</span>
-</div>
+<nav class="topbar">
+  <div class="topbar-main">
+    <a class="site-title" href="index.html">Ms. Liu · Math Tools</a>
+    <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-menu" id="navMenu">
+    <a href="index.html">Home</a>
+    <a href="linear_explorer.html" class="active">Linear &nbsp; y = mx + b</a>
+    <a href="quadratic_explorer.html">Quadratic &nbsp; y = a(k(x−d))² + c</a>
+    <a href="exponential_explorer.html">Exponential &nbsp; y = a · bˣ</a>
+    <a href="log_explorer.html">Logarithm &nbsp; y = a · log(x−h) + k</a>
+    <a href="trig_explorer.html">Trig Ratios &nbsp; sin · cos · tan</a>
+  </div>
+</nav>
 
 <div class="container">
 
-  <!-- Collapsible README -->
   <div class="readme" id="readme">
     <button class="readme-toggle" onclick="document.getElementById('readme').classList.toggle('open')">
       <span>How to use this tool</span>
@@ -253,36 +233,35 @@
     <div class="readme-body">
       <div class="readme-inner">
         <h3>What this shows</h3>
-        This tool explores the slope-intercept form of a linear function: <span class="param">y = mx + b</span>.
+        This tool explores the slope-intercept form: <span class="param">y = mx + b</span>.
         Adjust the sliders to see how each parameter changes the graph in real time.
-
         <h3>Parameters</h3>
         <ul>
-          <li><span class="param">m</span> — slope. Controls steepness and direction. Positive = rising, negative = falling, zero = horizontal.</li>
+          <li><span class="param">m</span> — slope. Positive = rising left to right, negative = falling, zero = horizontal line.</li>
           <li><span class="param">b</span> — y-intercept. Where the line crosses the y-axis. The point (0, b) is always on the line.</li>
         </ul>
-
         <h3>Key concepts</h3>
         <ul>
-          <li>Rise/run triangle is drawn on the graph to show slope visually</li>
-          <li>Red dot = y-intercept (0, b)</li>
-          <li>Green dot = x-intercept where the line crosses the x-axis</li>
+          <li>Rise/run triangle is drawn to show slope visually</li>
+          <li>Red dot = y-intercept &nbsp;·&nbsp; Green dot = x-intercept</li>
           <li>x-intercept = −b/m (when m ≠ 0)</li>
-          <li>Parallel lines have equal slopes · Perpendicular lines have slopes that multiply to −1</li>
+          <li>Parallel lines have equal slopes</li>
+          <li>Perpendicular lines: slopes multiply to −1</li>
         </ul>
-
         <h3>Try this</h3>
         <ul>
           <li>Set m = 0 — what happens to the line?</li>
           <li>Set b = 0 — does the line pass through the origin?</li>
-          <li>Make m negative — which way does the line slope?</li>
-          <li>What happens when m is very large or very small?</li>
+          <li>Make m negative — which direction does the line slope?</li>
         </ul>
       </div>
     </div>
   </div>
 
-  <div class="eq-display" id="eqLabel">y = 1.00x + 0.00</div>
+  <div class="eq-display">
+    <div class="eq-formula">y = mx + b</div>
+    <div class="eq-current" id="eqCurrent">current: y = 1.00x + 0.00</div>
+  </div>
 
   <div class="controls">
     <div class="group">
@@ -293,7 +272,6 @@
         <span class="val-display" id="vM">1.00</span>
       </div>
     </div>
-
     <div class="group">
       <div class="group-label">b — y-intercept (−5 to 5)</div>
       <div class="ctrl-row">
@@ -311,6 +289,11 @@
 </div>
 
 <script>
+function toggleNav() {
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('navMenu').classList.toggle('open');
+}
+
 const canvas = document.getElementById('c');
 const DPR = window.devicePixelRatio || 1;
 
@@ -330,95 +313,86 @@ function updateLabels() {
   const m = getM(), b = getB();
   document.getElementById('vM').textContent = m.toFixed(2);
   document.getElementById('vB').textContent = b.toFixed(2);
-  document.getElementById('eqLabel').textContent = `y = ${m.toFixed(2)}x ${fmt(b)}`;
-
-  const slopeDesc = m > 0 ? 'positive slope — rising' : m < 0 ? 'negative slope — falling' : 'zero slope — horizontal';
-  const steep = Math.abs(m) > 1 ? 'steep' : Math.abs(m) < 1 && m !== 0 ? 'gentle' : '';
+  document.getElementById('eqCurrent').textContent = `current: y = ${m.toFixed(2)}x ${fmt(b)}`;
+  const slopeDesc = m > 0 ? 'positive — rising' : m < 0 ? 'negative — falling' : 'zero — horizontal line';
+  const steep = Math.abs(m) > 1 ? 'steep, ' : Math.abs(m) < 1 && m !== 0 ? 'gentle, ' : '';
   const xi = m !== 0 ? (-b / m).toFixed(2) : 'none';
-
   document.getElementById('info').innerHTML =
-    `<strong>Slope:</strong> m = ${m.toFixed(2)} &nbsp;·&nbsp; ${steep ? steep + ', ' : ''}${slopeDesc}<br>` +
+    `<strong>Slope:</strong> m = ${m.toFixed(2)} &nbsp;·&nbsp; ${steep}${slopeDesc}<br>` +
     `<strong>y-intercept:</strong> (0, ${b.toFixed(2)}) &nbsp;·&nbsp; <strong>x-intercept:</strong> (${xi}, 0)` +
     (m !== 0 ? ` &nbsp;·&nbsp; <strong>Rise/run:</strong> ${m.toFixed(2)} per unit` : '');
 }
 
 function draw(m, b) {
   const ctx = canvas.getContext('2d');
-  const CW = canvas.width / DPR, CH = canvas.height / DPR;
-  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  ctx.clearRect(0, 0, CW, CH);
-  ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,CW,CH);
+  const CW = canvas.width/DPR, CH = canvas.height/DPR;
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.clearRect(0,0,CW,CH);
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,CW,CH);
 
-  const pad = { l:38, r:14, t:14, b:30 };
-  const xMin=-8, xMax=8, yMin=-8, yMax=8;
-  const W = CW-pad.l-pad.r, H = CH-pad.t-pad.b;
+  const pad={l:38,r:14,t:14,b:30};
+  const xMin=-8,xMax=8,yMin=-8,yMax=8;
+  const W=CW-pad.l-pad.r, H=CH-pad.t-pad.b;
+  function sx(x){return pad.l+(x-xMin)/(xMax-xMin)*W;}
+  function sy(y){return pad.t+(yMax-y)/(yMax-yMin)*H;}
 
-  function sx(x) { return pad.l + (x-xMin)/(xMax-xMin)*W; }
-  function sy(y) { return pad.t + (yMax-y)/(yMax-yMin)*H; }
+  ctx.strokeStyle='rgba(0,0,0,0.07)'; ctx.lineWidth=0.5;
+  for(let x=xMin;x<=xMax;x++){ctx.beginPath();ctx.moveTo(sx(x),sy(yMin));ctx.lineTo(sx(x),sy(yMax));ctx.stroke();}
+  for(let y=yMin;y<=yMax;y++){ctx.beginPath();ctx.moveTo(sx(xMin),sy(y));ctx.lineTo(sx(xMax),sy(y));ctx.stroke();}
 
-  ctx.strokeStyle='rgba(0,0,0,0.06)'; ctx.lineWidth=0.5;
-  for (let x=xMin; x<=xMax; x++) { ctx.beginPath(); ctx.moveTo(sx(x),sy(yMin)); ctx.lineTo(sx(x),sy(yMax)); ctx.stroke(); }
-  for (let y=yMin; y<=yMax; y++) { ctx.beginPath(); ctx.moveTo(sx(xMin),sy(y)); ctx.lineTo(sx(xMax),sy(y)); ctx.stroke(); }
+  ctx.strokeStyle='rgba(0,0,0,0.45)'; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(sx(xMin),sy(0));ctx.lineTo(sx(xMax),sy(0));ctx.stroke();
+  ctx.beginPath();ctx.moveTo(sx(0),sy(yMin));ctx.lineTo(sx(0),sy(yMax));ctx.stroke();
 
-  ctx.strokeStyle='rgba(0,0,0,0.4)'; ctx.lineWidth=1.5;
-  ctx.beginPath(); ctx.moveTo(sx(xMin),sy(0)); ctx.lineTo(sx(xMax),sy(0)); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(sx(0),sy(yMin)); ctx.lineTo(sx(0),sy(yMax)); ctx.stroke();
-
-  ctx.fillStyle='#aaa'; ctx.font='10px DM Mono,monospace'; ctx.textAlign='center';
-  for (let x=xMin; x<=xMax; x++) { if (x===0) continue; if (x%2===0) ctx.fillText(x, sx(x), sy(0)+13); }
+  ctx.fillStyle='#666'; ctx.font='10px DM Mono,monospace'; ctx.textAlign='center';
+  for(let x=xMin;x<=xMax;x++){if(x===0)continue;if(x%2===0)ctx.fillText(x,sx(x),sy(0)+13);}
   ctx.textAlign='right';
-  for (let y=yMin; y<=yMax; y+=2) { if (y===0) continue; ctx.fillText(y, sx(0)-4, sy(y)+4); }
+  for(let y=yMin;y<=yMax;y+=2){if(y===0)continue;ctx.fillText(y,sx(0)-4,sy(y)+4);}
 
-  // rise/run triangle
-  if (m !== 0 && Math.abs(m) < 8) {
-    const startX = 0, startY = b;
-    if (Math.abs(startY) < yMax) {
-      ctx.strokeStyle='rgba(180,120,0,0.35)'; ctx.lineWidth=1.2; ctx.setLineDash([3,2]);
+  if(m!==0&&Math.abs(m)<8){
+    const startX=0,startY=b;
+    if(Math.abs(startY)<yMax){
+      ctx.strokeStyle='rgba(160,100,0,0.4)'; ctx.lineWidth=1.2; ctx.setLineDash([3,2]);
       ctx.beginPath();
-      ctx.moveTo(sx(startX), sy(startY));
-      ctx.lineTo(sx(startX+1), sy(startY));
-      ctx.lineTo(sx(startX+1), sy(startY+m));
+      ctx.moveTo(sx(startX),sy(startY));
+      ctx.lineTo(sx(startX+1),sy(startY));
+      ctx.lineTo(sx(startX+1),sy(startY+m));
       ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle='rgba(140,90,0,0.55)'; ctx.font='9px DM Mono,monospace';
-      ctx.textAlign='center'; ctx.fillText('1', sx(startX+0.5), sy(startY)+13);
-      ctx.textAlign='left'; ctx.fillText(m.toFixed(2), sx(startX+1)+4, sy(startY+m/2)+4);
+      ctx.fillStyle='rgba(120,70,0,0.6)'; ctx.font='9px DM Mono,monospace';
+      ctx.textAlign='center'; ctx.fillText('1',sx(startX+0.5),sy(startY)+13);
+      ctx.textAlign='left'; ctx.fillText(m.toFixed(2),sx(startX+1)+4,sy(startY+m/2)+4);
     }
   }
 
-  // line
   ctx.strokeStyle='#185FA5'; ctx.lineWidth=2.5;
-  ctx.beginPath(); ctx.moveTo(sx(xMin), sy(m*xMin+b)); ctx.lineTo(sx(xMax), sy(m*xMax+b)); ctx.stroke();
+  ctx.beginPath();ctx.moveTo(sx(xMin),sy(m*xMin+b));ctx.lineTo(sx(xMax),sy(m*xMax+b));ctx.stroke();
 
-  // y-intercept
-  if (b>=yMin && b<=yMax) {
-    ctx.beginPath(); ctx.arc(sx(0),sy(b),5,0,Math.PI*2);
-    ctx.fillStyle='#e24b4a'; ctx.fill();
-    ctx.fillStyle='#333'; ctx.font='11px DM Sans,sans-serif'; ctx.textAlign='left';
-    ctx.fillText(`(0, ${b.toFixed(2)})`, sx(0)+8, sy(b)-7);
+  if(b>=yMin&&b<=yMax){
+    ctx.beginPath();ctx.arc(sx(0),sy(b),5,0,Math.PI*2);
+    ctx.fillStyle='#e24b4a';ctx.fill();
+    ctx.fillStyle='#333';ctx.font='11px DM Sans,sans-serif';ctx.textAlign='left';
+    ctx.fillText(`(0, ${b.toFixed(2)})`,sx(0)+8,sy(b)-7);
   }
-
-  // x-intercept
-  if (m !== 0) {
-    const xi = -b/m;
-    if (xi>=xMin && xi<=xMax) {
-      ctx.beginPath(); ctx.arc(sx(xi),sy(0),5,0,Math.PI*2);
-      ctx.fillStyle='#0F6E56'; ctx.fill();
-      ctx.fillStyle='#333'; ctx.font='11px DM Sans,sans-serif';
-      ctx.textAlign = xi < xMax-2 ? 'left' : 'right';
-      ctx.fillText(`(${xi.toFixed(2)}, 0)`, sx(xi)+(xi<xMax-2?8:-8), sy(0)-7);
+  if(m!==0){
+    const xi=-b/m;
+    if(xi>=xMin&&xi<=xMax){
+      ctx.beginPath();ctx.arc(sx(xi),sy(0),5,0,Math.PI*2);
+      ctx.fillStyle='#0F6E56';ctx.fill();
+      ctx.fillStyle='#333';ctx.font='11px DM Sans,sans-serif';
+      ctx.textAlign=xi<xMax-2?'left':'right';
+      ctx.fillText(`(${xi.toFixed(2)}, 0)`,sx(xi)+(xi<xMax-2?8:-8),sy(0)-7);
     }
   }
 }
 
-function update() { updateLabels(); draw(getM(), getB()); }
-
-document.getElementById('resetBtn').addEventListener('click', () => {
-  document.getElementById('slM').value = 100;
-  document.getElementById('slB').value = 0;
+function update(){updateLabels();draw(getM(),getB());}
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  document.getElementById('slM').value=100;
+  document.getElementById('slB').value=0;
   update();
 });
-['slM','slB'].forEach(id => document.getElementById(id).addEventListener('input', update));
-window.addEventListener('resize', resizeCanvas);
+['slM','slB'].forEach(id=>document.getElementById(id).addEventListener('input',update));
+window.addEventListener('resize',resizeCanvas);
 resizeCanvas(); update();
 </script>
 </body>
