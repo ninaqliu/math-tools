@@ -3,111 +3,285 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Linear Function Explorer — Ms. Liu</title>
+<title>Linear Functions — Ms. Liu</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --blue:   #185FA5;
+    --green:  #0F6E56;
+    --red:    #e24b4a;
+    --bg:     #f7f5f0;
+    --card:   #ffffff;
+    --border: #e4e0d8;
+    --text:   #1a1814;
+    --muted:  #7a7670;
+  }
 
   body {
-    font-family: 'Georgia', serif;
-    background: #f8f6f1;
-    color: #1a1a1a;
-    padding: 1rem;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 0;
+    min-height: 100vh;
+  }
+
+  /* Top bar */
+  .topbar {
+    background: var(--text);
+    padding: 0.9rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .back-btn {
+    color: #9a9690;
+    text-decoration: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .back-btn:hover { color: #f7f5f0; }
+  .topbar-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: #f7f5f0;
+    font-weight: 400;
   }
 
   .container {
-    max-width: 780px;
+    max-width: 720px;
     margin: 0 auto;
-    background: #fff;
-    border-radius: 12px;
-    border: 1px solid #e0ddd6;
     padding: 1.2rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   }
 
-  h1 { font-size: 1.2rem; font-weight: normal; color: #111; margin-bottom: 0.15rem; }
-
-  .subtitle {
-    font-size: 0.8rem; color: #999;
-    font-family: 'Courier New', monospace; margin-bottom: 1rem;
+  /* Collapsible readme */
+  .readme {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 1.2rem;
+    overflow: hidden;
   }
 
+  .readme-toggle {
+    width: 100%;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #faf8f4;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    text-align: left;
+    touch-action: manipulation;
+  }
+  .readme-toggle:hover { background: #f2efe8; }
+  .readme-arrow { transition: transform 0.2s; display: inline-block; }
+  .readme.open .readme-arrow { transform: rotate(180deg); }
+
+  .readme-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .readme.open .readme-body { max-height: 600px; }
+
+  .readme-inner {
+    padding: 1rem 1.2rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  .readme-inner h3 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 6px;
+    margin-top: 12px;
+  }
+  .readme-inner h3:first-child { margin-top: 0; }
+
+  .readme-inner ul { padding-left: 1.1rem; }
+  .readme-inner li { margin-bottom: 3px; }
+
+  .readme-inner .param {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    background: #f2efe8;
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--text);
+  }
+
+  /* Equation display */
   .eq-display {
-    font-family: 'Courier New', monospace;
-    font-size: 1.2rem; font-weight: bold; color: #111;
-    margin-bottom: 1rem; padding: 8px 14px;
-    background: #f5f3ee; border-radius: 8px;
-    border-left: 4px solid #185FA5;
+    font-family: 'DM Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 1rem;
+    padding: 10px 14px;
+    background: var(--card);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--blue);
   }
 
+  /* Controls */
   .controls {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     margin-bottom: 1rem;
   }
-  @media (max-width: 480px) { .controls { grid-template-columns: 1fr; } }
+  @media (max-width: 440px) { .controls { grid-template-columns: 1fr; } }
 
   .group {
-    background: #f9f8f5; border-radius: 8px;
-    border: 1px solid #e5e2da; padding: 10px 12px;
+    background: var(--card);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 10px 12px;
   }
 
   .group-label {
-    font-size: 11px; color: #888;
-    font-family: 'Courier New', monospace; margin-bottom: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 7px;
   }
 
   .ctrl-row { display: flex; align-items: center; gap: 8px; }
 
   .ctrl-row label {
-    font-family: 'Courier New', monospace;
-    font-size: 14px; font-weight: bold; color: #333; min-width: 18px;
+    font-family: 'DM Mono', monospace;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text);
+    min-width: 18px;
   }
 
   .ctrl-row input[type=range] {
-    flex: 1; accent-color: #185FA5;
+    flex: 1; accent-color: var(--blue);
     cursor: pointer; touch-action: manipulation; height: 22px;
   }
 
   .val-display {
-    font-family: 'Courier New', monospace;
-    font-size: 14px; font-weight: bold;
-    min-width: 48px; text-align: right; color: #111;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.88rem;
+    font-weight: 400;
+    min-width: 46px;
+    text-align: right;
+    color: var(--text);
   }
 
   .reset-btn {
-    padding: 7px 18px; border-radius: 6px;
-    border: 1px solid #ccc; background: transparent;
-    cursor: pointer; font-size: 13px; color: #555;
-    margin-bottom: 0.8rem; font-family: 'Courier New', monospace;
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 0.9rem;
     touch-action: manipulation;
+    letter-spacing: 0.04em;
   }
-  .reset-btn:hover { background: #f0ede8; }
+  .reset-btn:hover { background: var(--card); }
 
   .info-box {
-    padding: 8px 12px; border-radius: 8px;
-    background: #f5f3ee; font-size: 12px; color: #555;
-    margin-bottom: 0.8rem; line-height: 1.7;
-    border: 1px solid #e5e2da;
+    padding: 9px 13px;
+    border-radius: 10px;
+    background: var(--card);
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 0.9rem;
+    line-height: 1.7;
+    border: 1px solid var(--border);
   }
-  .info-box strong { color: #111; }
+  .info-box strong { color: var(--text); font-weight: 500; }
 
   canvas {
-    width: 100% !important; border-radius: 8px;
-    border: 1px solid #e5e2da; display: block;
+    width: 100% !important;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    display: block;
     touch-action: none;
+    background: var(--card);
   }
 
   .footer {
-    margin-top: 0.8rem; font-size: 11px; color: #bbb;
-    text-align: center; font-family: 'Courier New', monospace;
+    margin-top: 1rem;
+    font-size: 0.68rem;
+    color: #c0bdb6;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.06em;
   }
 </style>
 </head>
 <body>
+
+<div class="topbar">
+  <a class="back-btn" href="index.html">← Back</a>
+  <span class="topbar-title">Linear Functions</span>
+</div>
+
 <div class="container">
-  <h1>Linear Function Explorer</h1>
-  <div class="subtitle">y = mx + b &nbsp;·&nbsp; Use sliders to explore slope and y-intercept</div>
+
+  <!-- Collapsible README -->
+  <div class="readme" id="readme">
+    <button class="readme-toggle" onclick="document.getElementById('readme').classList.toggle('open')">
+      <span>How to use this tool</span>
+      <span class="readme-arrow">▾</span>
+    </button>
+    <div class="readme-body">
+      <div class="readme-inner">
+        <h3>What this shows</h3>
+        This tool explores the slope-intercept form of a linear function: <span class="param">y = mx + b</span>.
+        Adjust the sliders to see how each parameter changes the graph in real time.
+
+        <h3>Parameters</h3>
+        <ul>
+          <li><span class="param">m</span> — slope. Controls steepness and direction. Positive = rising, negative = falling, zero = horizontal.</li>
+          <li><span class="param">b</span> — y-intercept. Where the line crosses the y-axis. The point (0, b) is always on the line.</li>
+        </ul>
+
+        <h3>Key concepts</h3>
+        <ul>
+          <li>Rise/run triangle is drawn on the graph to show slope visually</li>
+          <li>Red dot = y-intercept (0, b)</li>
+          <li>Green dot = x-intercept where the line crosses the x-axis</li>
+          <li>x-intercept = −b/m (when m ≠ 0)</li>
+          <li>Parallel lines have equal slopes · Perpendicular lines have slopes that multiply to −1</li>
+        </ul>
+
+        <h3>Try this</h3>
+        <ul>
+          <li>Set m = 0 — what happens to the line?</li>
+          <li>Set b = 0 — does the line pass through the origin?</li>
+          <li>Make m negative — which way does the line slope?</li>
+          <li>What happens when m is very large or very small?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
   <div class="eq-display" id="eqLabel">y = 1.00x + 0.00</div>
 
   <div class="controls">
@@ -133,7 +307,7 @@
   <button class="reset-btn" id="resetBtn">↺ Reset</button>
   <div class="info-box" id="info"></div>
   <canvas id="c"></canvas>
-  <div class="footer">Ms. Liu · Linear Explorer · AI-integrated learning</div>
+  <div class="footer">Ms. Liu · Linear Functions</div>
 </div>
 
 <script>
@@ -141,12 +315,10 @@ const canvas = document.getElementById('c');
 const DPR = window.devicePixelRatio || 1;
 
 function resizeCanvas() {
-  const w = canvas.parentElement.clientWidth - 40;
-  const h = Math.min(Math.round(w * 0.7), 380);
-  canvas.width = w * DPR;
-  canvas.height = h * DPR;
-  canvas.style.width = w + 'px';
-  canvas.style.height = h + 'px';
+  const w = canvas.parentElement.clientWidth - 24;
+  const h = Math.min(Math.round(w * 0.68), 360);
+  canvas.width = w * DPR; canvas.height = h * DPR;
+  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
   draw(getM(), getB());
 }
 
@@ -158,24 +330,16 @@ function updateLabels() {
   const m = getM(), b = getB();
   document.getElementById('vM').textContent = m.toFixed(2);
   document.getElementById('vB').textContent = b.toFixed(2);
-  document.getElementById('eqLabel').textContent =
-    `y = ${m.toFixed(2)}x ${fmt(b)}`;
+  document.getElementById('eqLabel').textContent = `y = ${m.toFixed(2)}x ${fmt(b)}`;
 
-  const slopeDesc = m > 0 ? 'positive slope — rising left to right'
-    : m < 0 ? 'negative slope — falling left to right'
-    : 'zero slope — horizontal line';
-  const steepDesc = Math.abs(m) > 1 ? 'steep' : Math.abs(m) < 1 && m !== 0 ? 'gentle' : '';
-
-  const xIntercept = m !== 0 ? (-b / m).toFixed(2) : 'none';
-  const yIntercept = b.toFixed(2);
-  const bDesc = b > 0 ? `crosses y-axis above origin at (0, ${yIntercept})`
-    : b < 0 ? `crosses y-axis below origin at (0, ${yIntercept})`
-    : 'passes through the origin (0, 0)';
+  const slopeDesc = m > 0 ? 'positive slope — rising' : m < 0 ? 'negative slope — falling' : 'zero slope — horizontal';
+  const steep = Math.abs(m) > 1 ? 'steep' : Math.abs(m) < 1 && m !== 0 ? 'gentle' : '';
+  const xi = m !== 0 ? (-b / m).toFixed(2) : 'none';
 
   document.getElementById('info').innerHTML =
-    `<strong>Slope:</strong> m = ${m.toFixed(2)} &nbsp;·&nbsp; ${steepDesc ? steepDesc + ', ' : ''}${slopeDesc}<br>` +
-    `<strong>y-intercept:</strong> (0, ${yIntercept}) &nbsp;·&nbsp; ${bDesc}<br>` +
-    `<strong>x-intercept:</strong> (${xIntercept}, 0) &nbsp;·&nbsp; <strong>Rise/Run:</strong> ${m.toFixed(2)} per unit`;
+    `<strong>Slope:</strong> m = ${m.toFixed(2)} &nbsp;·&nbsp; ${steep ? steep + ', ' : ''}${slopeDesc}<br>` +
+    `<strong>y-intercept:</strong> (0, ${b.toFixed(2)}) &nbsp;·&nbsp; <strong>x-intercept:</strong> (${xi}, 0)` +
+    (m !== 0 ? ` &nbsp;·&nbsp; <strong>Rise/run:</strong> ${m.toFixed(2)} per unit` : '');
 }
 
 function draw(m, b) {
@@ -183,89 +347,65 @@ function draw(m, b) {
   const CW = canvas.width / DPR, CH = canvas.height / DPR;
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   ctx.clearRect(0, 0, CW, CH);
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,CW,CH);
 
-  const pad = { l:40, r:16, t:16, b:32 };
+  const pad = { l:38, r:14, t:14, b:30 };
   const xMin=-8, xMax=8, yMin=-8, yMax=8;
-  const W = CW - pad.l - pad.r, H = CH - pad.t - pad.b;
+  const W = CW-pad.l-pad.r, H = CH-pad.t-pad.b;
 
-  function sx(x) { return pad.l + (x - xMin) / (xMax - xMin) * W; }
-  function sy(y) { return pad.t + (yMax - y) / (yMax - yMin) * H; }
+  function sx(x) { return pad.l + (x-xMin)/(xMax-xMin)*W; }
+  function sy(y) { return pad.t + (yMax-y)/(yMax-yMin)*H; }
 
-  // grid
-  ctx.strokeStyle = 'rgba(0,0,0,0.06)'; ctx.lineWidth = 0.5;
-  for (let x = xMin; x <= xMax; x++) {
-    ctx.beginPath(); ctx.moveTo(sx(x), sy(yMin)); ctx.lineTo(sx(x), sy(yMax)); ctx.stroke();
-  }
-  for (let y = yMin; y <= yMax; y++) {
-    ctx.beginPath(); ctx.moveTo(sx(xMin), sy(y)); ctx.lineTo(sx(xMax), sy(y)); ctx.stroke();
-  }
+  ctx.strokeStyle='rgba(0,0,0,0.06)'; ctx.lineWidth=0.5;
+  for (let x=xMin; x<=xMax; x++) { ctx.beginPath(); ctx.moveTo(sx(x),sy(yMin)); ctx.lineTo(sx(x),sy(yMax)); ctx.stroke(); }
+  for (let y=yMin; y<=yMax; y++) { ctx.beginPath(); ctx.moveTo(sx(xMin),sy(y)); ctx.lineTo(sx(xMax),sy(y)); ctx.stroke(); }
 
-  // axes
-  ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.moveTo(sx(xMin), sy(0)); ctx.lineTo(sx(xMax), sy(0)); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(sx(0), sy(yMin)); ctx.lineTo(sx(0), sy(yMax)); ctx.stroke();
+  ctx.strokeStyle='rgba(0,0,0,0.4)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(sx(xMin),sy(0)); ctx.lineTo(sx(xMax),sy(0)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(sx(0),sy(yMin)); ctx.lineTo(sx(0),sy(yMax)); ctx.stroke();
 
-  // tick labels
-  ctx.fillStyle = '#888'; ctx.font = '10px Courier New'; ctx.textAlign = 'center';
-  for (let x = xMin; x <= xMax; x++) {
-    if (x === 0) continue;
-    if (x % 2 === 0) ctx.fillText(x, sx(x), sy(0) + 14);
-  }
-  ctx.textAlign = 'right';
-  for (let y = yMin; y <= yMax; y += 2) {
-    if (y === 0) continue;
-    ctx.fillText(y, sx(0) - 4, sy(y) + 4);
-  }
-  ctx.font = '12px Georgia';
-  ctx.textAlign = 'left'; ctx.fillText('y', sx(0) + 5, sy(yMax) + 4);
-  ctx.textAlign = 'center'; ctx.fillText('x', sx(xMax) + 12, sy(0) + 4);
+  ctx.fillStyle='#aaa'; ctx.font='10px DM Mono,monospace'; ctx.textAlign='center';
+  for (let x=xMin; x<=xMax; x++) { if (x===0) continue; if (x%2===0) ctx.fillText(x, sx(x), sy(0)+13); }
+  ctx.textAlign='right';
+  for (let y=yMin; y<=yMax; y+=2) { if (y===0) continue; ctx.fillText(y, sx(0)-4, sy(y)+4); }
 
-  // rise/run triangle (show slope visually)
+  // rise/run triangle
   if (m !== 0 && Math.abs(m) < 8) {
-    const rx = 1;
-    const ry = m;
     const startX = 0, startY = b;
-    if (startX >= xMin && startX <= xMax - rx && Math.abs(startY) < yMax) {
-      ctx.strokeStyle = 'rgba(180,120,0,0.4)'; ctx.lineWidth = 1.5;
-      ctx.setLineDash([3, 2]);
+    if (Math.abs(startY) < yMax) {
+      ctx.strokeStyle='rgba(180,120,0,0.35)'; ctx.lineWidth=1.2; ctx.setLineDash([3,2]);
       ctx.beginPath();
       ctx.moveTo(sx(startX), sy(startY));
-      ctx.lineTo(sx(startX + rx), sy(startY));
-      ctx.lineTo(sx(startX + rx), sy(startY + ry));
-      ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle = 'rgba(140,90,0,0.6)'; ctx.font = '10px Courier New';
-      ctx.textAlign = 'center';
-      ctx.fillText('run=1', sx(startX + rx / 2), sy(startY) + 13);
-      ctx.textAlign = 'left';
-      ctx.fillText(`rise=${m.toFixed(2)}`, sx(startX + rx) + 4, sy(startY + ry / 2));
+      ctx.lineTo(sx(startX+1), sy(startY));
+      ctx.lineTo(sx(startX+1), sy(startY+m));
+      ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle='rgba(140,90,0,0.55)'; ctx.font='9px DM Mono,monospace';
+      ctx.textAlign='center'; ctx.fillText('1', sx(startX+0.5), sy(startY)+13);
+      ctx.textAlign='left'; ctx.fillText(m.toFixed(2), sx(startX+1)+4, sy(startY+m/2)+4);
     }
   }
 
-  // main line
-  const x1 = xMin, y1 = m * x1 + b;
-  const x2 = xMax, y2 = m * x2 + b;
-  ctx.strokeStyle = '#185FA5'; ctx.lineWidth = 2.5;
-  ctx.beginPath(); ctx.moveTo(sx(x1), sy(y1)); ctx.lineTo(sx(x2), sy(y2)); ctx.stroke();
+  // line
+  ctx.strokeStyle='#185FA5'; ctx.lineWidth=2.5;
+  ctx.beginPath(); ctx.moveTo(sx(xMin), sy(m*xMin+b)); ctx.lineTo(sx(xMax), sy(m*xMax+b)); ctx.stroke();
 
-  // y-intercept dot
-  if (b >= yMin && b <= yMax) {
-    ctx.beginPath(); ctx.arc(sx(0), sy(b), 5, 0, Math.PI * 2);
-    ctx.fillStyle = '#e24b4a'; ctx.fill();
-    ctx.fillStyle = '#222'; ctx.font = '11px Georgia';
-    ctx.textAlign = 'left';
-    ctx.fillText(`(0, ${b.toFixed(2)})`, sx(0) + 8, sy(b) - 8);
+  // y-intercept
+  if (b>=yMin && b<=yMax) {
+    ctx.beginPath(); ctx.arc(sx(0),sy(b),5,0,Math.PI*2);
+    ctx.fillStyle='#e24b4a'; ctx.fill();
+    ctx.fillStyle='#333'; ctx.font='11px DM Sans,sans-serif'; ctx.textAlign='left';
+    ctx.fillText(`(0, ${b.toFixed(2)})`, sx(0)+8, sy(b)-7);
   }
 
-  // x-intercept dot
+  // x-intercept
   if (m !== 0) {
-    const xi = -b / m;
-    if (xi >= xMin && xi <= xMax) {
-      ctx.beginPath(); ctx.arc(sx(xi), sy(0), 5, 0, Math.PI * 2);
-      ctx.fillStyle = '#0F6E56'; ctx.fill();
-      ctx.fillStyle = '#222'; ctx.font = '11px Georgia';
-      ctx.textAlign = xi < xMax - 2 ? 'left' : 'right';
-      ctx.fillText(`(${xi.toFixed(2)}, 0)`, sx(xi) + (xi < xMax - 2 ? 8 : -8), sy(0) - 8);
+    const xi = -b/m;
+    if (xi>=xMin && xi<=xMax) {
+      ctx.beginPath(); ctx.arc(sx(xi),sy(0),5,0,Math.PI*2);
+      ctx.fillStyle='#0F6E56'; ctx.fill();
+      ctx.fillStyle='#333'; ctx.font='11px DM Sans,sans-serif';
+      ctx.textAlign = xi < xMax-2 ? 'left' : 'right';
+      ctx.fillText(`(${xi.toFixed(2)}, 0)`, sx(xi)+(xi<xMax-2?8:-8), sy(0)-7);
     }
   }
 }
@@ -277,14 +417,9 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   document.getElementById('slB').value = 0;
   update();
 });
-
-['slM', 'slB'].forEach(id =>
-  document.getElementById(id).addEventListener('input', update)
-);
-
+['slM','slB'].forEach(id => document.getElementById(id).addEventListener('input', update));
 window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-update();
+resizeCanvas(); update();
 </script>
 </body>
 </html>
