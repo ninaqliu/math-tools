@@ -2,430 +2,317 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Logarithm Explorer — FEIA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Logarithmic Functions — Ms. Liu</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  :root { --blue:#185FA5; --bg:#f7f5f0; --card:#ffffff; --border:#d8d4cc; --text:#1a1814; --muted:#4a4844; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
 
-  body {
-    font-family: 'Georgia', serif;
-    background: #f8f6f1;
-    color: #1a1a1a;
-    min-height: 100vh;
-    padding: 2rem 1rem;
-  }
+  .topbar { background:var(--text); padding:0; }
+  .topbar-main { display:flex; align-items:center; justify-content:space-between; padding:0.85rem 1.2rem; }
+  .site-title { font-family:'Playfair Display',serif; font-size:1rem; color:#f7f5f0; font-weight:400; text-decoration:none; }
+  .hamburger { background:none; border:none; cursor:pointer; padding:4px; display:flex; flex-direction:column; gap:5px; touch-action:manipulation; }
+  .hamburger span { display:block; width:22px; height:2px; background:#c8c4bc; border-radius:1px; transition:all 0.2s; }
+  .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity:0; }
+  .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+  .nav-menu { display:none; flex-direction:column; border-top:1px solid #2e2c28; padding:0.5rem 0; }
+  .nav-menu.open { display:flex; }
+  .nav-menu a { display:block; padding:0.65rem 1.4rem; font-family:'DM Mono',monospace; font-size:0.8rem; color:#c8c4bc; text-decoration:none; letter-spacing:0.04em; transition:background 0.12s; }
+  .nav-menu a:hover { background:#2a2620; color:#f7f5f0; }
+  .nav-menu a.active { color:#f7f5f0; border-left:2px solid #f7f5f0; padding-left:calc(1.4rem - 2px); }
 
-  .container {
-    max-width: 780px;
-    margin: 0 auto;
-    background: #fff;
-    border-radius: 12px;
-    border: 1px solid #e0ddd6;
-    padding: 2rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  }
+  .container { max-width:720px; margin:0 auto; padding:1.2rem; }
 
-  h1 {
-    font-size: 1.5rem;
-    font-weight: normal;
-    letter-spacing: -0.02em;
-    color: #111;
-    margin-bottom: 0.2rem;
-  }
+  .readme { background:#2a2620; border:1px solid #3a3630; border-radius:10px; margin-bottom:1.2rem; overflow:hidden; }
+  .readme-toggle { width:100%; padding:11px 14px; display:flex; justify-content:space-between; align-items:center; background:#2a2620; border:none; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.75rem; letter-spacing:0.06em; color:#c8c4bc; text-align:left; touch-action:manipulation; }
+  .readme-toggle:hover { background:#333028; }
+  .readme-arrow { transition:transform 0.2s; display:inline-block; color:#888480; }
+  .readme.open .readme-arrow { transform:rotate(180deg); }
+  .readme-body { max-height:0; overflow:hidden; transition:max-height 0.3s ease; }
+  .readme.open .readme-body { max-height:600px; }
+  .readme-inner { padding:1rem 1.2rem; border-top:1px solid #3a3630; font-size:0.85rem; color:#b8b4ac; line-height:1.75; }
+  .readme-inner h3 { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:#e8e4dc; margin-bottom:5px; margin-top:12px; }
+  .readme-inner h3:first-child { margin-top:0; }
+  .readme-inner ul { padding-left:1.1rem; }
+  .readme-inner li { margin-bottom:3px; }
+  .readme-inner .param { font-family:'DM Mono',monospace; font-size:0.78rem; background:#3a3630; padding:1px 6px; border-radius:4px; color:#e8e4dc; }
 
-  .subtitle {
-    font-size: 0.85rem;
-    color: #999;
-    font-family: 'Courier New', monospace;
-    margin-bottom: 1.5rem;
-  }
+  .eq-display { font-family:'DM Mono',monospace; margin-bottom:1rem; padding:10px 14px; background:var(--card); border-radius:10px; border:1px solid var(--border); border-left:4px solid var(--blue); }
+  .eq-formula { font-size:1.2rem; color:#444; letter-spacing:0.02em; }
+  .eq-formula sub { font-size:0.65em; vertical-align:sub; }
+  .eq-current { font-size:0.85rem; color:var(--muted); margin-top:3px; font-family:'DM Mono',monospace; }
+  .eq-current sub { font-size:0.75em; }
 
-  .tabs {
-    display: flex;
-    gap: 0;
-    margin-bottom: 1.5rem;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid #ccc;
-    width: fit-content;
-  }
+  .controls { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1rem; }
+  @media (max-width:440px) { .controls { grid-template-columns:1fr; } }
 
-  .tab-btn {
-    padding: 8px 28px;
-    border: none;
-    background: #f0ede8;
-    cursor: pointer;
-    font-size: 14px;
-    font-family: 'Courier New', monospace;
-    color: #666;
-    border-right: 1px solid #ccc;
-    transition: all 0.15s;
-  }
-  .tab-btn:last-child { border-right: none; }
-  .tab-btn:hover { background: #e8e5e0; }
-  .tab-btn.active { background: #185FA5; color: white; }
+  .group { background:var(--card); border-radius:10px; border:1px solid var(--border); padding:10px 12px; }
+  .group-label { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.06em; color:var(--muted); text-transform:uppercase; margin-bottom:7px; }
+  .sign-row { display:flex; gap:6px; margin-bottom:7px; }
+  .sign-btn { flex:1; padding:5px 6px; border-radius:6px; border:1px solid var(--border); background:transparent; cursor:pointer; font-size:11px; color:var(--muted); font-family:'DM Mono',monospace; touch-action:manipulation; }
+  .sign-btn.active { background:var(--blue); color:white; border-color:transparent; }
+  .ctrl-row { display:flex; align-items:center; gap:8px; }
+  .ctrl-row label { font-family:'DM Mono',monospace; font-size:1rem; color:var(--text); min-width:18px; }
+  .ctrl-row input[type=range] { flex:1; accent-color:var(--blue); cursor:pointer; touch-action:manipulation; height:22px; }
+  .val-display { font-family:'DM Mono',monospace; font-size:0.88rem; min-width:46px; text-align:right; color:var(--text); }
 
-  .eq-display {
-    font-family: 'Courier New', monospace;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #111;
-    margin-bottom: 1.4rem;
-    padding: 10px 16px;
-    background: #f5f3ee;
-    border-radius: 8px;
-    border-left: 4px solid #185FA5;
-  }
+  .reset-btn { padding:7px 16px; border-radius:8px; border:1px solid var(--border); background:transparent; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted); margin-bottom:0.9rem; touch-action:manipulation; letter-spacing:0.04em; }
+  .reset-btn:hover { background:var(--card); }
 
-  .group { margin-bottom: 1rem; }
+  .info-box { padding:9px 13px; border-radius:10px; background:var(--card); font-size:0.83rem; color:var(--muted); margin-bottom:0.9rem; line-height:1.7; border:1px solid var(--border); }
+  .info-box strong { color:var(--text); font-weight:500; }
 
-  .sign-label {
-    font-size: 11px;
-    color: #888;
-    margin-bottom: 4px;
-    font-family: 'Courier New', monospace;
-  }
-
-  .sign-tabs { display: flex; gap: 6px; margin-bottom: 6px; }
-
-  .sign-btn {
-    padding: 4px 14px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    background: transparent;
-    cursor: pointer;
-    font-size: 12px;
-    color: #555;
-    font-family: 'Courier New', monospace;
-    transition: all 0.15s;
-  }
-  .sign-btn:hover { background: #f0ede8; }
-  .sign-btn.active { background: #185FA5; color: white; border-color: transparent; }
-
-  .ctrl {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .ctrl label {
-    font-family: 'Courier New', monospace;
-    font-size: 13px;
-    font-weight: bold;
-    color: #333;
-    min-width: 180px;
-  }
-
-  .ctrl input[type=range] {
-    flex: 1;
-    accent-color: #185FA5;
-    cursor: pointer;
-  }
-
-  .val-display {
-    font-family: 'Courier New', monospace;
-    font-size: 15px;
-    font-weight: bold;
-    min-width: 58px;
-    text-align: right;
-    color: #111;
-  }
-
-  .reset-btn {
-    padding: 7px 18px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    background: transparent;
-    cursor: pointer;
-    font-size: 13px;
-    color: #555;
-    margin-bottom: 1rem;
-    font-family: 'Courier New', monospace;
-    transition: all 0.15s;
-  }
-  .reset-btn:hover { background: #f0ede8; }
-
-  .info-box {
-    padding: 10px 14px;
-    border-radius: 8px;
-    background: #f5f3ee;
-    font-size: 13px;
-    color: #555;
-    margin-bottom: 1.2rem;
-    line-height: 1.7;
-    border: 1px solid #e5e2da;
-  }
-  .info-box strong { color: #111; }
-
-  canvas {
-    width: 100% !important;
-    border-radius: 8px;
-    border: 1px solid #e5e2da;
-  }
-
-  .legend {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    margin-top: 10px;
-    font-size: 12px;
-    font-family: 'Courier New', monospace;
-    color: #777;
-  }
-  .legend-item { display: flex; align-items: center; gap: 6px; }
-  .legend-line { width: 18px; height: 2px; border-radius: 1px; }
-
-  .footer {
-    margin-top: 1.5rem;
-    font-size: 11px;
-    color: #bbb;
-    text-align: center;
-    font-family: 'Courier New', monospace;
-  }
+  canvas { width:100% !important; border-radius:10px; border:1px solid var(--border); display:block; touch-action:none; background:var(--card); }
+  .footer { margin-top:1rem; font-size:0.7rem; color:#888480; text-align:center; font-family:'DM Mono',monospace; letter-spacing:0.06em; }
 </style>
 </head>
 <body>
+
+<nav class="topbar">
+  <div class="topbar-main">
+    <a class="site-title" href="index.html">Ms. Liu · <em style="font-style:italic;">Math Tools</em></a>
+    <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-menu" id="navMenu">
+    <a href="index.html">Home</a>
+    <a href="linear_explorer.html">Linear &nbsp; y = mx + b</a>
+    <a href="quadratic_explorer.html">Quadratic &nbsp; y = a[k(x−d)]² + c</a>
+    <a href="exponential_explorer.html">Exponential &nbsp; y = a · b<sup style="font-size:0.65em;">x</sup></a>
+    <a href="log_explorer.html" class="active">Logarithm &nbsp; y = a · log<sub style="font-size:0.65em;">b</sub>(x)</a>
+    <a href="trig_explorer.html">Trig Ratios &nbsp; sin · cos · tan</a>
+  </div>
+</nav>
+
 <div class="container">
-  <h1>Logarithm Explorer</h1>
-  <div class="subtitle">y = a · log(x − h) + k &nbsp;|&nbsp; Explore transformations of logarithmic functions</div>
 
-  <div class="tabs">
-    <button class="tab-btn active" id="btnLog" onclick="setLogType('log10')">log₁₀ &nbsp; y = a·log₁₀(x−h)+k</button>
-    <button class="tab-btn" id="btnLn" onclick="setLogType('ln')">ln &nbsp; y = a·ln(x−h)+k</button>
+  <div class="readme" id="readme">
+    <button class="readme-toggle" onclick="document.getElementById('readme').classList.toggle('open')">
+      <span>How to use this tool</span>
+      <span class="readme-arrow">▾</span>
+    </button>
+    <div class="readme-body">
+      <div class="readme-inner">
+        <h3>What this shows</h3>
+        This tool explores: <span class="param">y = a · log<sub>b</sub>(x)</span> where <span class="param">b</span> is the base and <span class="param">a</span> is a vertical multiplier. Adjust sliders to see how each changes the graph.
+
+        <h3>Parameters</h3>
+        <ul>
+          <li><span class="param">a</span> — vertical stretch/compression. If a &lt; 0 the curve flips below the x-axis.</li>
+          <li><span class="param">b</span> — the base (b &gt; 0, b ≠ 1). Controls how fast the curve grows. b &gt; 1 = increasing, 0 &lt; b &lt; 1 = decreasing.</li>
+        </ul>
+
+        <h3>Key concepts</h3>
+        <ul>
+          <li>Domain: x &gt; 0 (log is only defined for positive x)</li>
+          <li>Vertical asymptote always at x = 0</li>
+          <li>Always passes through (1, 0) since log<sub>b</sub>(1) = 0 for any base</li>
+          <li>Always passes through (b, a) since log<sub>b</sub>(b) = 1</li>
+          <li>log<sub>10</sub>(x) = common log · ln(x) = natural log (base e ≈ 2.718)</li>
+        </ul>
+
+        <h3>Try this</h3>
+        <ul>
+          <li>Set b = 10 — this is the common logarithm (log₁₀)</li>
+          <li>Set b ≈ 2.718 — this is the natural log (ln)</li>
+          <li>Set b = 2 — how many times do you double to reach x?</li>
+          <li>Make a negative — which way does the curve flip?</li>
+          <li>What happens as b gets closer to 1?</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
-  <div class="eq-display" id="eqLabel">y = 1.00 · log₁₀(x − 0.00) + 0.00</div>
+  <div class="eq-display">
+    <div class="eq-formula">y = a · log<sub>b</sub>(x)</div>
+    <div class="eq-current" id="eqCurrent">current: y = 1.00 · log<sub>2.00</sub>(x)</div>
+  </div>
 
-  <div class="group">
-    <div class="sign-label">Sign of a:</div>
-    <div class="sign-tabs">
-      <button class="sign-btn active" data-sign="pos">a &gt; 0 (increasing)</button>
-      <button class="sign-btn" data-sign="neg">a &lt; 0 (decreasing / reflected)</button>
+  <div class="controls">
+    <div class="group">
+      <div class="group-label">a — multiplier</div>
+      <div class="sign-row">
+        <button class="sign-btn active" data-sign="pos">a &gt; 0</button>
+        <button class="sign-btn" data-sign="neg">a &lt; 0 (flip)</button>
+      </div>
+      <div class="ctrl-row">
+        <label>a</label>
+        <input type="range" id="slA" min="10" max="500" step="1" value="100">
+        <span class="val-display" id="vA">1.00</span>
+      </div>
     </div>
-    <div class="ctrl">
-      <label>a &nbsp;(0.1 to 5)</label>
-      <input type="range" id="slA" min="10" max="500" step="1" value="100">
-      <span class="val-display" id="vA">1.00</span>
+
+    <div class="group">
+      <div class="group-label">b — base (0.1 to 10, b ≠ 1)</div>
+      <div class="ctrl-row">
+        <label>b</label>
+        <input type="range" id="slB" min="1" max="200" step="1" value="40">
+        <span class="val-display" id="vB">2.00</span>
+      </div>
     </div>
   </div>
 
-  <div class="group">
-    <div class="ctrl">
-      <label>h — horizontal shift (−4 to 4)</label>
-      <input type="range" id="slH" min="-400" max="400" step="1" value="0">
-      <span class="val-display" id="vH">0.00</span>
-    </div>
-  </div>
-
-  <div class="group">
-    <div class="ctrl">
-      <label>k — vertical shift (−5 to 5)</label>
-      <input type="range" id="slK" min="-500" max="500" step="1" value="0">
-      <span class="val-display" id="vK">0.00</span>
-    </div>
-  </div>
-
-  <button class="reset-btn" id="resetBtn">↺ Reset to default</button>
-
+  <button class="reset-btn" id="resetBtn">↺ Reset</button>
   <div class="info-box" id="info"></div>
   <canvas id="c"></canvas>
-
-  <div class="legend">
-    <div class="legend-item"><div class="legend-line" style="background:#185FA5;"></div> transformed curve</div>
-    <div class="legend-item"><div class="legend-line" style="background:rgba(0,0,0,0.2);border-top:2px dashed rgba(0,0,0,0.2);"></div> base log (ghost)</div>
-    <div class="legend-item"><div class="legend-line" style="background:#a32d2d;border-top:2px dashed #a32d2d;"></div> vertical asymptote</div>
-    <div class="legend-item"><div class="legend-line" style="background:#e24b4a;width:10px;height:10px;border-radius:50%;"></div> x-intercept</div>
-    <div class="legend-item"><div class="legend-line" style="background:#0F6E56;width:10px;height:10px;border-radius:50%;"></div> key point (h+1, k)</div>
-  </div>
-
-  <div class="footer">FEIA · Logarithm Explorer · Built with AI-integrated learning</div>
+  <div class="footer">Ms. Liu · Logarithmic Functions</div>
 </div>
 
 <script>
-let signA = 1;
-let logType = 'log10';
+function toggleNav() {
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('navMenu').classList.toggle('open');
+}
 
+let signA = 1;
 const canvas = document.getElementById('c');
 const DPR = window.devicePixelRatio || 1;
-const CW = 720, CH = 480;
-canvas.width = CW * DPR;
-canvas.height = CH * DPR;
-canvas.style.height = CH + 'px';
 
-function setLogType(t) {
-  logType = t;
-  document.getElementById('btnLog').classList.toggle('active', t === 'log10');
-  document.getElementById('btnLn').classList.toggle('active', t === 'ln');
-  update();
+function resizeCanvas() {
+  const w = canvas.parentElement.clientWidth - 24;
+  const h = Math.min(Math.round(w * 0.68), 380);
+  canvas.width = w * DPR; canvas.height = h * DPR;
+  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+  draw(getA(), getB());
 }
 
 function getA() { return signA * (+document.getElementById('slA').value / 100); }
-function getH() { return +document.getElementById('slH').value / 100; }
-function getK() { return +document.getElementById('slK').value / 100; }
-
-function logFn(x) {
-  return logType === 'log10' ? Math.log10(x) : Math.log(x);
+function getB() {
+  // slider 1-200 maps to base 0.10 to 10.0, skip exactly 1
+  const raw = +document.getElementById('slB').value / 20;
+  return Math.max(0.10, Math.min(10.0, raw));
 }
 
-function fmtSign(v) { return (v >= 0 ? '+' : '') + v.toFixed(2); }
+function logB(b, x) {
+  if (x <= 0 || b <= 0 || b === 1) return null;
+  return Math.log(x) / Math.log(b);
+}
 
-function update() {
-  const a = getA(), h = getH(), k = getK();
+function updateLabels() {
+  const a = getA(), b = getB();
   document.getElementById('vA').textContent = a.toFixed(2);
-  document.getElementById('vH').textContent = h.toFixed(2);
-  document.getElementById('vK').textContent = k.toFixed(2);
+  document.getElementById('vB').textContent = b.toFixed(2);
+  document.getElementById('eqCurrent').innerHTML =
+    `current: y = ${a.toFixed(2)} · log<sub>${b.toFixed(2)}</sub>(x)`;
 
-  const logLabel = logType === 'log10' ? 'log₁₀' : 'ln';
-  const hSign = h >= 0 ? '−' : '+';
-  const hAbs = Math.abs(h).toFixed(2);
-  document.getElementById('eqLabel').textContent =
-    `y = ${a.toFixed(2)} · ${logLabel}(x ${hSign} ${hAbs}) ${fmtSign(k)}`;
-
-  const base = logType === 'log10' ? 10 : Math.E;
-  const xIntercept = Math.pow(base, -k / a) + h;
+  const dir = (a > 0 && b > 1) || (a < 0 && b < 1) ? 'increasing' : 'decreasing';
   const aDesc = Math.abs(a) > 1 ? 'vertical stretch' : 'vertical compression';
-  const flip = a < 0 ? ' · reflected over x-axis (decreasing)' : ' · increasing';
-  const hDesc = h > 0 ? `shifted right ${h.toFixed(2)}` : h < 0 ? `shifted left ${Math.abs(h).toFixed(2)}` : 'no horizontal shift';
-  const kDesc = k > 0 ? `shifted up ${k.toFixed(2)}` : k < 0 ? `shifted down ${Math.abs(k).toFixed(2)}` : 'no vertical shift';
+  const flip = a < 0 ? ' · reflected over x-axis' : '';
+  const bDesc = b > 1 ? `b > 1 — curve increases (grows to right)` : `0 < b < 1 — curve decreases`;
+  const keyPt = `(${b.toFixed(2)}, ${a.toFixed(2)})`;
 
   document.getElementById('info').innerHTML =
-    `<strong>Vertical asymptote:</strong> x = ${h.toFixed(2)} &nbsp;·&nbsp; ` +
-    `<strong>x-intercept ≈</strong> (${isFinite(xIntercept) ? xIntercept.toFixed(2) : 'none'}, 0)<br>` +
-    `<strong>Domain:</strong> x &gt; ${h.toFixed(2)} &nbsp;·&nbsp; <strong>Range:</strong> all real numbers<br>` +
-    `${aDesc}${flip} &nbsp;·&nbsp; ${hDesc} &nbsp;·&nbsp; ${kDesc}`;
-
-  draw(a, h, k);
+    `<strong>Domain:</strong> x &gt; 0 &nbsp;·&nbsp; <strong>Asymptote:</strong> x = 0 &nbsp;·&nbsp; <strong>Range:</strong> all reals<br>` +
+    `<strong>Passes through:</strong> (1, 0) and ${keyPt}<br>` +
+    `${aDesc}${flip} &nbsp;·&nbsp; ${bDesc}`;
 }
 
-function draw(a, h, k) {
+function draw(a, b) {
   const ctx = canvas.getContext('2d');
-  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  ctx.clearRect(0, 0, CW, CH);
+  const CW = canvas.width/DPR, CH = canvas.height/DPR;
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.clearRect(0,0,CW,CH);
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,CW,CH);
 
-  const pad = { l:56, r:28, t:28, b:48 };
-  const xMin = -2, xMax = 12, yMin = -8, yMax = 8;
-  const W = CW - pad.l - pad.r, H = CH - pad.t - pad.b;
-
-  function sx(x) { return pad.l + (x - xMin) / (xMax - xMin) * W; }
-  function sy(y) { return pad.t + (yMax - y) / (yMax - yMin) * H; }
-
-  const gridCol = 'rgba(0,0,0,0.06)';
-  const axisCol = 'rgba(0,0,0,0.5)';
-  const tickCol = '#666';
+  const pad={l:42,r:14,t:14,b:30};
+  const xMin=-1, xMax=11, yMin=-8, yMax=8;
+  const W=CW-pad.l-pad.r, H=CH-pad.t-pad.b;
+  function sx(x){return pad.l+(x-xMin)/(xMax-xMin)*W;}
+  function sy(y){return pad.t+(yMax-y)/(yMax-yMin)*H;}
 
   // grid
-  ctx.strokeStyle = gridCol; ctx.lineWidth = 0.5;
-  for (let x = xMin; x <= xMax; x++) {
-    ctx.beginPath(); ctx.moveTo(sx(x), sy(yMin)); ctx.lineTo(sx(x), sy(yMax)); ctx.stroke();
-  }
-  for (let y = yMin; y <= yMax; y += 2) {
-    ctx.beginPath(); ctx.moveTo(sx(xMin), sy(y)); ctx.lineTo(sx(xMax), sy(y)); ctx.stroke();
-  }
+  ctx.strokeStyle='rgba(0,0,0,0.06)'; ctx.lineWidth=0.5;
+  for(let x=0;x<=xMax;x++){ctx.beginPath();ctx.moveTo(sx(x),sy(yMin));ctx.lineTo(sx(x),sy(yMax));ctx.stroke();}
+  for(let y=yMin;y<=yMax;y+=2){ctx.beginPath();ctx.moveTo(sx(xMin),sy(y));ctx.lineTo(sx(xMax),sy(y));ctx.stroke();}
 
   // axes
-  ctx.strokeStyle = axisCol; ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.moveTo(sx(xMin), sy(0)); ctx.lineTo(sx(xMax), sy(0)); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(sx(0), sy(yMin)); ctx.lineTo(sx(0), sy(yMax)); ctx.stroke();
+  ctx.strokeStyle='rgba(0,0,0,0.45)'; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(sx(xMin),sy(0));ctx.lineTo(sx(xMax),sy(0));ctx.stroke();
+  ctx.beginPath();ctx.moveTo(sx(0),sy(yMin));ctx.lineTo(sx(0),sy(yMax));ctx.stroke();
 
-  // tick labels x
-  ctx.fillStyle = tickCol; ctx.font = '11px Courier New'; ctx.textAlign = 'center';
-  for (let x = xMin; x <= xMax; x++) {
-    if (x === 0) continue;
-    ctx.fillText(x, sx(x), sy(0) + 16);
-  }
-  ctx.textAlign = 'right';
-  for (let y = yMin; y <= yMax; y += 2) {
-    if (y === 0) continue;
-    ctx.fillText(y, sx(0) - 7, sy(y) + 4);
-  }
-  ctx.font = '13px Georgia';
-  ctx.textAlign = 'left'; ctx.fillText('y', sx(0) + 6, sy(yMax) + 4);
-  ctx.textAlign = 'center'; ctx.fillText('x', sx(xMax) + 14, sy(0) + 4);
+  // tick labels
+  ctx.fillStyle='#666'; ctx.font='10px DM Mono,monospace'; ctx.textAlign='center';
+  for(let x=1;x<=xMax;x++){if(x%2===0||x===1)ctx.fillText(x,sx(x),sy(0)+13);}
+  ctx.textAlign='right';
+  for(let y=yMin;y<=yMax;y+=2){if(y===0)continue;ctx.fillText(y,sx(0)-4,sy(y)+4);}
+  ctx.font='12px DM Sans,sans-serif';
+  ctx.textAlign='left'; ctx.fillText('y',sx(0)+5,sy(yMax)+4);
+  ctx.textAlign='center'; ctx.fillText('x',sx(xMax)+12,sy(0)+4);
 
-  // vertical asymptote dashed
-  if (h > xMin && h < xMax) {
-    ctx.strokeStyle = 'rgba(163,45,45,0.5)';
-    ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
-    ctx.beginPath(); ctx.moveTo(sx(h), sy(yMin)); ctx.lineTo(sx(h), sy(yMax)); ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = '#a32d2d'; ctx.font = '11px Courier New'; ctx.textAlign = 'left';
-    ctx.fillText('x = ' + h.toFixed(2), sx(h) + 4, sy(yMax) + 14);
-  }
+  // vertical asymptote at x=0
+  ctx.strokeStyle='rgba(163,45,45,0.45)'; ctx.lineWidth=1.5; ctx.setLineDash([5,4]);
+  ctx.beginPath();ctx.moveTo(sx(0),sy(yMin));ctx.lineTo(sx(0),sy(yMax));ctx.stroke();
+  ctx.setLineDash([]);
 
-  // ghost base curve
-  ctx.strokeStyle = 'rgba(0,0,0,0.12)';
-  ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
-  ctx.beginPath(); let penDown = false;
-  for (let i = 1; i <= 800; i++) {
-    const x = xMin + i * (xMax - xMin) / 800;
-    if (x <= 0) { penDown = false; continue; }
-    const v = logFn(x);
-    if (!isFinite(v) || v > yMax + 1 || v < yMin - 1) { penDown = false; continue; }
-    const cv = Math.max(yMin, Math.min(yMax, v));
-    if (!penDown) { ctx.moveTo(sx(x), sy(cv)); penDown = true; }
-    else ctx.lineTo(sx(x), sy(cv));
+  // ghost base curve (a=1, b=2)
+  ctx.strokeStyle='rgba(0,0,0,0.1)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); let pen=false;
+  for(let i=1;i<=800;i++){
+    const x=0.01+i*(xMax-0.01)/800;
+    const v=Math.log(x)/Math.log(2);
+    if(!isFinite(v)||v>yMax+1||v<yMin-1){pen=false;continue;}
+    const cv=Math.max(yMin,Math.min(yMax,v));
+    if(!pen){ctx.moveTo(sx(x),sy(cv));pen=true;}else ctx.lineTo(sx(x),sy(cv));
   }
   ctx.stroke(); ctx.setLineDash([]);
 
   // main curve
-  ctx.strokeStyle = '#185FA5'; ctx.lineWidth = 2.5; ctx.lineJoin = 'round';
-  ctx.beginPath(); penDown = false;
-  for (let i = 1; i <= 800; i++) {
-    const x = xMin + i * (xMax - xMin) / 800;
-    const inner = x - h;
-    if (inner <= 0) { penDown = false; continue; }
-    const v = a * logFn(inner) + k;
-    if (!isFinite(v) || v > yMax + 1 || v < yMin - 1) { penDown = false; continue; }
-    const cv = Math.max(yMin, Math.min(yMax, v));
-    if (!penDown) { ctx.moveTo(sx(x), sy(cv)); penDown = true; }
-    else ctx.lineTo(sx(x), sy(cv));
+  ctx.strokeStyle='#185FA5'; ctx.lineWidth=2.5; ctx.lineJoin='round';
+  ctx.beginPath(); pen=false;
+  for(let i=1;i<=800;i++){
+    const x=0.01+i*(xMax-0.01)/800;
+    const lv=logB(b,x);
+    if(lv===null)continue;
+    const v=a*lv;
+    if(!isFinite(v)||v>yMax+1||v<yMin-1){pen=false;continue;}
+    const cv=Math.max(yMin,Math.min(yMax,v));
+    if(!pen){ctx.moveTo(sx(x),sy(cv));pen=true;}else ctx.lineTo(sx(x),sy(cv));
   }
   ctx.stroke();
 
-  // x-intercept dot
-  const base = logType === 'log10' ? 10 : Math.E;
-  const xInt = Math.pow(base, -k / a) + h;
-  if (isFinite(xInt) && xInt > xMin && xInt < xMax) {
-    ctx.beginPath(); ctx.arc(sx(xInt), sy(0), 5, 0, Math.PI * 2);
-    ctx.fillStyle = '#e24b4a'; ctx.fill();
-    ctx.fillStyle = '#222'; ctx.font = '11px Courier New'; ctx.textAlign = 'left';
-    ctx.fillText('(' + xInt.toFixed(2) + ', 0)', sx(xInt) + 8, sy(0) - 8);
-  }
+  // (1,0) dot — always on curve
+  ctx.beginPath();ctx.arc(sx(1),sy(0),5,0,Math.PI*2);
+  ctx.fillStyle='#e24b4a';ctx.fill();
+  ctx.fillStyle='#333';ctx.font='11px DM Sans,sans-serif';ctx.textAlign='left';
+  ctx.fillText('(1, 0)',sx(1)+8,sy(0)-7);
 
-  // key point (h+1, k) — where log(1)=0 so y=k
-  const kpX = h + 1;
-  if (kpX > xMin && kpX < xMax && k > yMin && k < yMax) {
-    ctx.beginPath(); ctx.arc(sx(kpX), sy(k), 5, 0, Math.PI * 2);
-    ctx.fillStyle = '#0F6E56'; ctx.fill();
-    ctx.fillStyle = '#222'; ctx.font = '11px Courier New';
-    ctx.textAlign = kpX < xMax - 2 ? 'left' : 'right';
-    ctx.fillText('(' + kpX.toFixed(1) + ', ' + k.toFixed(2) + ')', sx(kpX) + (kpX < xMax - 2 ? 8 : -8), sy(k) - 8);
+  // (b, a) key point
+  if(b>=0&&b<=xMax&&a>=yMin&&a<=yMax){
+    ctx.beginPath();ctx.arc(sx(b),sy(a),5,0,Math.PI*2);
+    ctx.fillStyle='#0F6E56';ctx.fill();
+    ctx.fillStyle='#333';ctx.font='11px DM Sans,sans-serif';
+    ctx.textAlign=b<xMax-2?'left':'right';
+    ctx.fillText(`(${b.toFixed(1)}, ${a.toFixed(1)})`,sx(b)+(b<xMax-2?8:-8),sy(a)-7);
   }
 }
 
-document.querySelectorAll('.sign-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.sign-btn').forEach(b => b.classList.remove('active'));
+function update(){updateLabels();draw(getA(),getB());}
+
+document.querySelectorAll('.sign-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.sign-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
-    signA = btn.dataset.sign === 'pos' ? 1 : -1;
+    signA=btn.dataset.sign==='pos'?1:-1;
     update();
   });
 });
 
-document.getElementById('resetBtn').addEventListener('click', () => {
-  signA = 1;
-  document.querySelectorAll('.sign-btn').forEach(b => b.classList.remove('active'));
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  signA=1;
+  document.querySelectorAll('.sign-btn').forEach(b=>b.classList.remove('active'));
   document.querySelector('.sign-btn[data-sign="pos"]').classList.add('active');
-  document.getElementById('slA').value = 100;
-  document.getElementById('slH').value = 0;
-  document.getElementById('slK').value = 0;
+  document.getElementById('slA').value=100;
+  document.getElementById('slB').value=40;
   update();
 });
 
-['slA', 'slH', 'slK'].forEach(id =>
-  document.getElementById(id).addEventListener('input', update)
-);
-update();
+['slA','slB'].forEach(id=>document.getElementById(id).addEventListener('input',update));
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas(); update();
 </script>
 </body>
 </html>

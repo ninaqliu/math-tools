@@ -7,127 +7,41 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg:#f7f5f0; --card:#ffffff; --border:#d8d4cc; --text:#1a1814; --muted:#4a4844; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
 
-  :root {
-    --bg:     #f7f5f0;
-    --card:   #ffffff;
-    --border: #d8d4cc;
-    --text:   #1a1814;
-    --muted:  #4a4844;
-  }
+  .topbar { background:var(--text); padding:0; }
+  .topbar-main { display:flex; align-items:center; justify-content:space-between; padding:0.85rem 1.2rem; }
+  .site-title { font-family:'Playfair Display',serif; font-size:1rem; color:#f7f5f0; font-weight:400; text-decoration:none; }
+  .hamburger { background:none; border:none; cursor:pointer; padding:4px; display:flex; flex-direction:column; gap:5px; touch-action:manipulation; }
+  .hamburger span { display:block; width:22px; height:2px; background:#c8c4bc; border-radius:1px; transition:all 0.2s; }
+  .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity:0; }
+  .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+  .nav-menu { display:none; flex-direction:column; border-top:1px solid #2e2c28; padding:0.5rem 0; }
+  .nav-menu.open { display:flex; }
+  .nav-menu a { display:block; padding:0.65rem 1.4rem; font-family:'DM Mono',monospace; font-size:0.8rem; color:#c8c4bc; text-decoration:none; letter-spacing:0.04em; transition:background 0.12s; }
+  .nav-menu a:hover { background:#2a2620; color:#f7f5f0; }
+  .nav-menu a.active { color:#f7f5f0; border-left:2px solid #f7f5f0; padding-left:calc(1.4rem - 2px); }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
+  .main { max-width:680px; margin:0 auto; padding:1.8rem 1.2rem 4rem; }
+  .section-label { font-family:'DM Mono',monospace; font-size:0.72rem; letter-spacing:0.14em; color:#4a4844; text-transform:uppercase; margin-bottom:1rem; }
 
-  .topbar { background: var(--text); padding: 0; }
-
-  .topbar-main {
-    display: flex; align-items: center;
-    justify-content: space-between;
-    padding: 0.85rem 1.2rem;
-  }
-
-  .site-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem; color: #f7f5f0;
-    font-weight: 400; text-decoration: none;
-  }
-
-  .hamburger {
-    background: none; border: none; cursor: pointer;
-    padding: 4px; display: flex; flex-direction: column;
-    gap: 5px; touch-action: manipulation;
-  }
-  .hamburger span {
-    display: block; width: 22px; height: 2px;
-    background: #c8c4bc; border-radius: 1px; transition: all 0.2s;
-  }
-  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-  .hamburger.open span:nth-child(2) { opacity: 0; }
-  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-  .nav-menu {
-    display: none; flex-direction: column;
-    border-top: 1px solid #2e2c28; padding: 0.5rem 0;
-  }
-  .nav-menu.open { display: flex; }
-  .nav-menu a {
-    display: block; padding: 0.65rem 1.4rem;
-    font-family: 'DM Mono', monospace; font-size: 0.8rem;
-    color: #c8c4bc; text-decoration: none;
-    letter-spacing: 0.04em; transition: background 0.12s;
-  }
-  .nav-menu a:hover { background: #2a2620; color: #f7f5f0; }
-  .nav-menu a.active { color: #f7f5f0; border-left: 2px solid #f7f5f0; padding-left: calc(1.4rem - 2px); }
-
-  .main {
-    max-width: 680px; margin: 0 auto;
-    padding: 1.8rem 1.2rem 4rem;
-  }
-
-  .section-label {
-    font-family: 'DM Mono', monospace; font-size: 0.72rem;
-    letter-spacing: 0.14em; color: #4a4844;
-    text-transform: uppercase; margin-bottom: 1rem;
-  }
-
-  .cards {
-    display: flex; flex-direction: column;
-    gap: 1px; border: 1px solid var(--border);
-    border-radius: 14px; overflow: hidden;
-    background: var(--border);
-  }
-
-  .card {
-    background: var(--card);
-    opacity: 0; transform: translateY(10px);
-    animation: fadeUp 0.35s ease forwards;
-  }
-  .card:first-child { border-radius: 14px 14px 0 0; }
-  .card:last-child  { border-radius: 0 0 14px 14px; }
-  .card:nth-child(1){animation-delay:0.05s;}
-  .card:nth-child(2){animation-delay:0.10s;}
-  .card:nth-child(3){animation-delay:0.15s;}
-  .card:nth-child(4){animation-delay:0.20s;}
-  .card:nth-child(5){animation-delay:0.25s;}
+  .cards { display:flex; flex-direction:column; gap:1px; border:1px solid var(--border); border-radius:14px; overflow:hidden; background:var(--border); }
+  .card { background:var(--card); opacity:0; transform:translateY(10px); animation:fadeUp 0.35s ease forwards; }
+  .card:first-child { border-radius:14px 14px 0 0; }
+  .card:last-child  { border-radius:0 0 14px 14px; }
+  .card:nth-child(1){animation-delay:0.05s;} .card:nth-child(2){animation-delay:0.10s;} .card:nth-child(3){animation-delay:0.15s;} .card:nth-child(4){animation-delay:0.20s;} .card:nth-child(5){animation-delay:0.25s;}
   @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
-
-  .card a {
-    display: flex; align-items: center; gap: 14px;
-    padding: 1rem 1.3rem; text-decoration: none;
-    color: inherit; transition: background 0.15s;
-  }
-  .card a:hover { background: #faf8f4; }
-
-  .card-graph {
-    flex: 0 0 48px; height: 48px; border-radius: 8px;
-    border: 1px solid var(--border); background: #faf8f4; overflow: hidden;
-  }
-  .card-graph canvas { display: block; }
-
-  .card-meta { flex: 1; min-width: 0; }
-
-  .card-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem; font-weight: 400; color: #1a1814; margin-bottom: 3px;
-  }
-
-  .card-eq {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem; color: #4a4844;
-  }
-
-  .card-chevron { font-size: 15px; color: #4a4844; flex-shrink: 0; }
-
-  .footer {
-    text-align: center; font-family: 'DM Mono', monospace;
-    font-size: 0.7rem; color: #888480;
-    padding-bottom: 2rem; letter-spacing: 0.06em;
-  }
+  .card a { display:flex; align-items:center; gap:14px; padding:1rem 1.3rem; text-decoration:none; color:inherit; transition:background 0.15s; }
+  .card a:hover { background:#faf8f4; }
+  .card-graph { flex:0 0 48px; height:48px; border-radius:8px; border:1px solid var(--border); background:#faf8f4; overflow:hidden; }
+  .card-graph canvas { display:block; }
+  .card-meta { flex:1; min-width:0; }
+  .card-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:400; color:#1a1814; margin-bottom:3px; }
+  .card-eq { font-family:'DM Mono',monospace; font-size:0.75rem; color:#4a4844; }
+  .card-chevron { font-size:15px; color:#4a4844; flex-shrink:0; }
+  .footer { text-align:center; font-family:'DM Mono',monospace; font-size:0.7rem; color:#888480; padding-bottom:2rem; letter-spacing:0.06em; }
 </style>
 </head>
 <body>
@@ -142,9 +56,9 @@
   <div class="nav-menu" id="navMenu">
     <a href="index.html" class="active">Home</a>
     <a href="linear_explorer.html">Linear &nbsp; y = mx + b</a>
-    <a href="quadratic_explorer.html">Quadratic &nbsp; y = a(k(x−d))² + c</a>
-    <a href="exponential_explorer.html">Exponential &nbsp; y = a · bˣ</a>
-    <a href="log_explorer.html">Logarithm &nbsp; y = a · log(x−h) + k</a>
+    <a href="quadratic_explorer.html">Quadratic &nbsp; y = a[k(x−d)]² + c</a>
+    <a href="exponential_explorer.html">Exponential &nbsp; y = a · b<sup style="font-size:0.65em;">x</sup></a>
+    <a href="log_explorer.html">Logarithm &nbsp; y = a · log<sub style="font-size:0.65em;">b</sub>(x)</a>
     <a href="trig_explorer.html">Trig Ratios &nbsp; sin · cos · tan</a>
   </div>
 </nav>
@@ -169,7 +83,7 @@
         <div class="card-graph"><canvas id="g1" width="48" height="48"></canvas></div>
         <div class="card-meta">
           <div class="card-title">Quadratic Functions</div>
-          <div class="card-eq">y = a(k(x − d))² + c</div>
+          <div class="card-eq">y = a[k(x − d)]² + c</div>
         </div>
         <div class="card-chevron">›</div>
       </a>
@@ -180,7 +94,7 @@
         <div class="card-graph"><canvas id="g2" width="48" height="48"></canvas></div>
         <div class="card-meta">
           <div class="card-title">Exponential Functions</div>
-          <div class="card-eq">y = a · bˣ</div>
+          <div class="card-eq">y = a · b<sup>x</sup></div>
         </div>
         <div class="card-chevron">›</div>
       </a>
@@ -191,7 +105,7 @@
         <div class="card-graph"><canvas id="g3" width="48" height="48"></canvas></div>
         <div class="card-meta">
           <div class="card-title">Logarithmic Functions</div>
-          <div class="card-eq">y = a · log(x − h) + k</div>
+          <div class="card-eq">y = a · log<sub>b</sub>(x)</div>
         </div>
         <div class="card-chevron">›</div>
       </a>
@@ -218,7 +132,6 @@ function toggleNav() {
   document.getElementById('hamburger').classList.toggle('open');
   document.getElementById('navMenu').classList.toggle('open');
 }
-
 function drawPreview(id,fn,color){
   const canvas=document.getElementById(id);
   const ctx=canvas.getContext('2d');
@@ -259,7 +172,7 @@ function drawCircle(){
 drawPreview('g0',x=>x,'#185FA5');
 drawPreview('g1',x=>x*x-1,'#0F6E56');
 drawPreview('g2',x=>Math.pow(2,x)/4,'#854F0B');
-drawPreview('g3',x=>x<=-3.9?null:Math.log10(x+4)*2-1.2,'#993C1D');
+drawPreview('g3',x=>x<=0?null:Math.log(x)/Math.log(2)*0.8,'#993C1D');
 drawCircle();
 </script>
 </body>
