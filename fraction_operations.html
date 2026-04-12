@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fraction Operations — Ms. Liu</title>
+<link rel="stylesheet" href="nav.css"/>
+<style>
+  /* operation tabs */
+  .op-tabs { display:flex; gap:1px; background:var(--border); border:1px solid var(--border); margin-bottom:1.5rem; }
+  .op-tab {
+    flex:1; padding:0.6rem 0.5rem; font-size:13px; font-weight:600;
+    background:var(--surface); color:var(--muted); cursor:pointer;
+    text-align:center; border:none; transition:background 0.1s,color 0.1s;
+  }
+  .op-tab:hover { background:var(--tag-bg); color:var(--text); }
+  .op-tab.active { background:var(--blue-bg); color:var(--blue); }
+
+  /* fraction input grid */
+  .frac-inputs { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+  .frac-entry { display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .frac-entry input[type=number] {
+    width:64px; text-align:center; font-family:'Georgia',serif; font-size:1.1rem;
+    padding:6px 4px; border:1px solid var(--border); background:var(--surface);
+    color:var(--text); border-radius:0;
+  }
+  .frac-entry input[type=number]:focus { outline:2px solid var(--blue); outline-offset:0; }
+  .frac-bar-line { width:64px; height:2px; background:var(--text); }
+  .op-symbol { font-size:1.4rem; color:var(--muted); font-weight:300; padding:0 4px; margin-top:8px; }
+  .frac-label { font-size:10px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--subtle); margin-top:4px; }
+
+  /* inline fraction display (typeset) */
+  .frac-inline {
+    display:inline-flex; flex-direction:column; align-items:center;
+    font-family:'Georgia',serif; vertical-align:middle; line-height:1;
+  }
+  .frac-inline .fn { padding-bottom:2px; min-width:1.4ch; text-align:center; display:block; }
+  .frac-inline .fd { padding-top:2px; border-top:1.5px solid currentColor; min-width:1.4ch; text-align:center; display:block; }
+
+  /* steps */
+  .step { display:grid; grid-template-columns:1.5rem 1fr; gap:0 0.75rem; padding:0.7rem 0; border-top:1px solid var(--border); align-items:start; }
+  .step:first-child { border-top:none; }
+  .step-n { font-size:11px; color:var(--subtle); padding-top:2px; }
+  .step-b { font-size:13px; color:var(--text); line-height:1.6; }
+  .step-b em { font-style:normal; color:var(--blue); font-weight:600; }
+  .step-math { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:6px; font-family:'Georgia',serif; font-size:14px; }
+
+  /* result */
+  .result-box { background:var(--blue-bg); border:1px solid var(--blue-mid,#c5d5f8); padding:1rem 1.25rem; margin-top:1rem; display:flex; align-items:center; gap:2rem; flex-wrap:wrap; }
+  .result-label { font-size:10px; font-weight:600; color:var(--blue); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:6px; }
+
+  /* badge */
+  .badge { display:inline-block; font-size:11px; font-weight:500; padding:2px 8px; border-radius:20px; }
+  .badge-ok  { background:var(--green-bg,#e6f4ed); color:var(--green,#2d7a4f); }
+  .badge-err { background:var(--red-bg,#fdecea); color:var(--red,#b33a2a); }
+
+  :root { --green:#2d7a4f; --green-bg:#e6f4ed; --red:#b33a2a; --red-bg:#fdecea; --blue-mid:#c5d5f8; }
+  @media (prefers-color-scheme:dark) {
+    :root { --green:#5ab87a; --green-bg:#0f2a1a; --red:#e07060; --red-bg:#2a1010; --blue-mid:#253560; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MOBILE TOPBAR -->
+<div class="topbar">
+  <a href="index.html" class="topbar-brand">Ms. Liu <span>· Math Tools</span></a>
+  <button class="menu-btn" id="menu-btn" aria-label="Open menu"><span></span><span></span><span></span></button>
+</div>
+
+<!-- MOBILE BOTTOM SHEET -->
+<div class="sheet-overlay" id="sheet-overlay" style="display:none;"></div>
+<div class="sheet" id="nav-sheet" style="display:none;">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Navigation</div>
+  <div class="sheet-nav">
+    <div class="sheet-group">
+      <button class="sheet-group-btn"><span class="sheet-group-name">Middle School</span><span class="nav-group-pill pill-ms">6–8</span><span class="sheet-group-arrow">›</span></button>
+      <div class="sheet-sub">
+        <div class="sheet-sub-label">Number &amp; Operations</div>
+        <a href="fraction_concepts.html" class="sheet-item">Fraction Concepts</a>
+        <a href="fraction_operations.html" class="sheet-item active">Fraction Operations</a>
+        <a href="#" class="sheet-item soon">Frac · Dec · Percent</a>
+        <a href="#" class="sheet-item soon">Integer Operations</a>
+        <div class="sheet-sub-label">Algebra</div>
+        <a href="#" class="sheet-item soon">Order of Operations</a>
+        <a href="#" class="sheet-item soon">Solving Equations</a>
+        <div class="sheet-sub-label">Geometry</div>
+        <a href="#" class="sheet-item soon">Pythagorean Theorem</a>
+        <div class="sheet-sub-label">Stats &amp; Data</div>
+        <a href="#" class="sheet-item soon">Probability Concepts</a>
+      </div>
+    </div>
+    <div class="sheet-group">
+      <button class="sheet-group-btn"><span class="sheet-group-name">High School</span><span class="nav-group-pill pill-hs">9–12</span><span class="sheet-group-arrow">›</span></button>
+      <div class="sheet-sub">
+        <div class="sheet-sub-label">Functions</div>
+        <a href="linear_explorer.html" class="sheet-item">Linear</a>
+        <a href="quadratic_explorer.html" class="sheet-item">Quadratic</a>
+        <a href="sqrt_explorer.html" class="sheet-item">Square Root</a>
+        <a href="rational_explorer.html" class="sheet-item">Rational / Reciprocal</a>
+        <a href="exponential_explorer.html" class="sheet-item">Exponential</a>
+        <a href="log_explorer.html" class="sheet-item">Logarithmic</a>
+        <div class="sheet-sub-label">Trigonometry</div>
+        <a href="trig_explorer.html" class="sheet-item">Trig Ratios</a>
+        <div class="sheet-sub-label">Financial Literacy</div>
+        <a href="interest_explorer.html" class="sheet-item">Interest &amp; Present Value</a>
+      </div>
+    </div>
+    <div class="sheet-group">
+      <button class="sheet-group-btn"><span class="sheet-group-name">University Math</span><span class="nav-group-pill pill-uni">Uni</span><span class="sheet-group-arrow">›</span></button>
+      <div class="sheet-sub"><a href="#" class="sheet-item soon">Coming soon</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div class="app-shell">
+  <aside class="sidebar">
+    <a href="index.html" class="sidebar-brand"><span class="brand-title">Ms. Liu</span><span class="brand-sub">Math Tools</span></a>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-header"><span class="nav-group-label">Middle School</span><span class="nav-group-pill pill-ms">6–8</span><span class="nav-group-arrow">›</span></div>
+        <div class="nav-sub">
+          <div class="nav-sub-label">Number &amp; Ops</div>
+          <a href="fraction_concepts.html" class="nav-item">Fraction Concepts</a>
+          <a href="fraction_operations.html" class="nav-item active">Fraction Operations</a>
+          <a href="#" class="nav-item soon">Frac · Dec · Percent</a>
+          <a href="#" class="nav-item soon">Integer Operations</a>
+          <a href="#" class="nav-item soon">Ratios &amp; Proportions</a>
+          <a href="#" class="nav-item soon">Percent Problems</a>
+          <div class="nav-sub-label">Algebra</div>
+          <a href="#" class="nav-item soon">Order of Operations</a>
+          <a href="#" class="nav-item soon">Solving Equations</a>
+          <a href="#" class="nav-item soon">Inequalities</a>
+          <a href="#" class="nav-item soon">Coordinate Plane</a>
+          <div class="nav-sub-label">Geometry</div>
+          <a href="#" class="nav-item soon">Pythagorean Theorem</a>
+          <a href="#" class="nav-item soon">Area &amp; Perimeter</a>
+          <a href="#" class="nav-item soon">Volume &amp; Surface Area</a>
+          <a href="#" class="nav-item soon">Angle Relationships</a>
+          <div class="nav-sub-label">Stats &amp; Data</div>
+          <a href="#" class="nav-item soon">Probability Concepts</a>
+          <a href="#" class="nav-item soon">Tree Diagrams</a>
+          <a href="#" class="nav-item soon">Mean · Median · Mode</a>
+          <a href="#" class="nav-item soon">Data Displays</a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-header"><span class="nav-group-label">High School</span><span class="nav-group-pill pill-hs">9–12</span><span class="nav-group-arrow">›</span></div>
+        <div class="nav-sub">
+          <div class="nav-sub-label">Functions</div>
+          <a href="linear_explorer.html" class="nav-item">Linear</a>
+          <a href="quadratic_explorer.html" class="nav-item">Quadratic</a>
+          <a href="sqrt_explorer.html" class="nav-item">Square Root</a>
+          <a href="rational_explorer.html" class="nav-item">Rational / Reciprocal</a>
+          <a href="exponential_explorer.html" class="nav-item">Exponential</a>
+          <a href="log_explorer.html" class="nav-item">Logarithmic</a>
+          <div class="nav-sub-label">Trigonometry</div>
+          <a href="trig_explorer.html" class="nav-item">Trig Ratios</a>
+          <div class="nav-sub-label">Financial Literacy</div>
+          <a href="interest_explorer.html" class="nav-item">Interest &amp; Present Value</a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-header"><span class="nav-group-label">University</span><span class="nav-group-pill pill-uni">Uni</span><span class="nav-group-arrow">›</span></div>
+        <div class="nav-sub"><a href="#" class="nav-item soon">Coming soon</a></div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-header"><span class="nav-group-label">Economic &amp; Financial</span><span class="nav-group-pill pill-eco">Eco</span><span class="nav-group-arrow">›</span></div>
+        <div class="nav-sub">
+          <a href="#" class="nav-item soon">Cobb-Douglas Utility</a>
+          <a href="#" class="nav-item soon">Supply &amp; Demand</a>
+          <a href="#" class="nav-item soon">Cost / Revenue / Profit</a>
+        </div>
+      </div>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <div class="page-header">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a><span class="breadcrumb-sep">·</span>
+        <span>Middle School Math</span><span class="breadcrumb-sep">·</span>
+        <span>Number &amp; Operations</span>
+      </div>
+      <h1 class="page-title">Fraction Operations</h1>
+      <p class="page-formula">+ &nbsp; − &nbsp; × &nbsp; ÷ &nbsp; fractions &amp; mixed numbers</p>
+    </div>
+
+    <div class="readme">
+      <div class="readme-header" id="readme-hdr" onclick="toggleReadme()">
+        <span class="readme-label">Read me first</span>
+        <span class="readme-hint">How each operation works</span>
+        <span class="readme-arrow">▾</span>
+      </div>
+      <div class="readme-body" id="readme-body">
+        <h3>Addition &amp; Subtraction</h3>
+        <ul>
+          <li>Fractions must share a common denominator before you can add or subtract</li>
+          <li>Find the LCD (lowest common denominator), convert each fraction, then add/subtract numerators</li>
+          <li>The denominator never changes during the addition step</li>
+        </ul>
+        <h3>Multiplication</h3>
+        <ul>
+          <li>Multiply numerators together, then multiply denominators together</li>
+          <li>No common denominator needed — the simplest operation</li>
+          <li>Simplify (cross-cancel) before multiplying if possible</li>
+        </ul>
+        <h3>Division</h3>
+        <ul>
+          <li>Keep the first fraction, Change ÷ to ×, Flip the second fraction (reciprocal)</li>
+          <li>Then follow the multiplication steps</li>
+          <li>Memory trick: <strong>KCF</strong> — Keep, Change, Flip</li>
+        </ul>
+        <h3>Mixed numbers</h3>
+        <ul>
+          <li>Convert to improper fractions first, then apply the operation</li>
+          <li>Convert the result back to a mixed number at the end</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tool-body">
+
+      <!-- operation tabs -->
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Operation</div>
+        <div class="op-tabs">
+          <button class="op-tab active" id="op-0" onclick="setOp(0)">＋ Add</button>
+          <button class="op-tab" id="op-1" onclick="setOp(1)">－ Subtract</button>
+          <button class="op-tab" id="op-2" onclick="setOp(2)">× Multiply</button>
+          <button class="op-tab" id="op-3" onclick="setOp(3)">÷ Divide</button>
+        </div>
+      </div>
+
+      <!-- fraction inputs -->
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Enter fractions</div>
+        <div class="panel">
+          <div class="frac-inputs">
+
+            <!-- fraction 1 -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+              <div class="frac-label">First fraction</div>
+              <div class="frac-entry">
+                <input type="number" id="n1" value="1" min="-99" max="99" oninput="compute()">
+                <div class="frac-bar-line"></div>
+                <input type="number" id="d1" value="2" min="1" max="99" oninput="compute()">
+              </div>
+            </div>
+
+            <!-- operator symbol -->
+            <div class="op-symbol" id="op-sym">＋</div>
+
+            <!-- fraction 2 -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+              <div class="frac-label">Second fraction</div>
+              <div class="frac-entry">
+                <input type="number" id="n2" value="1" min="-99" max="99" oninput="compute()">
+                <div class="frac-bar-line"></div>
+                <input type="number" id="d2" value="3" min="1" max="99" oninput="compute()">
+              </div>
+            </div>
+
+          </div>
+          <button class="btn-reset" onclick="resetInputs()">↺ Reset</button>
+        </div>
+      </div>
+
+      <!-- step-by-step -->
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Step-by-step working</div>
+        <div class="panel">
+          <div id="steps-wrap"></div>
+        </div>
+      </div>
+
+      <!-- result -->
+      <div id="result-wrap"></div>
+
+    </div>
+    <div class="page-footer">Ms. Liu · Fraction Operations</div>
+  </main>
+</div>
+
+<script src="nav.js"></script>
+<script>
+  /* ── readme ── */
+  function toggleReadme() {
+    const hdr=document.getElementById('readme-hdr'), body=document.getElementById('readme-body');
+    const open=body.classList.toggle('open'); hdr.classList.toggle('open',open);
+  }
+
+  /* ── helpers ── */
+  function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); return b===0?a:gcd(b,a%b); }
+  function lcm(a,b){ return Math.abs(a*b)/gcd(a,b); }
+  function simplify(n,d){
+    if(d===0) return {n,d};
+    const g=gcd(Math.abs(n),Math.abs(d));
+    const sign=d<0?-1:1;
+    return {n:sign*n/g, d:sign*d/g};
+  }
+  function toMixed(n,d){
+    if(Math.abs(n)<d) return null;
+    const w=Math.trunc(n/d), r=Math.abs(n%d);
+    return r===0 ? {w,n:0,d:1} : {w,n:r,d};
+  }
+
+  /* ── typeset fraction HTML ── */
+  function fh(n,d,size){
+    size=size||'1rem';
+    return `<span class="frac-inline" style="font-size:${size}"><span class="fn">${n}</span><span class="fd">${d}</span></span>`;
+  }
+
+  /* ── operation state ── */
+  let opIdx=0;
+  const opSymbols=['＋','－','×','÷'];
+
+  function setOp(i){
+    opIdx=i;
+    [0,1,2,3].forEach(j=>document.getElementById('op-'+j).classList.toggle('active',j===i));
+    document.getElementById('op-sym').textContent=opSymbols[i];
+    compute();
+  }
+
+  /* ── main compute ── */
+  function compute(){
+    const n1=parseInt(document.getElementById('n1').value)||0;
+    const d1=parseInt(document.getElementById('d1').value)||1;
+    const n2=parseInt(document.getElementById('n2').value)||0;
+    const d2=parseInt(document.getElementById('d2').value)||1;
+
+    if(d1===0||d2===0){
+      document.getElementById('steps-wrap').innerHTML='<p style="color:var(--muted);font-size:13px;">Denominator cannot be zero.</p>';
+      document.getElementById('result-wrap').innerHTML='';
+      return;
+    }
+
+    let steps=[], rn, rd;
+
+    if(opIdx===0||opIdx===1){ /* add / subtract */
+      const LCD=lcm(d1,d2);
+      const m1=LCD/d1, m2=LCD/d2;
+      const cn1=n1*m1, cn2=n2*m2;
+      const raw= opIdx===0 ? cn1+cn2 : cn1-cn2;
+      const s=simplify(raw,LCD);
+      rn=s.n; rd=s.d;
+
+      steps.push({
+        n:1,
+        text:`Find the <em>LCD</em> (lowest common denominator) of ${d1} and ${d2}.`,
+        math:`LCD = ${LCD}`
+      });
+      steps.push({
+        n:2,
+        text:`Convert each fraction so both have denominator <em>${LCD}</em>.`,
+        math:`${fh(n1,d1)} = ${fh(`${n1}×${m1}`,`${d1}×${m1}`)} = ${fh(cn1,LCD)} &nbsp;&nbsp; ${fh(n2,d2)} = ${fh(`${n2}×${m2}`,`${d2}×${m2}`)} = ${fh(cn2,LCD)}`
+      });
+      steps.push({
+        n:3,
+        text:`${opIdx===0?'Add':'Subtract'} the numerators. The denominator stays <em>${LCD}</em>.`,
+        math:`${fh(cn1,LCD)} ${opIdx===0?'＋':'－'} ${fh(cn2,LCD)} = ${fh(raw,LCD)}`
+      });
+      if(gcd(Math.abs(raw),LCD)>1||raw!==s.n){
+        steps.push({
+          n:4,
+          text:`Simplify by dividing numerator and denominator by <em>${gcd(Math.abs(raw),LCD)}</em>.`,
+          math:`${fh(raw,LCD)} = ${fh(s.n,s.d)}`
+        });
+      }
+
+    } else if(opIdx===2){ /* multiply */
+      const g1=gcd(Math.abs(n1),d2), g2=gcd(Math.abs(n2),d1);
+      const cn1=n1/g1, cd2=d2/g1, cn2=n2/g2, cd1=d1/g2;
+      const rawN=n1*n2, rawD=d1*d2;
+      const s=simplify(rawN,rawD);
+      rn=s.n; rd=s.d;
+
+      steps.push({n:1, text:'Multiply the <em>numerators</em> together.', math:`${n1} × ${n2} = <em>${rawN}</em>`});
+      steps.push({n:2, text:'Multiply the <em>denominators</em> together.', math:`${d1} × ${d2} = <em>${rawD}</em>`});
+      steps.push({n:3, text:'Write the result.', math:`${fh(n1,d1)} × ${fh(n2,d2)} = ${fh(rawN,rawD)}`});
+      if(s.n!==rawN||s.d!==rawD){
+        steps.push({n:4, text:`Simplify by dividing by <em>${gcd(Math.abs(rawN),rawD)}</em>.`, math:`${fh(rawN,rawD)} = ${fh(s.n,s.d)}`});
+      }
+
+    } else { /* divide */
+      const recN=n2, recD=d2;
+      const rawN=n1*d2, rawD=d1*n2;
+      const s= rawD!==0 ? simplify(rawN,rawD) : {n:rawN,d:0};
+      rn=s.n; rd=s.d;
+
+      steps.push({n:1, text:'<em>Keep</em> the first fraction exactly as it is.', math:`${fh(n1,d1)}`});
+      steps.push({n:2, text:'<em>Change</em> ÷ to ×.', math:`${fh(n1,d1)} ×`});
+      steps.push({n:3, text:'<em>Flip</em> the second fraction (take its reciprocal).', math:`${fh(n1,d1)} × ${fh(d2,n2)}`});
+      steps.push({n:4, text:'Now multiply: numerators together, denominators together.', math:`${fh(n1*d2, d1*n2)}`});
+      if(rd!==0&&(s.n!==rawN||s.d!==rawD)){
+        steps.push({n:5, text:`Simplify by dividing by <em>${gcd(Math.abs(rawN),Math.abs(rawD))}</em>.`, math:`${fh(s.n,s.d)}`});
+      }
+    }
+
+    /* render steps */
+    document.getElementById('steps-wrap').innerHTML = steps.map(s=>`
+      <div class="step">
+        <span class="step-n">${s.n}</span>
+        <div class="step-b">${s.text}<div class="step-math">${s.math}</div></div>
+      </div>`).join('');
+
+    /* render result */
+    const wrap=document.getElementById('result-wrap');
+    if(rd===0){
+      wrap.innerHTML=`<div class="result-box"><div><div class="result-label">Result</div><span class="badge badge-err">Undefined — division by zero</span></div></div>`;
+      return;
+    }
+
+    const mixed=toMixed(Math.abs(rn),rd);
+    const sign=rn<0?'−':'';
+    let mixedHTML='';
+    if(mixed&&mixed.w!==0&&mixed.n!==0){
+      mixedHTML=` &nbsp;=&nbsp; <span style="font-family:'Georgia',serif;font-size:1.2rem;">${sign}${mixed.w}</span>${fh(mixed.n,mixed.d,'1.2rem')}`;
+    } else if(mixed&&mixed.n===0){
+      mixedHTML=` &nbsp;=&nbsp; <span style="font-family:'Georgia',serif;font-size:1.2rem;">${sign}${mixed.w}</span>`;
+    }
+
+    const isSimple= rd===1;
+    wrap.innerHTML=`
+      <div class="result-box">
+        <div>
+          <div class="result-label">Answer</div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            ${isSimple
+              ? `<span style="font-family:'Georgia',serif;font-size:1.5rem;">${rn}</span>`
+              : `${fh(rn,rd,'1.5rem')}${mixedHTML}`}
+          </div>
+        </div>
+        <div style="font-family:'Georgia',serif;font-size:13px;color:var(--muted);">
+          ${fh(n1,d1,'1rem')} ${opSymbols[opIdx]} ${fh(n2,d2,'1rem')} = ${isSimple ? rn : fh(rn,rd,'1rem')}
+          ${rn===0?'<br><span style=\'font-size:12px;\'>Result is zero</span>':''}
+        </div>
+      </div>`;
+  }
+
+  function resetInputs(){
+    document.getElementById('n1').value=1; document.getElementById('d1').value=2;
+    document.getElementById('n2').value=1; document.getElementById('d2').value=3;
+    compute();
+  }
+
+  /* update index.html link */
+  compute();
+</script>
+</body>
+</html>
