@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Square Root Functions — Ms. Liu</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  :root { --blue:#185FA5; --bg:#f7f5f0; --card:#ffffff; --border:#d8d4cc; --text:#1a1814; --muted:#4a4844; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+  .topbar { background:var(--text); padding:0; }
+  .topbar-main { display:flex; align-items:center; justify-content:space-between; padding:0.85rem 1.2rem; }
+  .site-title { font-family:'Playfair Display',serif; font-size:1rem; color:#f7f5f0; font-weight:400; text-decoration:none; }
+  .hamburger { background:none; border:none; cursor:pointer; padding:4px; display:flex; flex-direction:column; gap:5px; touch-action:manipulation; }
+  .hamburger span { display:block; width:22px; height:2px; background:#c8c4bc; border-radius:1px; transition:all 0.2s; }
+  .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity:0; }
+  .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+  .nav-menu { display:none; flex-direction:column; border-top:1px solid #2e2c28; padding:0.4rem 0; }
+  .nav-menu.open { display:flex; }
+  .nav-cat { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:#555250; padding:0.7rem 1.4rem 0.3rem; }
+  .nav-menu a { display:block; padding:0.55rem 1.4rem 0.55rem 1.8rem; font-family:'DM Mono',monospace; font-size:0.78rem; color:#c8c4bc; text-decoration:none; letter-spacing:0.03em; transition:background 0.12s; }
+  .nav-menu a:hover { background:#2a2620; color:#f7f5f0; }
+  .nav-menu a.active { color:#f7f5f0; border-left:2px solid #f7f5f0; padding-left:calc(1.8rem - 2px); }
+  .nav-divider { height:1px; background:#2e2c28; margin:0.4rem 0; }
+  .container { max-width:720px; margin:0 auto; padding:1.2rem; }
+  .readme { background:#2a2620; border:1px solid #3a3630; border-radius:10px; margin-bottom:1.2rem; overflow:hidden; }
+  .readme-toggle { width:100%; padding:11px 14px; display:flex; justify-content:space-between; align-items:center; background:#2a2620; border:none; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.75rem; letter-spacing:0.06em; color:#c8c4bc; text-align:left; touch-action:manipulation; }
+  .readme-toggle:hover { background:#333028; }
+  .readme-arrow { transition:transform 0.2s; display:inline-block; color:#888480; }
+  .readme.open .readme-arrow { transform:rotate(180deg); }
+  .readme-body { max-height:0; overflow:hidden; transition:max-height 0.3s ease; }
+  .readme.open .readme-body { max-height:700px; }
+  .readme-inner { padding:1rem 1.2rem; border-top:1px solid #3a3630; font-size:0.85rem; color:#b8b4ac; line-height:1.75; }
+  .readme-inner h3 { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:#e8e4dc; margin-bottom:5px; margin-top:12px; }
+  .readme-inner h3:first-child { margin-top:0; }
+  .readme-inner ul { padding-left:1.1rem; }
+  .readme-inner li { margin-bottom:3px; }
+  .readme-inner .param { font-family:'DM Mono',monospace; font-size:0.78rem; background:#3a3630; padding:1px 6px; border-radius:4px; color:#e8e4dc; }
+  .eq-display { font-family:'DM Mono',monospace; margin-bottom:1rem; padding:10px 14px; background:var(--card); border-radius:10px; border:1px solid var(--border); border-left:4px solid var(--blue); }
+  .eq-formula { font-size:1.1rem; color:#444; }
+  .eq-current { font-size:0.85rem; color:var(--muted); margin-top:3px; }
+  .controls { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1rem; }
+  @media (max-width:440px) { .controls { grid-template-columns:1fr; } }
+  .group { background:var(--card); border-radius:10px; border:1px solid var(--border); padding:10px 12px; }
+  .group-label { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.06em; color:var(--muted); text-transform:uppercase; margin-bottom:7px; }
+  .sign-row { display:flex; gap:6px; margin-bottom:7px; }
+  .sign-btn { flex:1; padding:5px 6px; border-radius:6px; border:1px solid var(--border); background:transparent; cursor:pointer; font-size:11px; color:var(--muted); font-family:'DM Mono',monospace; touch-action:manipulation; }
+  .sign-btn.active { background:var(--blue); color:white; border-color:transparent; }
+  .ctrl-row { display:flex; align-items:center; gap:8px; }
+  .ctrl-row label { font-family:'DM Mono',monospace; font-size:1rem; color:var(--text); min-width:18px; }
+  .ctrl-row input[type=range] { flex:1; accent-color:var(--blue); cursor:pointer; touch-action:manipulation; height:22px; }
+  .val-display { font-family:'DM Mono',monospace; font-size:0.88rem; min-width:46px; text-align:right; color:var(--text); }
+  .reset-btn { padding:7px 16px; border-radius:8px; border:1px solid var(--border); background:transparent; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted); margin-bottom:0.9rem; touch-action:manipulation; }
+  .reset-btn:hover { background:var(--card); }
+  .info-box { padding:9px 13px; border-radius:10px; background:var(--card); font-size:0.83rem; color:var(--muted); margin-bottom:0.9rem; line-height:1.7; border:1px solid var(--border); }
+  .info-box strong { color:var(--text); font-weight:500; }
+  canvas { width:100% !important; border-radius:10px; border:1px solid var(--border); display:block; touch-action:none; background:var(--card); }
+  .footer { margin-top:1rem; font-size:0.7rem; color:#888480; text-align:center; font-family:'DM Mono',monospace; }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="topbar-main">
+    <a class="site-title" href="index.html">Ms. Liu · <em style="font-style:italic;">Math Tools</em></a>
+    <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-menu" id="navMenu">
+    <a href="index.html" style="padding-left:1.4rem;">Home</a>
+    <div class="nav-divider"></div>
+    <div class="nav-cat">High School Math Functions</div>
+    <a href="linear_explorer.html">Linear &nbsp; y = mx + b</a>
+    <a href="quadratic_explorer.html">Quadratic &nbsp; y = a[k(x−d)]² + c</a>
+    <a href="sqrt_explorer.html" class="active">Square Root &nbsp; y = a√[k(x−d)] + c</a>
+    <a href="rational_explorer.html">Rational &nbsp; y = a / [k(x−d)] + c</a>
+    <a href="exponential_explorer.html">Exponential &nbsp; y = a · b<sup style="font-size:0.65em;">x</sup></a>
+    <a href="log_explorer.html">Logarithm &nbsp; y = a · log<sub style="font-size:0.65em;">b</sub>(x)</a>
+    <a href="trig_explorer.html">Trig Ratios &nbsp; sin · cos · tan</a>
+    <div class="nav-divider"></div>
+    <div class="nav-cat">Economic &amp; Financial Functions</div>
+    <a href="#" style="opacity:0.4;pointer-events:none;">Compound Interest</a>
+    <a href="#" style="opacity:0.4;pointer-events:none;">Supply &amp; Demand</a>
+    <a href="#" style="opacity:0.4;pointer-events:none;">Cost / Revenue / Profit</a>
+    <a href="#" style="opacity:0.4;pointer-events:none;">Depreciation</a>
+    <a href="#" style="opacity:0.4;pointer-events:none;">Present &amp; Future Value</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="readme" id="readme">
+    <button class="readme-toggle" onclick="document.getElementById('readme').classList.toggle('open')">
+      <span>How to use this tool</span>
+      <span class="readme-arrow">▾</span>
+    </button>
+    <div class="readme-body">
+      <div class="readme-inner">
+        <h3>What this shows</h3>
+        This tool explores <span class="param">y = a√[k(x − d)] + c</span>. The base function is y = √x — a half-parabola starting at the origin. Adjust sliders to transform it.
+
+        <h3>Parameters</h3>
+        <ul>
+          <li><span class="param">a</span> — vertical stretch (|a| &gt; 1) or compression (|a| &lt; 1). Negative a reflects the curve below the x-axis.</li>
+          <li><span class="param">k</span> — horizontal stretch (|k| &lt; 1) or compression (|k| &gt; 1). Negative k reflects the curve left (domain flips).</li>
+          <li><span class="param">d</span> — horizontal shift. Moves the starting point left or right.</li>
+          <li><span class="param">c</span> — vertical shift. Moves the curve up or down.</li>
+        </ul>
+
+        <h3>Key concepts</h3>
+        <ul>
+          <li>Domain: x ≥ d (when k &gt; 0) — square root requires non-negative input</li>
+          <li>Starting point (endpoint) is always at (d, c) — marked with red dot</li>
+          <li>Faint ghost curve shows base y = √x for reference</li>
+          <li>Negative k flips the domain: curve goes left instead of right</li>
+        </ul>
+
+        <h3>Try this</h3>
+        <ul>
+          <li>Set a &lt; 0 — curve flips downward</li>
+          <li>Move d right — starting point shifts right</li>
+          <li>Move c up/down — whole curve shifts vertically</li>
+          <li>Set k &lt; 0 — what happens to the direction of the curve?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="eq-display">
+    <div class="eq-formula">y = a√[k(x − d)] + c</div>
+    <div class="eq-current" id="eqCurrent">current: y = 1.00√[1.00(x − 0.00)] + 0.00</div>
+  </div>
+
+  <div class="controls">
+    <div class="group">
+      <div class="group-label">a — vertical stretch/flip</div>
+      <div class="sign-row">
+        <button class="sign-btn active" data-param="a" data-sign="pos">a &gt; 0</button>
+        <button class="sign-btn" data-param="a" data-sign="neg">a &lt; 0 (flip)</button>
+      </div>
+      <div class="ctrl-row">
+        <label>a</label>
+        <input type="range" id="slA" min="10" max="500" step="1" value="100">
+        <span class="val-display" id="vA">1.00</span>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-label">k — horizontal stretch</div>
+      <div class="sign-row">
+        <button class="sign-btn active" data-param="k" data-sign="pos">k &gt; 0</button>
+        <button class="sign-btn" data-param="k" data-sign="neg">k &lt; 0 (flip)</button>
+      </div>
+      <div class="ctrl-row">
+        <label>k</label>
+        <input type="range" id="slK" min="10" max="500" step="1" value="100">
+        <span class="val-display" id="vK">1.00</span>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-label">d — horizontal shift (−5 to 5)</div>
+      <div class="ctrl-row">
+        <label>d</label>
+        <input type="range" id="slD" min="-500" max="500" step="1" value="0">
+        <span class="val-display" id="vD">0.00</span>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="group-label">c — vertical shift (−5 to 5)</div>
+      <div class="ctrl-row">
+        <label>c</label>
+        <input type="range" id="slC" min="-500" max="500" step="1" value="0">
+        <span class="val-display" id="vC">0.00</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="reset-btn" id="resetBtn">↺ Reset</button>
+  <div class="info-box" id="info"></div>
+  <canvas id="c"></canvas>
+  <div class="footer">Ms. Liu · Square Root Functions</div>
+</div>
+
+<script>
+function toggleNav() {
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('navMenu').classList.toggle('open');
+}
+
+let signA = 1, signK = 1;
+const canvas = document.getElementById('c');
+const DPR = window.devicePixelRatio || 1;
+
+function resizeCanvas() {
+  const w = canvas.parentElement.clientWidth - 24;
+  const h = Math.min(Math.round(w * 0.7), 380);
+  canvas.width = w * DPR; canvas.height = h * DPR;
+  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+  draw(getA(), getK(), getD(), getC());
+}
+
+function getA() { return signA * (+document.getElementById('slA').value / 100); }
+function getK() { return signK * (+document.getElementById('slK').value / 100); }
+function getD() { return +document.getElementById('slD').value / 100; }
+function getC() { return +document.getElementById('slC').value / 100; }
+function fmt(v) { return (v >= 0 ? '+' : '') + v.toFixed(2); }
+
+function updateLabels() {
+  const a = getA(), k = getK(), d = getD(), c = getC();
+  document.getElementById('vA').textContent = a.toFixed(2);
+  document.getElementById('vK').textContent = k.toFixed(2);
+  document.getElementById('vD').textContent = d.toFixed(2);
+  document.getElementById('vC').textContent = c.toFixed(2);
+
+  const dSign = d >= 0 ? '−' : '+';
+  const dAbs = Math.abs(d).toFixed(2);
+  document.getElementById('eqCurrent').textContent =
+    `current: y = ${a.toFixed(2)}√[${k.toFixed(2)}(x ${dSign} ${dAbs})] ${fmt(c)}`;
+
+  const domainDir = k >= 0 ? `x ≥ ${d.toFixed(2)}` : `x ≤ ${d.toFixed(2)}`;
+  const aDesc = Math.abs(a) > 1 ? 'vertical stretch' : 'vertical compression';
+  const kDesc = Math.abs(k) > 1 ? 'horiz. compression' : 'horiz. stretch';
+  const flip = a < 0 ? ' · reflected below x-axis' : '';
+  const kflip = k < 0 ? ' · domain flipped left' : '';
+  const hshift = d !== 0 ? `shift ${d > 0 ? 'right' : 'left'} ${Math.abs(d).toFixed(2)}` : 'no horiz. shift';
+  const vshift = c !== 0 ? `shift ${c > 0 ? 'up' : 'down'} ${Math.abs(c).toFixed(2)}` : 'no vert. shift';
+
+  document.getElementById('info').innerHTML =
+    `<strong>Starting point:</strong> (${d.toFixed(2)}, ${c.toFixed(2)}) &nbsp;·&nbsp; <strong>Domain:</strong> ${domainDir}<br>` +
+    `${aDesc}${flip} &nbsp;·&nbsp; ${kDesc}${kflip} &nbsp;·&nbsp; ${hshift} &nbsp;·&nbsp; ${vshift}`;
+}
+
+function draw(a, k, d, c) {
+  const ctx = canvas.getContext('2d');
+  const CW = canvas.width/DPR, CH = canvas.height/DPR;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.clearRect(0, 0, CW, CH);
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, CW, CH);
+
+  const pad = {l:44, r:16, t:16, b:32};
+  const xMin=-8, xMax=8, yMin=-10, yMax=10;
+  const W=CW-pad.l-pad.r, H=CH-pad.t-pad.b;
+  function sx(x){return pad.l+(x-xMin)/(xMax-xMin)*W;}
+  function sy(y){return pad.t+(yMax-y)/(yMax-yMin)*H;}
+
+  // grid
+  ctx.strokeStyle='rgba(0,0,0,0.06)'; ctx.lineWidth=0.5;
+  for(let x=xMin;x<=xMax;x++){ctx.beginPath();ctx.moveTo(sx(x),sy(yMin));ctx.lineTo(sx(x),sy(yMax));ctx.stroke();}
+  for(let y=yMin;y<=yMax;y+=2){ctx.beginPath();ctx.moveTo(sx(xMin),sy(y));ctx.lineTo(sx(xMax),sy(y));ctx.stroke();}
+
+  // axes
+  ctx.strokeStyle='rgba(0,0,0,0.45)'; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(sx(xMin),sy(0));ctx.lineTo(sx(xMax),sy(0));ctx.stroke();
+  ctx.beginPath();ctx.moveTo(sx(0),sy(yMin));ctx.lineTo(sx(0),sy(yMax));ctx.stroke();
+
+  // tick labels
+  ctx.fillStyle='#666'; ctx.font='10px DM Mono,monospace'; ctx.textAlign='center';
+  for(let x=xMin;x<=xMax;x++){if(x===0)continue;if(x%2===0)ctx.fillText(x,sx(x),sy(0)+13);}
+  ctx.textAlign='right';
+  for(let y=yMin;y<=yMax;y+=2){if(y===0)continue;ctx.fillText(y,sx(0)-4,sy(y)+4);}
+  ctx.font='12px DM Sans,sans-serif';
+  ctx.textAlign='left'; ctx.fillText('y',sx(0)+5,sy(yMax)+4);
+  ctx.textAlign='center'; ctx.fillText('x',sx(xMax)+12,sy(0)+4);
+
+  // ghost base y=√x
+  ctx.strokeStyle='rgba(0,0,0,0.1)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); let pen=false;
+  for(let i=0;i<=600;i++){
+    const x=xMin+i*(xMax-xMin)/600;
+    if(x<0){pen=false;continue;}
+    const v=Math.sqrt(x);
+    if(v>yMax+1){pen=false;continue;}
+    const cv=Math.max(yMin,Math.min(yMax,v));
+    if(!pen){ctx.moveTo(sx(x),sy(cv));pen=true;}else ctx.lineTo(sx(x),sy(cv));
+  }
+  ctx.stroke(); ctx.setLineDash([]);
+
+  // domain boundary vertical line at x=d
+  if(d>=xMin&&d<=xMax){
+    ctx.strokeStyle='rgba(180,140,0,0.4)'; ctx.lineWidth=1; ctx.setLineDash([4,3]);
+    ctx.beginPath();ctx.moveTo(sx(d),sy(yMin));ctx.lineTo(sx(d),sy(yMax));ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // main curve
+  ctx.strokeStyle='#185FA5'; ctx.lineWidth=2.5; ctx.lineJoin='round';
+  ctx.beginPath(); pen=false;
+  for(let i=0;i<=800;i++){
+    const x=xMin+i*(xMax-xMin)/800;
+    const inner=k*(x-d);
+    if(inner<0){pen=false;continue;}
+    const v=a*Math.sqrt(inner)+c;
+    if(!isFinite(v)||v>yMax+1||v<yMin-1){pen=false;continue;}
+    const cv=Math.max(yMin,Math.min(yMax,v));
+    if(!pen){ctx.moveTo(sx(x),sy(cv));pen=true;}else ctx.lineTo(sx(x),sy(cv));
+  }
+  ctx.stroke();
+
+  // starting point (d, c)
+  if(d>=xMin&&d<=xMax&&c>=yMin&&c<=yMax){
+    ctx.beginPath();ctx.arc(sx(d),sy(c),5,0,Math.PI*2);
+    ctx.fillStyle='#e24b4a';ctx.fill();
+    ctx.fillStyle='#333';ctx.font='11px DM Sans,sans-serif';
+    const lx=d<xMax-2?sx(d)+8:sx(d)-80;
+    const ly=a>=0?sy(c)-8:sy(c)+16;
+    ctx.textAlign='left';ctx.fillText(`(${d.toFixed(1)}, ${c.toFixed(1)})`,lx,ly);
+  }
+}
+
+function update(){updateLabels();draw(getA(),getK(),getD(),getC());}
+
+document.querySelectorAll('.sign-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const param=btn.dataset.param;
+    document.querySelectorAll(`.sign-btn[data-param="${param}"]`).forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    if(param==='a')signA=btn.dataset.sign==='pos'?1:-1;
+    if(param==='k')signK=btn.dataset.sign==='pos'?1:-1;
+    update();
+  });
+});
+
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  signA=1;signK=1;
+  document.querySelectorAll('.sign-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.sign-btn[data-param="a"][data-sign="pos"]').classList.add('active');
+  document.querySelector('.sign-btn[data-param="k"][data-sign="pos"]').classList.add('active');
+  ['slA','slK'].forEach(id=>document.getElementById(id).value=100);
+  ['slD','slC'].forEach(id=>document.getElementById(id).value=0);
+  update();
+});
+
+['slA','slK','slD','slC'].forEach(id=>document.getElementById(id).addEventListener('input',update));
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas(); update();
+</script>
+</body>
+</html>
