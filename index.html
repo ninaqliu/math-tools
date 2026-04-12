@@ -3,631 +3,398 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Math Tools</title>
+<title>Ms. Liu — Math Tools</title>
+<link rel="stylesheet" href="nav.css" />
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #faf9f7;
-    --surface: #ffffff;
-    --border: #e8e5df;
-    --border-hover: #ccc9c0;
-    --text: #1a1917;
-    --muted: #6b6860;
-    --accent: #1a1917;
-    --tag-bg: #f0ede6;
-    --tag-text: #4a4840;
-    --soon-bg: #f5f3ef;
-    --soon-text: #9a9790;
-    --pill-ms-bg: #e8f0fd;
-    --pill-ms: #2a5bd7;
-    --pill-hs-bg: #f0ede6;
-    --pill-hs: #5a4830;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #141312;
-      --surface: #1e1d1b;
-      --border: #2e2d2a;
-      --border-hover: #3e3d3a;
-      --text: #f0ede6;
-      --muted: #8a8780;
-      --accent: #f0ede6;
-      --tag-bg: #2a2926;
-      --tag-text: #b0ada6;
-      --soon-bg: #1a1917;
-      --soon-text: #5a5850;
-      --pill-ms-bg: #1a2a50;
-      --pill-ms: #7aa4f0;
-      --pill-hs-bg: #2a2518;
-      --pill-hs: #c0a870;
-    }
-  }
-
-  body {
-    font-family: 'Georgia', 'Times New Roman', serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    line-height: 1.6;
-  }
-
-  /* NAV */
-  nav {
+  .page-hero {
+    padding: 2.5rem 2.5rem 1.75rem;
     border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    height: 52px;
-    background: var(--surface);
-    position: sticky;
-    top: 0;
-    z-index: 100;
   }
-  .nav-brand {
-    font-size: 14px;
-    font-weight: normal;
-    letter-spacing: 0.01em;
-    color: var(--text);
-    text-decoration: none;
-    white-space: nowrap;
+  .page-hero h1 {
+    font-size: 1.5rem; font-weight: 600;
+    letter-spacing: -0.02em; color: var(--text); margin-bottom: 0.3rem;
   }
-  .nav-brand em { font-style: italic; color: var(--muted); }
-  .nav-links {
-    display: flex;
-    gap: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-    flex: 1;
-  }
-  .nav-links::-webkit-scrollbar { display: none; }
-  .nav-links a {
-    font-size: 12px;
-    color: var(--muted);
-    text-decoration: none;
-    padding: 0 14px;
-    height: 52px;
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-    border-bottom: 2px solid transparent;
-    transition: color 0.15s, border-color 0.15s;
-    font-family: 'Helvetica Neue', sans-serif;
-  }
-  .nav-links a:hover { color: var(--text); border-bottom-color: var(--text); }
-  .nav-links a.active { color: var(--text); border-bottom-color: var(--text); }
+  .page-hero p { font-size: 13px; color: var(--muted); max-width: 400px; line-height: 1.6; }
 
-  /* HERO */
-  .hero {
-    padding: 4rem 2rem 2.5rem;
-    max-width: 820px;
-    margin: 0 auto;
-  }
-  .hero h1 {
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: normal;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-    margin-bottom: 0.75rem;
-    color: var(--text);
-  }
-  .hero h1 em { font-style: italic; color: var(--muted); }
-  .hero p {
-    font-size: 15px;
-    color: var(--muted);
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    max-width: 480px;
-    line-height: 1.6;
-  }
+  .categories { padding: 1.5rem 2.5rem 4rem; }
 
-  /* SECTIONS */
-  .sections { max-width: 820px; margin: 0 auto; padding: 0 2rem 5rem; }
-
-  .section-block { margin-bottom: 1px; }
-
-  .section-header {
-    display: grid;
-    grid-template-columns: 3rem 1fr auto;
-    align-items: start;
-    gap: 0 1.25rem;
-    padding: 1.5rem 0;
+  .cat-block { margin-bottom: 0; }
+  .cat-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 1rem 0 0.75rem;
     border-top: 1px solid var(--border);
-    cursor: pointer;
-    user-select: none;
+    cursor: pointer; user-select: none;
   }
-  .section-header:hover .section-toggle { color: var(--text); }
+  .cat-header:hover .cat-title { color: var(--blue); }
+  .cat-num { font-size: 11px; color: var(--subtle); width: 16px; flex-shrink: 0; }
+  .cat-title { font-size: 13.5px; font-weight: 600; color: var(--text); flex: 1; letter-spacing: -0.01em; }
+  .cat-count { font-size: 11px; color: var(--subtle); flex-shrink: 0; }
+  .cat-chevron { font-size: 10px; color: var(--subtle); transition: transform 0.2s; flex-shrink: 0; }
+  .cat-header.open .cat-chevron { transform: rotate(90deg); }
 
-  .section-num {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    padding-top: 4px;
-  }
+  .cat-body { display: none; padding-bottom: 1rem; }
+  .cat-body.open { display: block; }
 
-  .section-meta { min-width: 0; }
-
-  .section-title-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 4px;
-    flex-wrap: wrap;
-  }
-  .section-title {
-    font-size: 1.2rem;
-    font-weight: normal;
-    letter-spacing: -0.01em;
-    color: var(--text);
-  }
-  .level-pill {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-weight: 500;
-  }
-  .pill-ms { background: var(--pill-ms-bg); color: var(--pill-ms); }
-  .pill-hs { background: var(--pill-hs-bg); color: var(--pill-hs); }
-
-  .section-subtitle {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 11.5px;
-    color: var(--muted);
-    margin-bottom: 6px;
-    line-height: 1.5;
-  }
-
-  .section-count {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .section-count span { color: var(--text); }
-
-  .section-toggle {
-    font-size: 13px;
-    color: var(--muted);
-    padding-top: 4px;
-    transition: color 0.15s, transform 0.25s;
-    line-height: 1;
-  }
-  .section-toggle.open { transform: rotate(180deg); }
-
-  /* TOOL GRID */
-  .tool-grid {
-    display: none;
-    padding-bottom: 1.5rem;
-    padding-left: calc(3rem + 1.25rem);
-  }
-  .tool-grid.open { display: block; }
-
-  /* Sub-categories for MS */
-  .subcategory { margin-bottom: 1.5rem; }
-  .subcategory-label {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 10px;
-    padding-bottom: 6px;
+  .subcat { margin-bottom: 1.25rem; }
+  .subcat-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--subtle);
+    padding-bottom: 6px; margin-bottom: 6px;
     border-bottom: 1px solid var(--border);
   }
 
-  .tool-cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
+  .tool-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--border); border: 1px solid var(--border);
   }
-
-  @media (max-width: 540px) {
-    .tool-cards { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 480px) { .tool-grid { grid-template-columns: 1fr; } }
 
   .tool-card {
-    background: var(--surface);
-    padding: 1rem 1.1rem;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transition: background 0.12s;
-    gap: 0.75rem;
+    background: var(--surface); padding: 0.75rem 0.9rem;
+    text-decoration: none; display: flex; align-items: center;
+    justify-content: space-between; gap: 0.5rem; transition: background 0.1s;
   }
   .tool-card:hover { background: var(--tag-bg); }
-  .tool-card.soon {
-    background: var(--soon-bg);
-    cursor: default;
-    pointer-events: none;
-  }
+  .tool-card.soon { background: var(--soon-bg); pointer-events: none; }
 
-  .tool-card-left { min-width: 0; }
-  .tool-card-name {
-    font-size: 13.5px;
-    color: var(--text);
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-weight: 500;
-    margin-bottom: 2px;
-    display: block;
-  }
-  .tool-card.soon .tool-card-name { color: var(--soon-text); }
-  .tool-card-formula {
-    font-family: 'Georgia', serif;
-    font-size: 11px;
-    color: var(--muted);
-    font-style: italic;
-    display: block;
-  }
-  .tool-card.soon .tool-card-formula { color: var(--soon-text); }
+  .tc-left { min-width: 0; }
+  .tc-name { font-size: 12.5px; font-weight: 500; color: var(--text); display: block; margin-bottom: 1px; }
+  .tool-card.soon .tc-name { color: var(--soon-text); font-style: italic; }
+  .tc-formula { font-size: 11px; color: var(--muted); display: block; font-family: 'Georgia', serif; font-style: italic; }
+  .tool-card.soon .tc-formula { color: var(--soon-text); }
+  .tc-arrow { font-size: 13px; color: var(--subtle); flex-shrink: 0; }
+  .tool-card.soon .tc-arrow { font-size: 11px; }
 
-  .tool-card-arrow {
-    font-size: 14px;
-    color: var(--muted);
-    flex-shrink: 0;
-  }
-  .tool-card.soon .tool-card-arrow { font-size: 11px; font-family: 'Helvetica Neue', sans-serif; color: var(--soon-text); }
-
-  /* FOOTER */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 1.5rem 2rem;
-    text-align: center;
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 11px;
-    color: var(--muted);
-  }
+  .soon-note { font-size: 13px; color: var(--muted); padding: 0.5rem 0 0.75rem; }
 </style>
 </head>
 <body>
 
-<nav>
-  <a class="nav-brand" href="#">Ms. Liu · <em>Math Tools</em></a>
-  <div class="nav-links">
-    <a href="#" class="active">Home</a>
-    <a href="linear_explorer.html">Linear &nbsp; y = mx + b</a>
-    <a href="quadratic_explorer.html">Quadratic &nbsp; y = a[k(x−d)]² + c</a>
-    <a href="sqrt_explorer.html">Square Root &nbsp; y = a√[k(x−d)] + c</a>
-    <a href="rational_explorer.html">Rational &nbsp; y = a / k(x−d) + c</a>
-    <a href="exponential_explorer.html">Exponential &nbsp; y = a · bˣ</a>
-    <a href="log_explorer.html">Logarithm &nbsp; y = a · log<sub>b</sub>(x)</a>
-    <a href="trig_explorer.html">Trig Ratios &nbsp; sin · cos · tan</a>
-    <a href="interest_explorer.html">Interest &amp; Present Value</a>
-  </div>
-</nav>
-
-<div class="hero">
-  <h1>Ms. Liu —<br><em>Math Tools</em></h1>
-  <p>Interactive explorers for middle school and high school mathematics. Adjust, explore, and understand concepts in real time.</p>
+<!-- MOBILE TOPBAR -->
+<div class="topbar">
+  <span class="topbar-brand">Ms. Liu <span>· Math Tools</span></span>
+  <button class="menu-btn" id="menu-btn" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
 </div>
 
-<div class="sections">
+<!-- MOBILE BOTTOM SHEET -->
+<div class="sheet-overlay" id="sheet-overlay" style="display:none;"></div>
+<div class="sheet" id="nav-sheet" style="display:none;">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Navigation</div>
+  <div class="sheet-nav">
 
-  <!-- SECTION 00: MIDDLE SCHOOL -->
-  <div class="section-block">
-    <div class="section-header" onclick="toggle(this)">
-      <div class="section-num">1</div>
-      <div class="section-meta">
-        <div class="section-title-row">
-          <span class="section-title">Middle School Math</span>
-          <span class="level-pill pill-ms">Grades 6–8</span>
-        </div>
-        <div class="section-subtitle">Fractions · Decimals · Geometry · Probability · Algebra Foundations</div>
-        <div class="section-count">Coming soon</div>
-      </div>
-      <div class="section-toggle">▾</div>
-    </div>
-
-    <div class="tool-grid">
-
-      <!-- Number & Operations -->
-      <div class="subcategory">
-        <div class="subcategory-label">Number &amp; Operations</div>
-        <div class="tool-cards">
-          <a href="fraction_concepts.html" class="tool-card">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Fraction Concepts</span>
-              <span class="tool-card-formula">numerator / denominator · equivalent fractions</span>
-            </div>
-            <span class="tool-card-arrow">›</span>
-          </a>
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Fraction Operations</span>
-              <span class="tool-card-formula">+  −  ×  ÷  fractions &amp; mixed numbers</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Fraction · Decimal · Percent</span>
-              <span class="tool-card-formula">½ = 0.5 = 50% · conversion explorer</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Integer Operations</span>
-              <span class="tool-card-formula">negative numbers · number line · rules</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Ratios &amp; Proportions</span>
-              <span class="tool-card-formula">a : b · unit rates · scale factors</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Percent Problems</span>
-              <span class="tool-card-formula">discount · tax · tip · percent change</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- Algebra Foundations -->
-      <div class="subcategory">
-        <div class="subcategory-label">Algebra Foundations</div>
-        <div class="tool-cards">
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Order of Operations</span>
-              <span class="tool-card-formula">PEMDAS / BEDMAS · step-by-step</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Solving Equations</span>
-              <span class="tool-card-formula">one-step · two-step · balance model</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Inequalities</span>
-              <span class="tool-card-formula">x &gt; a · x ≤ b · number line</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Coordinate Plane</span>
-              <span class="tool-card-formula">(x, y) · four quadrants · plotting</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- Geometry -->
-      <div class="subcategory">
-        <div class="subcategory-label">Geometry</div>
-        <div class="tool-cards">
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Pythagorean Theorem</span>
-              <span class="tool-card-formula">a² + b² = c² · right triangles</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Area &amp; Perimeter</span>
-              <span class="tool-card-formula">composite shapes · triangles · polygons</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Volume &amp; Surface Area</span>
-              <span class="tool-card-formula">prisms · cylinders · nets</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Angle Relationships</span>
-              <span class="tool-card-formula">supplementary · complementary · vertical</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- Statistics & Data -->
-      <div class="subcategory">
-        <div class="subcategory-label">Statistics &amp; Data</div>
-        <div class="tool-cards">
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Probability Concepts</span>
-              <span class="tool-card-formula">P(event) · sample space · outcomes</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Tree Diagrams</span>
-              <span class="tool-card-formula">compound events · counting principle</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Mean · Median · Mode · Range</span>
-              <span class="tool-card-formula">measures of centre &amp; spread</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-          <a href="#" class="tool-card soon">
-            <div class="tool-card-left">
-              <span class="tool-card-name">Data Displays</span>
-              <span class="tool-card-formula">bar · line · circle graph · box plot</span>
-            </div>
-            <span class="tool-card-arrow">Soon</span>
-          </a>
-        </div>
-      </div>
-
-    </div><!-- end tool-grid -->
-  </div><!-- end section-block -->
-
-
-  <!-- SECTION 01: HIGH SCHOOL -->
-  <div class="section-block">
-    <div class="section-header" onclick="toggle(this)" style="border-top: 1px solid var(--border);">
-      <div class="section-num">2</div>
-      <div class="section-meta">
-        <div class="section-title-row">
-          <span class="section-title">High School Math Functions</span>
-          <span class="level-pill pill-hs">Grades 9–12</span>
-        </div>
-        <div class="section-subtitle">Linear · Quadratic · Square Root · Rational · Exponential · Log · Trig · Interest</div>
-        <div class="section-count"><span>8</span> tools</div>
-      </div>
-      <div class="section-toggle">▾</div>
-    </div>
-
-    <div class="tool-grid">
-      <div class="tool-cards">
-        <a href="linear_explorer.html" class="tool-card">
-          <div class="tool-card-left">
-            <span class="tool-card-name">Linear</span>
-            <span class="tool-card-formula">y = mx + b</span>
-          </div>
-          <span class="tool-card-arrow">›</span>
-        </a>
-        <a href="quadratic_explorer.html" class="tool-card">
-          <div class="tool-card-left">
-            <span class="tool-card-name">Quadratic</span>
-            <span class="tool-card-formula">y = a[k(x − d)]² + c</span>
-          </div>
-          <span class="tool-card-arrow">›</span>
-        </a>
-        <a href="sqrt_explorer.html" class="tool-card">
-          <div class="tool-card-left">
-            <span class="tool-card-name">Square Root</span>
-            <span class="tool-card-formula">y = a√[k(x − d)] + c</span>
-          </div>
-          <span class="tool-card-arrow">›</span>
-        </a>
-        <a href="rational_explorer.html" class="tool-card">
-          <div class="tool-card-left">
-            <span class="tool-card-name">Rational / Reciprocal</span>
-            <span class="tool-card-formula">y = a / k(x − d) + c</span>
-          </div>
-          <span class="tool-card-arrow">›</span>
-        </a>
-        <a href="exponential_explorer.html" class="tool-card">
-          <div class="tool-card-left">
-            <span class="tool-card-name">Exponential</span>
-            <span class="tool-card-formula">y = a · bˣ</span>
-          </div>
-          <span class="tool-card-arrow">›</span>
-        </a>
-        <a href="log_explorer.html" class="tool-card">
-          <div class="tool-card-left">
-            <span class="tool-card-name">Logarithmic</span>
-            <span class="tool-card-formula">y = a · log<sub>b</sub>(x)</span>
-          </div>
-          <span class="tool-card-arrow">›</span>
-        </a>
-        <a href="trig_explorer.html" class="tool-card">
-          <div class="tool-card-left">
-            <span class="tool-card-name">Trig Ratios</span>
-            <span class="tool-card-formula">sin θ · cos θ · tan θ</span>
-          </div>
-          <span class="tool-card-arrow">›</span>
-        </a>
-        <a href="interest_explorer.html" class="tool-card">
-          <div class="tool-card-left">
-            <span class="tool-card-name">Interest &amp; Present Value</span>
-            <span class="tool-card-formula">A = P(1+r/n)ⁿᵗ · A = Peʳᵗ · PV = FV/(1+r)ᵗ</span>
-          </div>
-          <span class="tool-card-arrow">›</span>
-        </a>
+    <div class="sheet-group">
+      <button class="sheet-group-btn">
+        <span class="sheet-group-name">Middle School</span>
+        <span class="nav-group-pill pill-ms">6–8</span>
+        <span class="sheet-group-arrow">›</span>
+      </button>
+      <div class="sheet-sub">
+        <div class="sheet-sub-label">Number &amp; Operations</div>
+        <a href="fraction_concepts.html" class="sheet-item">Fraction Concepts</a>
+        <a href="#" class="sheet-item soon">Fraction Operations</a>
+        <a href="#" class="sheet-item soon">Frac · Dec · Percent</a>
+        <a href="#" class="sheet-item soon">Integer Operations</a>
+        <a href="#" class="sheet-item soon">Ratios &amp; Proportions</a>
+        <a href="#" class="sheet-item soon">Percent Problems</a>
+        <div class="sheet-sub-label">Algebra Foundations</div>
+        <a href="#" class="sheet-item soon">Order of Operations</a>
+        <a href="#" class="sheet-item soon">Solving Equations</a>
+        <a href="#" class="sheet-item soon">Inequalities</a>
+        <a href="#" class="sheet-item soon">Coordinate Plane</a>
+        <div class="sheet-sub-label">Geometry</div>
+        <a href="#" class="sheet-item soon">Pythagorean Theorem</a>
+        <a href="#" class="sheet-item soon">Area &amp; Perimeter</a>
+        <a href="#" class="sheet-item soon">Volume &amp; Surface Area</a>
+        <a href="#" class="sheet-item soon">Angle Relationships</a>
+        <div class="sheet-sub-label">Statistics &amp; Data</div>
+        <a href="#" class="sheet-item soon">Probability Concepts</a>
+        <a href="#" class="sheet-item soon">Tree Diagrams</a>
+        <a href="#" class="sheet-item soon">Mean · Median · Mode</a>
+        <a href="#" class="sheet-item soon">Data Displays</a>
       </div>
     </div>
+
+    <div class="sheet-group">
+      <button class="sheet-group-btn">
+        <span class="sheet-group-name">High School</span>
+        <span class="nav-group-pill pill-hs">9–12</span>
+        <span class="sheet-group-arrow">›</span>
+      </button>
+      <div class="sheet-sub">
+        <div class="sheet-sub-label">Functions</div>
+        <a href="linear_explorer.html" class="sheet-item">Linear</a>
+        <a href="quadratic_explorer.html" class="sheet-item">Quadratic</a>
+        <a href="sqrt_explorer.html" class="sheet-item">Square Root</a>
+        <a href="rational_explorer.html" class="sheet-item">Rational / Reciprocal</a>
+        <a href="exponential_explorer.html" class="sheet-item">Exponential</a>
+        <a href="log_explorer.html" class="sheet-item">Logarithmic</a>
+        <a href="trig_explorer.html" class="sheet-item">Trig Ratios</a>
+        <a href="interest_explorer.html" class="sheet-item">Interest &amp; Present Value</a>
+      </div>
+    </div>
+
+    <div class="sheet-group">
+      <button class="sheet-group-btn">
+        <span class="sheet-group-name">University Math</span>
+        <span class="nav-group-pill pill-uni">Uni</span>
+        <span class="sheet-group-arrow">›</span>
+      </button>
+      <div class="sheet-sub">
+        <a href="#" class="sheet-item soon">Coming soon</a>
+      </div>
+    </div>
+
+    <div class="sheet-group">
+      <button class="sheet-group-btn">
+        <span class="sheet-group-name">Economic &amp; Financial</span>
+        <span class="nav-group-pill pill-eco">Eco</span>
+        <span class="sheet-group-arrow">›</span>
+      </button>
+      <div class="sheet-sub">
+        <a href="#" class="sheet-item soon">Cobb-Douglas Utility</a>
+        <a href="#" class="sheet-item soon">Supply &amp; Demand</a>
+        <a href="#" class="sheet-item soon">Cost / Revenue / Profit</a>
+        <a href="#" class="sheet-item soon">Logistic Growth</a>
+      </div>
+    </div>
+
   </div>
+</div>
 
+<!-- APP SHELL -->
+<div class="app-shell">
 
-  <!-- SECTION 02: ECONOMIC & FINANCIAL -->
-  <div class="section-block">
-    <div class="section-header" onclick="toggle(this)">
-      <div class="section-num">3</div>
-      <div class="section-meta">
-        <div class="section-title-row">
-          <span class="section-title">Economic &amp; Financial Functions</span>
+  <!-- DESKTOP SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-title">Ms. Liu</span>
+      <span class="brand-sub">Math Tools</span>
+    </div>
+    <nav class="sidebar-nav">
+
+      <div class="nav-group open">
+        <div class="nav-group-header">
+          <span class="nav-group-label">Middle School</span>
+          <span class="nav-group-pill pill-ms">6–8</span>
+          <span class="nav-group-arrow">›</span>
         </div>
-        <div class="section-subtitle">Utility · Production · Cost · Demand · Growth</div>
-        <div class="section-count">Coming soon</div>
+        <div class="nav-sub">
+          <div class="nav-sub-label">Number &amp; Ops</div>
+          <a href="fraction_concepts.html" class="nav-item">Fraction Concepts</a>
+          <a href="#" class="nav-item soon">Fraction Operations</a>
+          <a href="#" class="nav-item soon">Frac · Dec · Percent</a>
+          <a href="#" class="nav-item soon">Integer Operations</a>
+          <a href="#" class="nav-item soon">Ratios &amp; Proportions</a>
+          <a href="#" class="nav-item soon">Percent Problems</a>
+          <div class="nav-sub-label">Algebra</div>
+          <a href="#" class="nav-item soon">Order of Operations</a>
+          <a href="#" class="nav-item soon">Solving Equations</a>
+          <a href="#" class="nav-item soon">Inequalities</a>
+          <a href="#" class="nav-item soon">Coordinate Plane</a>
+          <div class="nav-sub-label">Geometry</div>
+          <a href="#" class="nav-item soon">Pythagorean Theorem</a>
+          <a href="#" class="nav-item soon">Area &amp; Perimeter</a>
+          <a href="#" class="nav-item soon">Volume &amp; Surface Area</a>
+          <a href="#" class="nav-item soon">Angle Relationships</a>
+          <div class="nav-sub-label">Stats &amp; Data</div>
+          <a href="#" class="nav-item soon">Probability Concepts</a>
+          <a href="#" class="nav-item soon">Tree Diagrams</a>
+          <a href="#" class="nav-item soon">Mean · Median · Mode</a>
+          <a href="#" class="nav-item soon">Data Displays</a>
+        </div>
       </div>
-      <div class="section-toggle">▾</div>
+
+      <div class="nav-group">
+        <div class="nav-group-header">
+          <span class="nav-group-label">High School</span>
+          <span class="nav-group-pill pill-hs">9–12</span>
+          <span class="nav-group-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <div class="nav-sub-label">Functions</div>
+          <a href="linear_explorer.html" class="nav-item">Linear</a>
+          <a href="quadratic_explorer.html" class="nav-item">Quadratic</a>
+          <a href="sqrt_explorer.html" class="nav-item">Square Root</a>
+          <a href="rational_explorer.html" class="nav-item">Rational / Reciprocal</a>
+          <a href="exponential_explorer.html" class="nav-item">Exponential</a>
+          <a href="log_explorer.html" class="nav-item">Logarithmic</a>
+          <a href="trig_explorer.html" class="nav-item">Trig Ratios</a>
+          <a href="interest_explorer.html" class="nav-item">Interest &amp; Present Value</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-header">
+          <span class="nav-group-label">University</span>
+          <span class="nav-group-pill pill-uni">Uni</span>
+          <span class="nav-group-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <a href="#" class="nav-item soon">Coming soon</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-header">
+          <span class="nav-group-label">Economic &amp; Financial</span>
+          <span class="nav-group-pill pill-eco">Eco</span>
+          <span class="nav-group-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <a href="#" class="nav-item soon">Cobb-Douglas Utility</a>
+          <a href="#" class="nav-item soon">Supply &amp; Demand</a>
+          <a href="#" class="nav-item soon">Cost / Revenue / Profit</a>
+          <a href="#" class="nav-item soon">Logistic Growth</a>
+          <a href="#" class="nav-item soon">Average Cost</a>
+        </div>
+      </div>
+
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="content">
+
+    <div class="page-hero">
+      <h1>Math Tools</h1>
+      <p>Interactive explorers for middle school, high school, and university mathematics.</p>
     </div>
 
-    <div class="tool-grid">
-      <div class="tool-cards">
-        <a href="#" class="tool-card soon">
-          <div class="tool-card-left">
-            <span class="tool-card-name">Cobb-Douglas Utility</span>
-            <span class="tool-card-formula">U = xᵃ · yᵇ</span>
+    <div class="categories">
+
+      <!-- 1 -->
+      <div class="cat-block">
+        <div class="cat-header" onclick="toggleCat(this)">
+          <span class="cat-num">1</span>
+          <span class="cat-title">Middle School Math</span>
+          <span class="nav-group-pill pill-ms" style="font-size:10px;padding:2px 7px;">6–8</span>
+          <span class="cat-count">1 live · 13 soon</span>
+          <span class="cat-chevron">›</span>
+        </div>
+        <div class="cat-body">
+
+          <div class="subcat">
+            <div class="subcat-label">Number &amp; Operations</div>
+            <div class="tool-grid">
+              <a href="fraction_concepts.html" class="tool-card">
+                <div class="tc-left"><span class="tc-name">Fraction Concepts</span><span class="tc-formula">proper · improper · mixed numbers</span></div>
+                <span class="tc-arrow">›</span>
+              </a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Fraction Operations</span><span class="tc-formula">+ − × ÷ fractions</span></div><span class="tc-arrow">Soon</span></a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Fraction · Decimal · Percent</span><span class="tc-formula">½ = 0.5 = 50%</span></div><span class="tc-arrow">Soon</span></a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Integer Operations</span><span class="tc-formula">negative numbers · number line</span></div><span class="tc-arrow">Soon</span></a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Ratios &amp; Proportions</span><span class="tc-formula">a : b · unit rates · scale</span></div><span class="tc-arrow">Soon</span></a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Percent Problems</span><span class="tc-formula">discount · tax · tip · % change</span></div><span class="tc-arrow">Soon</span></a>
+            </div>
           </div>
-          <span class="tool-card-arrow">Soon</span>
-        </a>
-        <a href="#" class="tool-card soon">
-          <div class="tool-card-left">
-            <span class="tool-card-name">Supply &amp; Demand</span>
-            <span class="tool-card-formula">P = f(Qs) · g(Qd)</span>
+
+          <div class="subcat">
+            <div class="subcat-label">Algebra Foundations</div>
+            <div class="tool-grid">
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Order of Operations</span><span class="tc-formula">PEMDAS / BEDMAS</span></div><span class="tc-arrow">Soon</span></a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Solving Equations</span><span class="tc-formula">one-step · two-step · balance</span></div><span class="tc-arrow">Soon</span></a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Inequalities</span><span class="tc-formula">x &gt; a · x ≤ b · number line</span></div><span class="tc-arrow">Soon</span></a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Coordinate Plane</span><span class="tc-formula">(x, y) · four quadrants</span></div><span class="tc-arrow">Soon</span></a>
+            </div>
           </div>
-          <span class="tool-card-arrow">Soon</span>
-        </a>
-        <a href="#" class="tool-card soon">
-          <div class="tool-card-left">
-            <span class="tool-card-name">Cost / Revenue / Profit</span>
-            <span class="tool-card-formula">π = R − C</span>
+
+          <div class="subcat">
+            <div class="subcat-label">Geometry</div>
+            <div class="tool-grid">
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Pythagorean Theorem</span><span class="tc-formula">a² + b² = c²</span></div><span class="tc-arrow">Soon</span></a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Area &amp; Perimeter</span><span class="tc-formula">composite shapes · polygons</span></div><span class="tc-arrow">Soon</span></a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Volume &amp; Surface Area</span><span class="tc-formula">prisms · cylinders · nets</span></div><span class="tc-arrow">Soon</span></a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Angle Relationships</span><span class="tc-formula">supplementary · vertical · parallel</span></div><span class="tc-arrow">Soon</span></a>
+            </div>
           </div>
-          <span class="tool-card-arrow">Soon</span>
-        </a>
-        <a href="#" class="tool-card soon">
-          <div class="tool-card-left">
-            <span class="tool-card-name">Logistic Growth</span>
-            <span class="tool-card-formula">P(t) = K / (1 + Ae⁻ʳᵗ)</span>
+
+          <div class="subcat">
+            <div class="subcat-label">Statistics &amp; Data</div>
+            <div class="tool-grid">
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Probability Concepts</span><span class="tc-formula">P(event) · sample space</span></div><span class="tc-arrow">Soon</span></a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Tree Diagrams</span><span class="tc-formula">compound events · counting</span></div><span class="tc-arrow">Soon</span></a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Mean · Median · Mode · Range</span><span class="tc-formula">measures of centre &amp; spread</span></div><span class="tc-arrow">Soon</span></a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Data Displays</span><span class="tc-formula">bar · line · circle · box plot</span></div><span class="tc-arrow">Soon</span></a>
+            </div>
           </div>
-          <span class="tool-card-arrow">Soon</span>
-        </a>
-        <a href="#" class="tool-card soon">
-          <div class="tool-card-left">
-            <span class="tool-card-name">Average Cost</span>
-            <span class="tool-card-formula">AC = TC / Q</span>
-          </div>
-          <span class="tool-card-arrow">Soon</span>
-        </a>
+        </div>
       </div>
+
+      <!-- 2 -->
+      <div class="cat-block">
+        <div class="cat-header" onclick="toggleCat(this)">
+          <span class="cat-num">2</span>
+          <span class="cat-title">High School Math</span>
+          <span class="nav-group-pill pill-hs" style="font-size:10px;padding:2px 7px;">9–12</span>
+          <span class="cat-count">8 live</span>
+          <span class="cat-chevron">›</span>
+        </div>
+        <div class="cat-body">
+          <div class="subcat">
+            <div class="subcat-label">Functions</div>
+            <div class="tool-grid">
+              <a href="linear_explorer.html" class="tool-card"><div class="tc-left"><span class="tc-name">Linear</span><span class="tc-formula">y = mx + b</span></div><span class="tc-arrow">›</span></a>
+              <a href="quadratic_explorer.html" class="tool-card"><div class="tc-left"><span class="tc-name">Quadratic</span><span class="tc-formula">y = a[k(x−d)]² + c</span></div><span class="tc-arrow">›</span></a>
+              <a href="sqrt_explorer.html" class="tool-card"><div class="tc-left"><span class="tc-name">Square Root</span><span class="tc-formula">y = a√[k(x−d)] + c</span></div><span class="tc-arrow">›</span></a>
+              <a href="rational_explorer.html" class="tool-card"><div class="tc-left"><span class="tc-name">Rational / Reciprocal</span><span class="tc-formula">y = a / k(x−d) + c</span></div><span class="tc-arrow">›</span></a>
+              <a href="exponential_explorer.html" class="tool-card"><div class="tc-left"><span class="tc-name">Exponential</span><span class="tc-formula">y = a · bˣ</span></div><span class="tc-arrow">›</span></a>
+              <a href="log_explorer.html" class="tool-card"><div class="tc-left"><span class="tc-name">Logarithmic</span><span class="tc-formula">y = a · log&#x2093;(x)</span></div><span class="tc-arrow">›</span></a>
+              <a href="trig_explorer.html" class="tool-card"><div class="tc-left"><span class="tc-name">Trig Ratios</span><span class="tc-formula">sin θ · cos θ · tan θ</span></div><span class="tc-arrow">›</span></a>
+              <a href="interest_explorer.html" class="tool-card"><div class="tc-left"><span class="tc-name">Interest &amp; Present Value</span><span class="tc-formula">A = P(1+r/n)ⁿᵗ · PV = FV/(1+r)ᵗ</span></div><span class="tc-arrow">›</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="cat-block">
+        <div class="cat-header" onclick="toggleCat(this)">
+          <span class="cat-num">3</span>
+          <span class="cat-title">University Math</span>
+          <span class="nav-group-pill pill-uni" style="font-size:10px;padding:2px 7px;">Uni</span>
+          <span class="cat-count">Coming soon</span>
+          <span class="cat-chevron">›</span>
+        </div>
+        <div class="cat-body">
+          <p class="soon-note">Calculus, linear algebra, statistics, and more — coming soon.</p>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="cat-block">
+        <div class="cat-header" onclick="toggleCat(this)">
+          <span class="cat-num">4</span>
+          <span class="cat-title">Economic &amp; Financial</span>
+          <span class="nav-group-pill pill-eco" style="font-size:10px;padding:2px 7px;">Eco</span>
+          <span class="cat-count">Coming soon</span>
+          <span class="cat-chevron">›</span>
+        </div>
+        <div class="cat-body">
+          <div class="subcat">
+            <div class="subcat-label">Utility &amp; Production</div>
+            <div class="tool-grid">
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Cobb-Douglas Utility</span><span class="tc-formula">U = xᵃ · yᵇ</span></div><span class="tc-arrow">Soon</span></a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Supply &amp; Demand</span><span class="tc-formula">P = f(Qˢ) · g(Qᵈ)</span></div><span class="tc-arrow">Soon</span></a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Cost / Revenue / Profit</span><span class="tc-formula">π = R − C</span></div><span class="tc-arrow">Soon</span></a>
+              <a href="#" class="tool-card soon"><div class="tc-left"><span class="tc-name">Logistic Growth</span><span class="tc-formula">P(t) = K / (1 + Ae⁻ʳᵗ)</span></div><span class="tc-arrow">Soon</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
-  </div>
+  </main>
+</div>
 
-</div><!-- end sections -->
-
-<footer>Ms. Liu · Math Tools</footer>
-
+<script src="nav.js"></script>
 <script>
-  function toggle(header) {
-    const grid = header.nextElementSibling;
-    const arrow = header.querySelector('.section-toggle');
-    const isOpen = grid.classList.contains('open');
-    grid.classList.toggle('open', !isOpen);
-    arrow.classList.toggle('open', !isOpen);
+  function toggleCat(hdr) {
+    const body = hdr.nextElementSibling;
+    const open = body.classList.toggle('open');
+    hdr.classList.toggle('open', open);
   }
 </script>
 </body>
