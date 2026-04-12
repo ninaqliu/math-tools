@@ -73,7 +73,11 @@ body {
   padding: 18px 16px 14px;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
+  display: block;
+  text-decoration: none;
+  transition: background 0.12s;
 }
+.sidebar-brand:hover { background: var(--tag-bg); }
 .sidebar-brand .brand-title {
   font-size: 13px;
   font-weight: 600;

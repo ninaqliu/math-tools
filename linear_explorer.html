@@ -1,399 +1,463 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Linear Functions — Ms. Liu</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-  :root {
-    --blue:   #185FA5;
-    --green:  #0F6E56;
-    --red:    #e24b4a;
-    --bg:     #f7f5f0;
-    --card:   #ffffff;
-    --border: #d8d4cc;
-    --text:   #1a1814;
-    --muted:  #4a4844;
-  }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
-
-  /* ── NAV ── */
-  .topbar {
-    background: var(--text);
-    padding: 0;
-    position: relative;
-  }
-
-  .topbar-main {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.85rem 1.2rem;
-  }
-
-  .site-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    color: #f7f5f0;
-    font-weight: 400;
-    text-decoration: none;
-  }
-
-  .hamburger {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    touch-action: manipulation;
-  }
-  .hamburger span {
-    display: block;
-    width: 22px;
-    height: 2px;
-    background: #c8c4bc;
-    border-radius: 1px;
-    transition: all 0.2s;
-  }
-  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-  .hamburger.open span:nth-child(2) { opacity: 0; }
-  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-  .nav-menu {
-    display: none;
-    flex-direction: column;
-    border-top: 1px solid #2e2c28;
-    padding: 0.5rem 0;
-  }
-  .nav-menu.open { display: flex; }
-
-  .nav-menu a {
-    display: block;
-    padding: 0.65rem 1.4rem;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.8rem;
-    color: #c8c4bc;
-    text-decoration: none;
-    letter-spacing: 0.04em;
-    transition: background 0.12s;
-  }
-  .nav-menu a:hover { background: #2a2620; color: #f7f5f0; }
-  .nav-menu a.active { color: #f7f5f0; border-left: 2px solid #f7f5f0; padding-left: calc(1.4rem - 2px); }
-
-  /* ── CONTENT ── */
-  .container {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 1.2rem;
-  }
-
-  .readme {
-    background: #2a2620;
-    border: 1px solid #3a3630;
-    border-radius: 10px;
-    margin-bottom: 1.2rem;
-    overflow: hidden;
-  }
-  .readme-toggle {
-    width: 100%; padding: 11px 14px;
-    display: flex; justify-content: space-between; align-items: center;
-    background: #2a2620; border: none; cursor: pointer;
-    font-family: 'DM Mono', monospace; font-size: 0.75rem;
-    letter-spacing: 0.06em; color: #c8c4bc;
-    text-align: left; touch-action: manipulation;
-  }
-  .readme-toggle:hover { background: #333028; }
-  .readme-arrow { transition: transform 0.2s; display: inline-block; color: #888480; }
-  .readme.open .readme-arrow { transform: rotate(180deg); }
-  .readme-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-  .readme.open .readme-body { max-height: 600px; }
-  .readme-inner {
-    padding: 1rem 1.2rem; border-top: 1px solid #3a3630;
-    font-size: 0.85rem; color: #b8b4ac; line-height: 1.75;
-  }
-  .readme-inner h3 {
-    font-family: 'DM Mono', monospace; font-size: 0.7rem;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: #e8e4dc; margin-bottom: 5px; margin-top: 12px;
-  }
-  .readme-inner h3:first-child { margin-top: 0; }
-  .readme-inner ul { padding-left: 1.1rem; }
-  .readme-inner li { margin-bottom: 3px; }
-  .readme-inner .param {
-    font-family: 'DM Mono', monospace; font-size: 0.78rem;
-    background: #3a3630; padding: 1px 6px;
-    border-radius: 4px; color: #e8e4dc;
-  }
-
-  .eq-display {
-    font-family: 'DM Mono', monospace; font-size: 1rem;
-    color: var(--text); margin-bottom: 1rem; padding: 10px 14px;
-    background: var(--card); border-radius: 10px;
-    border: 1px solid var(--border); border-left: 4px solid var(--blue);
-  }
-  .eq-formula { font-size: 1.1rem; font-weight: 400; color: #555; }
-  .eq-current { font-size: 0.85rem; color: var(--muted); margin-top: 2px; }
-
-  .controls {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 10px; margin-bottom: 1rem;
-  }
-  @media (max-width: 440px) { .controls { grid-template-columns: 1fr; } }
-
-  .group {
-    background: var(--card); border-radius: 10px;
-    border: 1px solid var(--border); padding: 10px 12px;
-  }
-  .group-label {
-    font-family: 'DM Mono', monospace; font-size: 0.7rem;
-    letter-spacing: 0.06em; color: var(--muted);
-    text-transform: uppercase; margin-bottom: 7px;
-  }
-  .ctrl-row { display: flex; align-items: center; gap: 8px; }
-  .ctrl-row label {
-    font-family: 'DM Mono', monospace; font-size: 1rem;
-    color: var(--text); min-width: 18px;
-  }
-  .ctrl-row input[type=range] {
-    flex: 1; accent-color: var(--blue);
-    cursor: pointer; touch-action: manipulation; height: 22px;
-  }
-  .val-display {
-    font-family: 'DM Mono', monospace; font-size: 0.88rem;
-    min-width: 46px; text-align: right; color: var(--text);
-  }
-
-  .reset-btn {
-    padding: 7px 16px; border-radius: 8px;
-    border: 1px solid var(--border); background: transparent;
-    cursor: pointer; font-family: 'DM Mono', monospace;
-    font-size: 0.75rem; color: var(--muted);
-    margin-bottom: 0.9rem; touch-action: manipulation;
-    letter-spacing: 0.04em;
-  }
-  .reset-btn:hover { background: var(--card); }
-
-  .info-box {
-    padding: 9px 13px; border-radius: 10px; background: var(--card);
-    font-size: 0.83rem; color: var(--muted); margin-bottom: 0.9rem;
-    line-height: 1.7; border: 1px solid var(--border);
-  }
-  .info-box strong { color: var(--text); font-weight: 500; }
-
-  canvas {
-    width: 100% !important; border-radius: 10px;
-    border: 1px solid var(--border); display: block;
-    touch-action: none; background: var(--card);
-  }
-
-  .footer {
-    margin-top: 1rem; font-size: 0.7rem; color: #888480;
-    text-align: center; font-family: 'DM Mono', monospace;
-    letter-spacing: 0.06em;
-  }
-</style>
+<link rel="stylesheet" href="nav.css"/>
 </head>
 <body>
 
-<nav class="topbar">
-  <div class="topbar-main">
-    <a class="site-title" href="index.html">Ms. Liu · Math Tools</a>
-    <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-  <div class="nav-menu" id="navMenu">
-    <a href="index.html">Home</a>
-    <a href="linear_explorer.html" class="active">Linear &nbsp; y = mx + b</a>
-    <a href="quadratic_explorer.html">Quadratic &nbsp; y = a(k(x−d))² + c</a>
-    <a href="exponential_explorer.html">Exponential &nbsp; y = a · bˣ</a>
-    <a href="log_explorer.html">Logarithm &nbsp; y = a · log(x−h) + k</a>
-    <a href="trig_explorer.html">Trig Ratios &nbsp; sin · cos · tan</a>
-  </div>
-</nav>
+<!-- ── MOBILE TOPBAR ── -->
+<div class="topbar">
+  <span class="topbar-brand">Ms. Liu <span>· Math Tools</span></span>
+  <button class="menu-btn" id="menu-btn" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</div>
 
-<div class="container">
+<!-- ── MOBILE BOTTOM SHEET ── -->
+<div class="sheet-overlay" id="sheet-overlay" style="display:none;"></div>
+<div class="sheet" id="nav-sheet" style="display:none;">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Navigation</div>
+  <div class="sheet-nav">
+    <div class="sheet-group">
+      <button class="sheet-group-btn">
+        <span class="sheet-group-name">Middle School</span>
+        <span class="nav-group-pill pill-ms">6–8</span>
+        <span class="sheet-group-arrow">›</span>
+      </button>
+      <div class="sheet-sub">
+        <div class="sheet-sub-label">Number &amp; Operations</div>
+        <a href="fraction_concepts.html" class="sheet-item">Fraction Concepts</a>
+        <a href="#" class="sheet-item soon">Fraction Operations</a>
+        <a href="#" class="sheet-item soon">Frac · Dec · Percent</a>
+        <a href="#" class="sheet-item soon">Integer Operations</a>
+        <div class="sheet-sub-label">Algebra</div>
+        <a href="#" class="sheet-item soon">Order of Operations</a>
+        <a href="#" class="sheet-item soon">Solving Equations</a>
+        <div class="sheet-sub-label">Geometry</div>
+        <a href="#" class="sheet-item soon">Pythagorean Theorem</a>
+        <div class="sheet-sub-label">Stats &amp; Data</div>
+        <a href="#" class="sheet-item soon">Probability Concepts</a>
+      </div>
+    </div>
+    <div class="sheet-group">
+      <button class="sheet-group-btn">
+        <span class="sheet-group-name">High School</span>
+        <span class="nav-group-pill pill-hs">9–12</span>
+        <span class="sheet-group-arrow">›</span>
+      </button>
+      <div class="sheet-sub">
+        <div class="sheet-sub-label">Functions</div>
+        <a href="linear_explorer.html" class="sheet-item active">Linear</a>
+        <a href="quadratic_explorer.html" class="sheet-item">Quadratic</a>
+        <a href="sqrt_explorer.html" class="sheet-item">Square Root</a>
+        <a href="rational_explorer.html" class="sheet-item">Rational / Reciprocal</a>
+        <a href="exponential_explorer.html" class="sheet-item">Exponential</a>
+        <a href="log_explorer.html" class="sheet-item">Logarithmic</a>
+        <div class="sheet-sub-label">Trigonometry</div>
+        <a href="trig_explorer.html" class="sheet-item">Trig Ratios</a>
+        <div class="sheet-sub-label">Financial Literacy</div>
+        <a href="interest_explorer.html" class="sheet-item">Interest &amp; Present Value</a>
+      </div>
+    </div>
+    <div class="sheet-group">
+      <button class="sheet-group-btn">
+        <span class="sheet-group-name">University Math</span>
+        <span class="nav-group-pill pill-uni">Uni</span>
+        <span class="sheet-group-arrow">›</span>
+      </button>
+      <div class="sheet-sub"><a href="#" class="sheet-item soon">Coming soon</a></div>
+    </div>
+    <div class="sheet-group">
+      <button class="sheet-group-btn">
+        <span class="sheet-group-name">Economic &amp; Financial</span>
+        <span class="nav-group-pill pill-eco">Eco</span>
+        <span class="sheet-group-arrow">›</span>
+      </button>
+      <div class="sheet-sub">
+        <a href="#" class="sheet-item soon">Cobb-Douglas Utility</a>
+        <a href="#" class="sheet-item soon">Supply &amp; Demand</a>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <div class="readme" id="readme">
-    <button class="readme-toggle" onclick="document.getElementById('readme').classList.toggle('open')">
-      <span>How to use this tool</span>
-      <span class="readme-arrow">▾</span>
-    </button>
-    <div class="readme-body">
-      <div class="readme-inner">
+<!-- ── APP SHELL ── -->
+<div class="app-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <a href="index.html" class="sidebar-brand">
+      <span class="brand-title">Ms. Liu</span>
+      <span class="brand-sub">Math Tools</span>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-header">
+          <span class="nav-group-label">Middle School</span>
+          <span class="nav-group-pill pill-ms">6–8</span>
+          <span class="nav-group-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <div class="nav-sub-label">Number &amp; Ops</div>
+          <a href="fraction_concepts.html" class="nav-item">Fraction Concepts</a>
+          <a href="#" class="nav-item soon">Fraction Operations</a>
+          <a href="#" class="nav-item soon">Frac · Dec · Percent</a>
+          <a href="#" class="nav-item soon">Integer Operations</a>
+          <a href="#" class="nav-item soon">Ratios &amp; Proportions</a>
+          <a href="#" class="nav-item soon">Percent Problems</a>
+          <div class="nav-sub-label">Algebra</div>
+          <a href="#" class="nav-item soon">Order of Operations</a>
+          <a href="#" class="nav-item soon">Solving Equations</a>
+          <a href="#" class="nav-item soon">Inequalities</a>
+          <a href="#" class="nav-item soon">Coordinate Plane</a>
+          <div class="nav-sub-label">Geometry</div>
+          <a href="#" class="nav-item soon">Pythagorean Theorem</a>
+          <a href="#" class="nav-item soon">Area &amp; Perimeter</a>
+          <a href="#" class="nav-item soon">Volume &amp; Surface Area</a>
+          <a href="#" class="nav-item soon">Angle Relationships</a>
+          <div class="nav-sub-label">Stats &amp; Data</div>
+          <a href="#" class="nav-item soon">Probability Concepts</a>
+          <a href="#" class="nav-item soon">Tree Diagrams</a>
+          <a href="#" class="nav-item soon">Mean · Median · Mode</a>
+          <a href="#" class="nav-item soon">Data Displays</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-header">
+          <span class="nav-group-label">High School</span>
+          <span class="nav-group-pill pill-hs">9–12</span>
+          <span class="nav-group-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <div class="nav-sub-label">Functions</div>
+          <a href="linear_explorer.html" class="nav-item active">Linear</a>
+          <a href="quadratic_explorer.html" class="nav-item">Quadratic</a>
+          <a href="sqrt_explorer.html" class="nav-item">Square Root</a>
+          <a href="rational_explorer.html" class="nav-item">Rational / Reciprocal</a>
+          <a href="exponential_explorer.html" class="nav-item">Exponential</a>
+          <a href="log_explorer.html" class="nav-item">Logarithmic</a>
+          <div class="nav-sub-label">Trigonometry</div>
+          <a href="trig_explorer.html" class="nav-item">Trig Ratios</a>
+          <div class="nav-sub-label">Financial Literacy</div>
+          <a href="interest_explorer.html" class="nav-item">Interest &amp; Present Value</a>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-header">
+          <span class="nav-group-label">University</span>
+          <span class="nav-group-pill pill-uni">Uni</span>
+          <span class="nav-group-arrow">›</span>
+        </div>
+        <div class="nav-sub"><a href="#" class="nav-item soon">Coming soon</a></div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-header">
+          <span class="nav-group-label">Economic &amp; Financial</span>
+          <span class="nav-group-pill pill-eco">Eco</span>
+          <span class="nav-group-arrow">›</span>
+        </div>
+        <div class="nav-sub">
+          <a href="#" class="nav-item soon">Cobb-Douglas Utility</a>
+          <a href="#" class="nav-item soon">Supply &amp; Demand</a>
+          <a href="#" class="nav-item soon">Cost / Revenue / Profit</a>
+          <a href="#" class="nav-item soon">Logistic Growth</a>
+          <a href="#" class="nav-item soon">Average Cost</a>
+        </div>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="content">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">·</span>
+        <span>High School Math</span>
+        <span class="breadcrumb-sep">·</span>
+        <span>Functions</span>
+      </div>
+      <h1 class="page-title">Linear Functions</h1>
+      <p class="page-formula">y = mx + b</p>
+    </div>
+
+    <!-- READ ME FIRST -->
+    <div class="readme">
+      <div class="readme-header" id="readme-hdr" onclick="toggleReadme()">
+        <span class="readme-label">Read me first</span>
+        <span class="readme-hint">What this tool shows &amp; how to use it</span>
+        <span class="readme-arrow">▾</span>
+      </div>
+      <div class="readme-body" id="readme-body">
         <h3>What this shows</h3>
-        This tool explores the slope-intercept form: <span class="param">y = mx + b</span>.
-        Adjust the sliders to see how each parameter changes the graph in real time.
+        <p>This tool explores slope-intercept form: <em>y = mx + b</em>. Adjust the sliders to see how each parameter changes the graph in real time.</p>
         <h3>Parameters</h3>
         <ul>
-          <li><span class="param">m</span> — slope. Positive = rising left to right, negative = falling, zero = horizontal line.</li>
-          <li><span class="param">b</span> — y-intercept. Where the line crosses the y-axis. The point (0, b) is always on the line.</li>
+          <li><strong>m — slope.</strong> Positive = rising left to right. Negative = falling. Zero = horizontal line.</li>
+          <li><strong>b — y-intercept.</strong> Where the line crosses the y-axis. The point (0, b) is always on the line.</li>
         </ul>
         <h3>Key concepts</h3>
         <ul>
-          <li>Rise/run triangle is drawn to show slope visually</li>
+          <li>A rise/run triangle is drawn to show slope visually</li>
           <li>Red dot = y-intercept &nbsp;·&nbsp; Green dot = x-intercept</li>
-          <li>x-intercept = −b/m (when m ≠ 0)</li>
-          <li>Parallel lines have equal slopes</li>
-          <li>Perpendicular lines: slopes multiply to −1</li>
+          <li>x-intercept = −b/m (only when m ≠ 0)</li>
+          <li>Parallel lines share the same slope</li>
+          <li>Perpendicular lines have slopes that multiply to −1</li>
         </ul>
         <h3>Try this</h3>
         <ul>
           <li>Set m = 0 — what happens to the line?</li>
           <li>Set b = 0 — does the line pass through the origin?</li>
           <li>Make m negative — which direction does the line slope?</li>
+          <li>Set m = 2 and m = −½ — are those lines perpendicular?</li>
         </ul>
       </div>
     </div>
-  </div>
 
-  <div class="eq-display">
-    <div class="eq-formula">y = mx + b</div>
-    <div class="eq-current" id="eqCurrent">current: y = 1.00x + 0.00</div>
-  </div>
+    <!-- TOOL BODY -->
+    <div class="tool-body">
 
-  <div class="controls">
-    <div class="group">
-      <div class="group-label">m — slope (−5 to 5)</div>
-      <div class="ctrl-row">
-        <label>m</label>
-        <input type="range" id="slM" min="-500" max="500" step="1" value="100">
-        <span class="val-display" id="vM">1.00</span>
+      <!-- equation -->
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Equation</div>
+        <div class="eq-display">
+          <span class="eq-formula">y = mx + b</span>
+          <span class="eq-current" id="eq-live">current: y = 1.00x + 0.00</span>
+        </div>
       </div>
-    </div>
-    <div class="group">
-      <div class="group-label">b — y-intercept (−5 to 5)</div>
-      <div class="ctrl-row">
-        <label>b</label>
-        <input type="range" id="slB" min="-500" max="500" step="1" value="0">
-        <span class="val-display" id="vB">0.00</span>
+
+      <!-- sliders -->
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Parameters</div>
+        <div class="panel">
+          <div class="slider-row">
+            <span class="slider-label"><strong>m</strong> — slope (−5 to 5)</span>
+            <input type="range" id="m" min="-5" max="5" step="0.25" value="1" oninput="update()">
+            <span class="slider-val" id="m-val">1.00</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-label"><strong>b</strong> — y-intercept (−5 to 5)</span>
+            <input type="range" id="b" min="-5" max="5" step="0.25" value="0" oninput="update()">
+            <span class="slider-val" id="b-val">0.00</span>
+          </div>
+          <button class="btn-reset" onclick="resetSliders()">↺ Reset</button>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <button class="reset-btn" id="resetBtn">↺ Reset</button>
-  <div class="info-box" id="info"></div>
-  <canvas id="c"></canvas>
-  <div class="footer">Ms. Liu · Linear Functions</div>
-</div>
+      <!-- graph -->
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Graph</div>
+        <div class="graph-wrap">
+          <canvas id="graph" width="460" height="460"></canvas>
+        </div>
+        <div class="facts">
+          <div class="fact">
+            <div class="fact-label">Slope (m)</div>
+            <div class="fact-val" id="f-m">1.00</div>
+          </div>
+          <div class="fact">
+            <div class="fact-label">y-intercept</div>
+            <div class="fact-val" id="f-yint">(0, 0.00)</div>
+          </div>
+          <div class="fact">
+            <div class="fact-label">x-intercept</div>
+            <div class="fact-val" id="f-xint">(0.00, 0)</div>
+          </div>
+          <div class="fact">
+            <div class="fact-label">Direction</div>
+            <div class="fact-val" id="f-dir">Rising (m &gt; 0)</div>
+          </div>
+        </div>
+      </div>
 
+    </div><!-- end tool-body -->
+
+    <div class="page-footer">Ms. Liu · Linear Functions</div>
+
+  </main>
+</div><!-- end app-shell -->
+
+<script src="nav.js"></script>
 <script>
-function toggleNav() {
-  document.getElementById('hamburger').classList.toggle('open');
-  document.getElementById('navMenu').classList.toggle('open');
-}
+  /* ── readme toggle ── */
+  function toggleReadme() {
+    const hdr  = document.getElementById('readme-hdr');
+    const body = document.getElementById('readme-body');
+    const open = body.classList.toggle('open');
+    hdr.classList.toggle('open', open);
+  }
 
-const canvas = document.getElementById('c');
-const DPR = window.devicePixelRatio || 1;
+  /* ── graph colours ── */
+  function C() {
+    const dk = window.matchMedia('(prefers-color-scheme:dark)').matches;
+    return {
+      bg:   dk ? '#1c1b1a' : '#ffffff',
+      grid: dk ? '#2c2b28' : '#e8e6e0',
+      axis: dk ? '#4a4845' : '#c0bdb6',
+      line: dk ? '#6a9ef0' : '#2a5bd7',
+      yDot: dk ? '#e07060' : '#c0392b',
+      xDot: dk ? '#5ab87a' : '#27ae60',
+      tri:  dk ? 'rgba(106,158,240,0.15)' : 'rgba(42,91,215,0.10)',
+      txt:  dk ? '#6a6865' : '#9a9890',
+    };
+  }
 
-function resizeCanvas() {
-  const w = canvas.parentElement.clientWidth - 24;
-  const h = Math.min(Math.round(w * 0.68), 360);
-  canvas.width = w * DPR; canvas.height = h * DPR;
-  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-  draw(getM(), getB());
-}
+  /* ── draw ── */
+  function draw() {
+    const m  = parseFloat(document.getElementById('m').value);
+    const b  = parseFloat(document.getElementById('b').value);
+    const cv = document.getElementById('graph');
+    const W  = cv.width, H = cv.height;
+    const c  = cv.getContext('2d');
+    const col = C();
 
-function getM() { return +document.getElementById('slM').value / 100; }
-function getB() { return +document.getElementById('slB').value / 100; }
-function fmt(v) { return (v >= 0 ? '+' : '') + v.toFixed(2); }
+    c.clearRect(0, 0, W, H);
+    c.fillStyle = col.bg;
+    c.fillRect(0, 0, W, H);
 
-function updateLabels() {
-  const m = getM(), b = getB();
-  document.getElementById('vM').textContent = m.toFixed(2);
-  document.getElementById('vB').textContent = b.toFixed(2);
-  document.getElementById('eqCurrent').textContent = `current: y = ${m.toFixed(2)}x ${fmt(b)}`;
-  const slopeDesc = m > 0 ? 'positive — rising' : m < 0 ? 'negative — falling' : 'zero — horizontal line';
-  const steep = Math.abs(m) > 1 ? 'steep, ' : Math.abs(m) < 1 && m !== 0 ? 'gentle, ' : '';
-  const xi = m !== 0 ? (-b / m).toFixed(2) : 'none';
-  document.getElementById('info').innerHTML =
-    `<strong>Slope:</strong> m = ${m.toFixed(2)} &nbsp;·&nbsp; ${steep}${slopeDesc}<br>` +
-    `<strong>y-intercept:</strong> (0, ${b.toFixed(2)}) &nbsp;·&nbsp; <strong>x-intercept:</strong> (${xi}, 0)` +
-    (m !== 0 ? ` &nbsp;·&nbsp; <strong>Rise/run:</strong> ${m.toFixed(2)} per unit` : '');
-}
+    const pad = 36, inner = W - pad * 2;
+    const range = 6;
+    const sc  = inner / (range * 2);
+    const ox  = pad + inner / 2;
+    const oy  = pad + inner / 2;
+    const tx  = v => ox + v * sc;
+    const ty  = v => oy - v * sc;
 
-function draw(m, b) {
-  const ctx = canvas.getContext('2d');
-  const CW = canvas.width/DPR, CH = canvas.height/DPR;
-  ctx.setTransform(DPR,0,0,DPR,0,0);
-  ctx.clearRect(0,0,CW,CH);
-  ctx.fillStyle='#fff'; ctx.fillRect(0,0,CW,CH);
+    /* grid */
+    c.strokeStyle = col.grid; c.lineWidth = 1;
+    for (let i = -range; i <= range; i++) {
+      c.beginPath(); c.moveTo(tx(i), pad); c.lineTo(tx(i), H - pad); c.stroke();
+      c.beginPath(); c.moveTo(pad, ty(i)); c.lineTo(W - pad, ty(i)); c.stroke();
+    }
 
-  const pad={l:38,r:14,t:14,b:30};
-  const xMin=-8,xMax=8,yMin=-8,yMax=8;
-  const W=CW-pad.l-pad.r, H=CH-pad.t-pad.b;
-  function sx(x){return pad.l+(x-xMin)/(xMax-xMin)*W;}
-  function sy(y){return pad.t+(yMax-y)/(yMax-yMin)*H;}
+    /* axes */
+    c.strokeStyle = col.axis; c.lineWidth = 1.5;
+    c.beginPath(); c.moveTo(pad, oy); c.lineTo(W - pad, oy); c.stroke();
+    c.beginPath(); c.moveTo(ox, pad); c.lineTo(ox, H - pad); c.stroke();
 
-  ctx.strokeStyle='rgba(0,0,0,0.07)'; ctx.lineWidth=0.5;
-  for(let x=xMin;x<=xMax;x++){ctx.beginPath();ctx.moveTo(sx(x),sy(yMin));ctx.lineTo(sx(x),sy(yMax));ctx.stroke();}
-  for(let y=yMin;y<=yMax;y++){ctx.beginPath();ctx.moveTo(sx(xMin),sy(y));ctx.lineTo(sx(xMax),sy(y));ctx.stroke();}
+    /* axis tick labels */
+    c.fillStyle = col.txt;
+    c.font = '10px Helvetica Neue, Arial, sans-serif';
+    for (let i = -range; i <= range; i++) {
+      if (i === 0) continue;
+      c.textAlign = 'center'; c.fillText(i, tx(i), oy + 13);
+      c.textAlign = 'right';  c.fillText(i, ox - 5, ty(i) + 4);
+    }
+    c.textAlign = 'center'; c.fillText('x', W - pad + 14, oy + 4);
+    c.textAlign = 'right';  c.fillText('y', ox - 6, pad - 4);
 
-  ctx.strokeStyle='rgba(0,0,0,0.45)'; ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.moveTo(sx(xMin),sy(0));ctx.lineTo(sx(xMax),sy(0));ctx.stroke();
-  ctx.beginPath();ctx.moveTo(sx(0),sy(yMin));ctx.lineTo(sx(0),sy(yMax));ctx.stroke();
+    /* clip to graph area */
+    c.save();
+    c.rect(pad, pad, inner, inner);
+    c.clip();
 
-  ctx.fillStyle='#666'; ctx.font='10px DM Mono,monospace'; ctx.textAlign='center';
-  for(let x=xMin;x<=xMax;x++){if(x===0)continue;if(x%2===0)ctx.fillText(x,sx(x),sy(0)+13);}
-  ctx.textAlign='right';
-  for(let y=yMin;y<=yMax;y+=2){if(y===0)continue;ctx.fillText(y,sx(0)-4,sy(y)+4);}
+    /* rise/run triangle at x=1..2 */
+    if (Math.abs(m) > 0.01) {
+      const rx1 = 1, rx2 = 2;
+      const ry1 = m * rx1 + b, ry2 = m * rx2 + b;
+      c.beginPath();
+      c.moveTo(tx(rx1), ty(ry1));
+      c.lineTo(tx(rx2), ty(ry1));
+      c.lineTo(tx(rx2), ty(ry2));
+      c.closePath();
+      c.fillStyle = col.tri;
+      c.fill();
+      c.strokeStyle = col.line;
+      c.lineWidth = 1;
+      c.setLineDash([3, 3]);
+      c.stroke();
+      c.setLineDash([]);
 
-  if(m!==0&&Math.abs(m)<8){
-    const startX=0,startY=b;
-    if(Math.abs(startY)<yMax){
-      ctx.strokeStyle='rgba(160,100,0,0.4)'; ctx.lineWidth=1.2; ctx.setLineDash([3,2]);
-      ctx.beginPath();
-      ctx.moveTo(sx(startX),sy(startY));
-      ctx.lineTo(sx(startX+1),sy(startY));
-      ctx.lineTo(sx(startX+1),sy(startY+m));
-      ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle='rgba(120,70,0,0.6)'; ctx.font='9px DM Mono,monospace';
-      ctx.textAlign='center'; ctx.fillText('1',sx(startX+0.5),sy(startY)+13);
-      ctx.textAlign='left'; ctx.fillText(m.toFixed(2),sx(startX+1)+4,sy(startY+m/2)+4);
+      /* run label */
+      c.fillStyle = col.txt;
+      c.font = '10px Helvetica Neue, Arial, sans-serif';
+      c.textAlign = 'center';
+      c.fillText('run=1', tx(rx1 + 0.5), ty(ry1) + 13);
+      c.textAlign = 'right';
+      c.fillText('rise=' + m.toFixed(2), tx(rx2) - 4, ty((ry1 + ry2) / 2) + 4);
+    }
+
+    /* the line */
+    const x0 = -range - 1, x1 = range + 1;
+    c.strokeStyle = col.line; c.lineWidth = 2.5; c.lineJoin = 'round';
+    c.beginPath();
+    c.moveTo(tx(x0), ty(m * x0 + b));
+    c.lineTo(tx(x1), ty(m * x1 + b));
+    c.stroke();
+
+    c.restore();
+
+    /* y-intercept dot */
+    if (ty(b) >= pad && ty(b) <= H - pad) {
+      c.beginPath(); c.arc(tx(0), ty(b), 5, 0, Math.PI * 2);
+      c.fillStyle = col.yDot; c.fill();
+    }
+
+    /* x-intercept dot */
+    if (Math.abs(m) > 0.01) {
+      const xi = -b / m;
+      if (xi >= -range && xi <= range) {
+        c.beginPath(); c.arc(tx(xi), ty(0), 5, 0, Math.PI * 2);
+        c.fillStyle = col.xDot; c.fill();
+      }
     }
   }
 
-  ctx.strokeStyle='#185FA5'; ctx.lineWidth=2.5;
-  ctx.beginPath();ctx.moveTo(sx(xMin),sy(m*xMin+b));ctx.lineTo(sx(xMax),sy(m*xMax+b));ctx.stroke();
+  /* ── update UI ── */
+  function update() {
+    const m = parseFloat(document.getElementById('m').value);
+    const b = parseFloat(document.getElementById('b').value);
 
-  if(b>=yMin&&b<=yMax){
-    ctx.beginPath();ctx.arc(sx(0),sy(b),5,0,Math.PI*2);
-    ctx.fillStyle='#e24b4a';ctx.fill();
-    ctx.fillStyle='#333';ctx.font='11px DM Sans,sans-serif';ctx.textAlign='left';
-    ctx.fillText(`(0, ${b.toFixed(2)})`,sx(0)+8,sy(b)-7);
-  }
-  if(m!==0){
-    const xi=-b/m;
-    if(xi>=xMin&&xi<=xMax){
-      ctx.beginPath();ctx.arc(sx(xi),sy(0),5,0,Math.PI*2);
-      ctx.fillStyle='#0F6E56';ctx.fill();
-      ctx.fillStyle='#333';ctx.font='11px DM Sans,sans-serif';
-      ctx.textAlign=xi<xMax-2?'left':'right';
-      ctx.fillText(`(${xi.toFixed(2)}, 0)`,sx(xi)+(xi<xMax-2?8:-8),sy(0)-7);
+    document.getElementById('m-val').textContent = m.toFixed(2);
+    document.getElementById('b-val').textContent = b.toFixed(2);
+
+    /* live equation */
+    const mStr = m === 0 ? '' : (m === 1 ? 'x' : m === -1 ? '−x' : m.toFixed(2) + 'x');
+    const bStr = b === 0 ? '' : (b > 0 ? ' + ' + b.toFixed(2) : ' − ' + Math.abs(b).toFixed(2));
+    const eq   = 'y = ' + (mStr || '') + (bStr || '') || 'y = 0';
+    document.getElementById('eq-live').textContent = 'current: ' + (mStr ? mStr + bStr : b.toFixed(2));
+
+    /* facts */
+    document.getElementById('f-m').textContent = m.toFixed(2);
+    document.getElementById('f-yint').textContent = '(0, ' + b.toFixed(2) + ')';
+
+    const xintEl = document.getElementById('f-xint');
+    if (Math.abs(m) < 0.01) {
+      xintEl.textContent = b === 0 ? 'Every point' : 'None';
+      xintEl.className = 'fact-val na';
+    } else {
+      xintEl.textContent = '(' + (-b / m).toFixed(2) + ', 0)';
+      xintEl.className = 'fact-val';
     }
-  }
-}
 
-function update(){updateLabels();draw(getM(),getB());}
-document.getElementById('resetBtn').addEventListener('click',()=>{
-  document.getElementById('slM').value=100;
-  document.getElementById('slB').value=0;
+    const dirEl = document.getElementById('f-dir');
+    if (m > 0.01)       { dirEl.textContent = 'Rising (m > 0)'; }
+    else if (m < -0.01) { dirEl.textContent = 'Falling (m < 0)'; }
+    else                { dirEl.textContent = 'Horizontal (m = 0)'; }
+
+    draw();
+  }
+
+  function resetSliders() {
+    document.getElementById('m').value = 1;
+    document.getElementById('b').value = 0;
+    update();
+  }
+
+  /* redraw on dark mode switch */
+  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', draw);
+
+  /* init */
   update();
-});
-['slM','slB'].forEach(id=>document.getElementById(id).addEventListener('input',update));
-window.addEventListener('resize',resizeCanvas);
-resizeCanvas(); update();
 </script>
 </body>
 </html>

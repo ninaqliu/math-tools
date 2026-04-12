@@ -29,17 +29,6 @@
   .page-header .page-title { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
   .page-header .page-subtitle { font-size: 12px; color: var(--muted); margin-top: 0.25rem; }
 
-  .how-to { border-bottom: 1px solid var(--border); }
-  .how-to-header { padding: 0.85rem 2.5rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--muted); user-select: none; }
-  .how-to-header:hover { color: var(--text); }
-  .how-to-arrow { transition: transform 0.2s; display: inline-block; }
-  .how-to-body { display: none; padding: 0 2.5rem 1.25rem; }
-  .how-to-body.open { display: block; }
-  .how-to-body h3 { font-size: 12.5px; font-weight: 600; color: var(--text); margin: 0.85rem 0 0.25rem; }
-  .how-to-body p, .how-to-body li { font-size: 12.5px; color: var(--muted); line-height: 1.65; }
-  .how-to-body ul { padding-left: 1.2rem; }
-  .how-to-body li { margin-bottom: 0.2rem; }
-
   .main { padding: 1.5rem 2.5rem 4rem; display: grid; gap: 2rem; max-width: 680px; }
 
   .section-label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
@@ -108,7 +97,7 @@
   <div class="sheet-handle"></div>
   <div class="sheet-title">Navigation</div>
   <div class="sheet-nav">
-    <div class="sheet-group open">
+    <div class="sheet-group">
       <button class="sheet-group-btn">
         <span class="sheet-group-name">Middle School</span>
         <span class="nav-group-pill pill-ms">6–8</span>
@@ -152,12 +141,12 @@
 
   <!-- DESKTOP SIDEBAR -->
   <aside class="sidebar">
-    <div class="sidebar-brand">
+    <a href="index.html" class="sidebar-brand">
       <span class="brand-title">Ms. Liu</span>
       <span class="brand-sub">Math Tools</span>
-    </div>
+    </a>
     <nav class="sidebar-nav">
-      <div class="nav-group open">
+      <div class="nav-group">
         <div class="nav-group-header">
           <span class="nav-group-label">Middle School</span>
           <span class="nav-group-pill pill-ms">6–8</span>
@@ -238,11 +227,13 @@
   <p class="page-subtitle">proper fractions · improper fractions · mixed numbers · conversion</p>
 </div>
 
-<div class="how-to">
-  <div class="how-to-header" onclick="toggleHow(this)">
-    How to use this tool &nbsp;<span class="how-to-arrow">▾</span>
+<div class="readme">
+  <div class="readme-header" id="readme-hdr" onclick="toggleReadme()">
+    <span class="readme-label">Read me first</span>
+    <span class="readme-hint">What this tool shows &amp; how to use it</span>
+    <span class="readme-arrow">▾</span>
   </div>
-  <div class="how-to-body">
+  <div class="readme-body" id="readme-body">
     <h3>What this shows</h3>
     <p>Set a numerator and denominator with the sliders. The tool displays the fraction using a proper fraction bar, classifies it, and draws a visual circle model. Use the Conversion section to see step-by-step working.</p>
     <h3>Key concepts</h3>
@@ -564,11 +555,11 @@
     document.getElementById('tab-'+id).classList.add('active');
   }
 
-  function toggleHow(el) {
-    const body  = el.nextElementSibling;
-    const arrow = el.querySelector('.how-to-arrow');
-    const open  = body.classList.toggle('open');
-    arrow.style.transform = open ? 'rotate(180deg)' : '';
+  function toggleReadme() {
+    const hdr  = document.getElementById('readme-hdr');
+    const body = document.getElementById('readme-body');
+    const open = body.classList.toggle('open');
+    hdr.classList.toggle('open', open);
   }
 
   update(); updateA(); updateB();

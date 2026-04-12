@@ -10,11 +10,15 @@
     padding: 2.5rem 2.5rem 1.75rem;
     border-bottom: 1px solid var(--border);
   }
-  .page-hero h1 {
-    font-size: 1.5rem; font-weight: 600;
-    letter-spacing: -0.02em; color: var(--text); margin-bottom: 0.3rem;
+  .hero-byline {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--subtle); margin-bottom: 0.35rem;
   }
-  .page-hero p { font-size: 13px; color: var(--muted); max-width: 400px; line-height: 1.6; }
+  .page-hero h1 {
+    font-size: 1.9rem; font-weight: 600;
+    letter-spacing: -0.025em; color: var(--text); margin-bottom: 0.4rem; line-height: 1.15;
+  }
+  .page-hero p { font-size: 13px; color: var(--muted); max-width: 420px; line-height: 1.6; }
 
   .categories { padding: 1.5rem 2.5rem 4rem; }
 
@@ -171,13 +175,13 @@
 
   <!-- DESKTOP SIDEBAR -->
   <aside class="sidebar">
-    <div class="sidebar-brand">
+    <a href="index.html" class="sidebar-brand">
       <span class="brand-title">Ms. Liu</span>
       <span class="brand-sub">Math Tools</span>
-    </div>
+    </a>
     <nav class="sidebar-nav">
 
-      <div class="nav-group open">
+      <div class="nav-group">
         <div class="nav-group-header">
           <span class="nav-group-label">Middle School</span>
           <span class="nav-group-pill pill-ms">6–8</span>
@@ -263,6 +267,7 @@
   <main class="content">
 
     <div class="page-hero">
+      <p class="hero-byline">Ms. Liu</p>
       <h1>Math Tools</h1>
       <p>Interactive explorers for middle school, high school, and university mathematics.</p>
     </div>
