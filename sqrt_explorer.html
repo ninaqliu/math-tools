@@ -184,7 +184,7 @@
         <span>Functions</span>
       </div>
       <h1 class="page-title">Square Root Functions</h1>
-      <p class="page-formula">y = a√[k(x − d)] + c</p>
+      <div class="page-formula" style="display:flex;align-items:center;gap:3px;font-family:'Georgia',serif;font-size:13px;color:var(--muted);font-style:italic;" id="header-formula">y = a√[k(x − d)] + c</div>
     </div>
 
     <div class="readme">
@@ -227,7 +227,8 @@
         <div class="section-label">Equation</div>
         <div class="eq-display" style="flex-direction:column; align-items:flex-start; gap:0.6rem;">
           <!-- static label -->
-          <span class="eq-formula">y = a√[k(x − d)] + c</span>
+          <!-- static formula with SVG radical -->
+          <div style="display:flex;align-items:center;gap:4px;" id="static-formula"></div>
           <!-- live current -->
           <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
             <span style="font-family:'Georgia',serif;font-size:13px;color:var(--muted);font-style:italic;">current:&nbsp; y =</span>
@@ -312,46 +313,72 @@
     const clr   = dk ? '#edeae2' : '#111110';
     const muted = dk ? '#8a8780' : '#6b6860';
 
-    /* text inside the radical: k(x − d) */
     const dSign = dVal >= 0 ? ' − ' : ' + ';
     const dAbs  = Math.abs(dVal).toFixed(2);
     const inner = kVal.toFixed(2) + '(x' + dSign + dAbs + ')';
 
-    /* geometry — match surrounding 14px Georgia text */
-    const fs     = 14;          /* font-size px */
-    const charW  = 7.5;        /* ~px per char at 14px Georgia */
-    const textW  = inner.length * charW;
-    const padR   = 4;           /* small gap after text under vinculum */
+    return renderRadicalSVG(aVal.toFixed(2), inner, clr, muted, 14);
+  }
 
-    /* radical shape dimensions */
-    const hookX  = 6;           /* small back-serif width */
-    const tickX  = 10;          /* width of the rising diagonal */
-    const gap    = 3;           /* gap between tick top and text start */
-    const vinTop = 3;           /* y of vinculum from SVG top */
-    const textY  = 17;          /* baseline of text from SVG top */
-    const svgH   = textY + 3;  /* total SVG height — just enough */
+  /* ── static radical using letter variables ── */
+  function buildStaticRadical(size) {
+    const dk    = window.matchMedia('(prefers-color-scheme:dark)').matches;
+    const clr   = dk ? '#edeae2' : '#111110';
+    const col   = dk ? '#8a8780' : '#6b6860';
+    return renderRadicalSVG('a', 'k(x − d)', clr, col, size || 14);
+  }
+
+  /* ── core SVG radical renderer ── */
+  function renderRadicalSVG(coeff, inner, strokeClr, textClr, fs) {
+    const charW  = fs * 0.54;
+    const textW  = inner.length * charW;
+    const padR   = 4;
+    const hookX  = Math.round(fs * 0.42);
+    const tickX  = Math.round(fs * 0.72);
+    const gap    = 3;
+    const vinTop = Math.round(fs * 0.18);
+    const textY  = Math.round(fs * 1.1);
+    const svgH   = textY + 3;
     const svgW   = hookX + tickX + gap + textW + padR;
 
-    /* path points */
-    const p = [
-      [0,            textY - 2],          /* bottom-left of back hook */
-      [hookX,        textY - 2],          /* end of hook / base of tick */
-      [hookX + tickX, vinTop],            /* top of tick = left end of vinculum */
-      [svgW,          vinTop],            /* right end of vinculum */
+    const pts = [
+      [0,              textY - 2],
+      [hookX,          textY - 2],
+      [hookX + tickX,  vinTop   ],
+      [svgW,           vinTop   ],
     ];
-    const d = p.map((pt, i) => (i === 0 ? 'M' : 'L') + pt[0] + ',' + pt[1]).join(' ');
-
-    /* text x starts after tick + small gap */
-    const textX = hookX + tickX + gap;
+    const d = pts.map((p, i) => (i === 0 ? 'M' : 'L') + p[0] + ',' + p[1]).join(' ');
+    const tx = hookX + tickX + gap;
 
     return (
-      `<span style="font-family:'Georgia',serif;font-size:${fs}px;color:${muted};vertical-align:middle;">${aVal.toFixed(2)}</span>` +
-      `<svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" ` +
-        `style="overflow:visible;vertical-align:middle;display:inline-block;">` +
-        `<path d="${d}" fill="none" stroke="${clr}" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="round"/>` +
-        `<text x="${textX}" y="${textY}" font-family="Georgia,serif" font-size="${fs}" fill="${muted}">${inner}</text>` +
+      `<span style="font-family:'Georgia',serif;font-size:${fs}px;color:${textClr};vertical-align:middle;">${coeff}</span>` +
+      `<svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" style="overflow:visible;vertical-align:middle;display:inline-block;">` +
+        `<path d="${d}" fill="none" stroke="${strokeClr}" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="round"/>` +
+        `<text x="${tx}" y="${textY}" font-family="Georgia,serif" font-size="${fs}" fill="${textClr}">${inner}</text>` +
       `</svg>`
     );
+  }
+
+  /* ── render static formulas (called once + on dark mode change) ── */
+  function renderStatic() {
+    const dk    = window.matchMedia('(prefers-color-scheme:dark)').matches;
+    const muted = dk ? '#8a8780' : '#6b6860';
+    const text  = dk ? '#edeae2' : '#111110';
+
+    /* page header: y = a√[k(x−d)] + c at 13px, muted colour */
+    document.getElementById('header-formula').innerHTML =
+      `<span style="font-family:'Georgia',serif;font-size:13px;color:${muted};font-style:italic;">y = </span>` +
+      buildStaticRadical(13) +
+      `<span style="font-family:'Georgia',serif;font-size:13px;color:${muted};font-style:italic;"> + c</span>`;
+
+    /* equation box: y = a√[k(x−d)] + c at 20px, full text colour */
+    const dk2   = window.matchMedia('(prefers-color-scheme:dark)').matches;
+    const clr2  = dk2 ? '#edeae2' : '#111110';
+    const col2  = dk2 ? '#edeae2' : '#111110';
+    document.getElementById('static-formula').innerHTML =
+      `<span style="font-family:'Georgia',serif;font-size:20px;color:${text};">y = </span>` +
+      renderRadicalSVG('a', 'k(x − d)', clr2, col2, 20) +
+      `<span style="font-family:'Georgia',serif;font-size:20px;color:${text};"> + c</span>`;
   }
 
   /* ── colours ── */
@@ -487,7 +514,8 @@
     update();
   }
 
-  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', update);
+  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', function() { renderStatic(); update(); });
+  renderStatic();
   update();
 </script>
 </body>
