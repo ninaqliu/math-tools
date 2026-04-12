@@ -10,6 +10,7 @@
   :root { --bg:#f7f5f0; --card:#ffffff; --border:#d8d4cc; --text:#1a1814; --muted:#4a4844; --blue:#185FA5; }
   body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
 
+  /* NAV */
   .topbar { background:var(--text); padding:0; }
   .topbar-main { display:flex; align-items:center; justify-content:space-between; padding:0.85rem 1.2rem; }
   .site-title { font-family:'Playfair Display',serif; font-size:1rem; color:#f7f5f0; font-weight:400; text-decoration:none; }
@@ -18,75 +19,72 @@
   .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
   .hamburger.open span:nth-child(2) { opacity:0; }
   .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
-
   .nav-menu { display:none; flex-direction:column; border-top:1px solid #2e2c28; padding:0.4rem 0; }
   .nav-menu.open { display:flex; }
-
-  .nav-cat {
-    font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.14em;
-    text-transform:uppercase; color:#555250; padding:0.7rem 1.4rem 0.3rem;
-  }
-  .nav-menu a {
-    display:block; padding:0.55rem 1.4rem 0.55rem 1.8rem;
-    font-family:'DM Mono',monospace; font-size:0.78rem;
-    color:#c8c4bc; text-decoration:none; letter-spacing:0.03em;
-    transition:background 0.12s;
-  }
+  .nav-cat { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:#555250; padding:0.7rem 1.4rem 0.3rem; }
+  .nav-menu a { display:block; padding:0.55rem 1.4rem 0.55rem 1.8rem; font-family:'DM Mono',monospace; font-size:0.78rem; color:#c8c4bc; text-decoration:none; letter-spacing:0.03em; transition:background 0.12s; }
   .nav-menu a:hover { background:#2a2620; color:#f7f5f0; }
   .nav-menu a.active { color:#f7f5f0; border-left:2px solid #f7f5f0; padding-left:calc(1.8rem - 2px); }
   .nav-divider { height:1px; background:#2e2c28; margin:0.4rem 0; }
 
+  /* MAIN */
   .main { max-width:700px; margin:0 auto; padding:1.8rem 1.2rem 4rem; }
 
-  .cat-section { margin-bottom:2.2rem; }
+  /* CATEGORY ACCORDION */
+  .cat-block { margin-bottom:1.2rem; border:1px solid var(--border); border-radius:14px; overflow:hidden; background:var(--card); }
 
-  .cat-header {
-    display:flex; align-items:center; gap:10px;
-    margin-bottom:1rem;
+  .cat-toggle {
+    width:100%; display:flex; align-items:center; gap:14px;
+    padding:1rem 1.3rem; background:var(--card);
+    border:none; cursor:pointer; text-align:left;
+    transition:background 0.15s; touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;
   }
-  .cat-number {
-    font-family:'DM Mono',monospace; font-size:0.65rem;
-    letter-spacing:0.12em; color:#fff;
-    background:var(--text); padding:2px 8px;
-    border-radius:4px; text-transform:uppercase;
+  .cat-toggle:hover { background:#faf8f4; }
+  .cat-block.open .cat-toggle { background:#faf8f4; }
+
+  .cat-num {
+    font-family:'DM Mono',monospace; font-size:0.62rem;
+    letter-spacing:0.12em; color:#fff; background:var(--text);
+    padding:2px 8px; border-radius:4px; text-transform:uppercase;
+    flex-shrink:0;
   }
-  .cat-title {
-    font-family:'Playfair Display',serif; font-size:1.05rem;
-    font-weight:400; color:var(--text);
+
+  .cat-label { flex:1; }
+  .cat-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:400; color:var(--text); display:block; }
+  .cat-sub { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); margin-top:2px; display:block; }
+
+  .cat-count {
+    font-family:'DM Mono',monospace; font-size:0.68rem;
+    color:var(--muted); flex-shrink:0;
   }
 
-  .cards { display:flex; flex-direction:column; gap:1px; border:1px solid var(--border); border-radius:12px; overflow:hidden; background:var(--border); }
+  .cat-arrow { font-size:13px; color:var(--muted); flex-shrink:0; transition:transform 0.25s; }
+  .cat-block.open .cat-arrow { transform:rotate(180deg); }
 
-  .card { background:var(--card); opacity:0; transform:translateY(8px); animation:fadeUp 0.3s ease forwards; }
-  .card:first-child { border-radius:12px 12px 0 0; }
-  .card:last-child  { border-radius:0 0 12px 12px; }
+  /* CARDS PANEL */
+  .cat-panel { max-height:0; overflow:hidden; transition:max-height 0.4s ease; }
+  .cat-block.open .cat-panel { max-height:1000px; }
 
-  /* stagger all cards globally */
-  .card:nth-child(1){animation-delay:0.04s;} .card:nth-child(2){animation-delay:0.08s;}
-  .card:nth-child(3){animation-delay:0.12s;} .card:nth-child(4){animation-delay:0.16s;}
-  .card:nth-child(5){animation-delay:0.20s;} .card:nth-child(6){animation-delay:0.24s;}
-  .card:nth-child(7){animation-delay:0.28s;} .card:nth-child(8){animation-delay:0.32s;}
-  @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+  .cards { display:flex; flex-direction:column; gap:1px; background:var(--border); border-top:1px solid var(--border); }
 
-  .card a { display:flex; align-items:center; gap:14px; padding:0.9rem 1.2rem; text-decoration:none; color:inherit; transition:background 0.15s; }
+  .card { background:var(--card); }
+  .card:last-child { border-radius:0 0 14px 14px; }
+
+  .card a { display:flex; align-items:center; gap:14px; padding:0.85rem 1.2rem; text-decoration:none; color:inherit; transition:background 0.15s; }
   .card a:hover { background:#faf8f4; }
 
-  .card-graph { flex:0 0 44px; height:44px; border-radius:7px; border:1px solid var(--border); background:#faf8f4; overflow:hidden; }
+  .card-graph { flex:0 0 42px; height:42px; border-radius:7px; border:1px solid var(--border); background:#faf8f4; overflow:hidden; }
   .card-graph canvas { display:block; }
 
   .card-meta { flex:1; min-width:0; }
-  .card-title { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:400; color:#1a1814; margin-bottom:2px; }
-  .card-eq { font-family:'DM Mono',monospace; font-size:0.72rem; color:#4a4844; }
+  .card-title { font-family:'Playfair Display',serif; font-size:0.92rem; font-weight:400; color:#1a1814; margin-bottom:2px; }
+  .card-eq { font-family:'DM Mono',monospace; font-size:0.7rem; color:#4a4844; }
+  .card-chevron { font-size:14px; color:#4a4844; flex-shrink:0; }
 
-  .card-chevron { font-size:15px; color:#4a4844; flex-shrink:0; }
-
-  /* Placeholder cards for category 2 */
-  .card-placeholder a { opacity:0.45; cursor:default; pointer-events:none; }
-  .coming-badge {
-    font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em;
-    background:#f0ede8; color:#888480; padding:2px 7px; border-radius:4px;
-    flex-shrink:0; text-transform:uppercase;
-  }
+  /* placeholder cards for cat 2 */
+  .card-ph a { opacity:0.4; cursor:default; pointer-events:none; }
+  .soon-badge { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; background:#f0ede8; color:#888480; padding:2px 7px; border-radius:4px; flex-shrink:0; text-transform:uppercase; }
 
   .footer { text-align:center; font-family:'DM Mono',monospace; font-size:0.7rem; color:#888480; padding-bottom:2rem; letter-spacing:0.06em; }
 </style>
@@ -123,157 +121,171 @@
 
 <div class="main">
 
-  <!-- CATEGORY 1 -->
-  <div class="cat-section">
-    <div class="cat-header">
-      <span class="cat-number">01</span>
-      <span class="cat-title">High School Math Functions</span>
-    </div>
-    <div class="cards">
+  <!-- CATEGORY 1 — collapsed by default, click to open -->
+  <div class="cat-block" id="cat1">
+    <button class="cat-toggle" onclick="toggleCat('cat1')">
+      <span class="cat-num">01</span>
+      <span class="cat-label">
+        <span class="cat-name">High School Math Functions</span>
+        <span class="cat-sub">Linear · Quadratic · Square Root · Rational · Exponential · Log · Trig</span>
+      </span>
+      <span class="cat-count">7 tools</span>
+      <span class="cat-arrow">▾</span>
+    </button>
+    <div class="cat-panel">
+      <div class="cards">
 
-      <div class="card">
-        <a href="linear_explorer.html">
-          <div class="card-graph"><canvas id="g0" width="44" height="44"></canvas></div>
-          <div class="card-meta">
-            <div class="card-title">Linear</div>
-            <div class="card-eq">y = mx + b</div>
-          </div>
-          <div class="card-chevron">›</div>
-        </a>
+        <div class="card">
+          <a href="linear_explorer.html">
+            <div class="card-graph"><canvas id="g0" width="42" height="42"></canvas></div>
+            <div class="card-meta">
+              <div class="card-title">Linear</div>
+              <div class="card-eq">y = mx + b</div>
+            </div>
+            <div class="card-chevron">›</div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="quadratic_explorer.html">
+            <div class="card-graph"><canvas id="g1" width="42" height="42"></canvas></div>
+            <div class="card-meta">
+              <div class="card-title">Quadratic</div>
+              <div class="card-eq">y = a[k(x − d)]² + c</div>
+            </div>
+            <div class="card-chevron">›</div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="sqrt_explorer.html">
+            <div class="card-graph"><canvas id="g2" width="42" height="42"></canvas></div>
+            <div class="card-meta">
+              <div class="card-title">Square Root</div>
+              <div class="card-eq">y = a√[k(x − d)] + c</div>
+            </div>
+            <div class="card-chevron">›</div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="rational_explorer.html">
+            <div class="card-graph"><canvas id="g3" width="42" height="42"></canvas></div>
+            <div class="card-meta">
+              <div class="card-title">Rational / Reciprocal</div>
+              <div class="card-eq">y = a / [k(x − d)] + c</div>
+            </div>
+            <div class="card-chevron">›</div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="exponential_explorer.html">
+            <div class="card-graph"><canvas id="g4" width="42" height="42"></canvas></div>
+            <div class="card-meta">
+              <div class="card-title">Exponential</div>
+              <div class="card-eq">y = a · b<sup>x</sup></div>
+            </div>
+            <div class="card-chevron">›</div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="log_explorer.html">
+            <div class="card-graph"><canvas id="g5" width="42" height="42"></canvas></div>
+            <div class="card-meta">
+              <div class="card-title">Logarithmic</div>
+              <div class="card-eq">y = a · log<sub>b</sub>(x)</div>
+            </div>
+            <div class="card-chevron">›</div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="trig_explorer.html">
+            <div class="card-graph"><canvas id="g6" width="42" height="42"></canvas></div>
+            <div class="card-meta">
+              <div class="card-title">Trig Ratios</div>
+              <div class="card-eq">sin θ · cos θ · tan θ</div>
+            </div>
+            <div class="card-chevron">›</div>
+          </a>
+        </div>
+
       </div>
-
-      <div class="card">
-        <a href="quadratic_explorer.html">
-          <div class="card-graph"><canvas id="g1" width="44" height="44"></canvas></div>
-          <div class="card-meta">
-            <div class="card-title">Quadratic</div>
-            <div class="card-eq">y = a[k(x − d)]² + c</div>
-          </div>
-          <div class="card-chevron">›</div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="sqrt_explorer.html">
-          <div class="card-graph"><canvas id="g2" width="44" height="44"></canvas></div>
-          <div class="card-meta">
-            <div class="card-title">Square Root</div>
-            <div class="card-eq">y = a√[k(x − d)] + c</div>
-          </div>
-          <div class="card-chevron">›</div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="rational_explorer.html">
-          <div class="card-graph"><canvas id="g3" width="44" height="44"></canvas></div>
-          <div class="card-meta">
-            <div class="card-title">Rational / Reciprocal</div>
-            <div class="card-eq">y = a / [k(x − d)] + c</div>
-          </div>
-          <div class="card-chevron">›</div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="exponential_explorer.html">
-          <div class="card-graph"><canvas id="g4" width="44" height="44"></canvas></div>
-          <div class="card-meta">
-            <div class="card-title">Exponential</div>
-            <div class="card-eq">y = a · b<sup>x</sup></div>
-          </div>
-          <div class="card-chevron">›</div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="log_explorer.html">
-          <div class="card-graph"><canvas id="g5" width="44" height="44"></canvas></div>
-          <div class="card-meta">
-            <div class="card-title">Logarithmic</div>
-            <div class="card-eq">y = a · log<sub>b</sub>(x)</div>
-          </div>
-          <div class="card-chevron">›</div>
-        </a>
-      </div>
-
-      <div class="card">
-        <a href="trig_explorer.html">
-          <div class="card-graph"><canvas id="g6" width="44" height="44"></canvas></div>
-          <div class="card-meta">
-            <div class="card-title">Trig Ratios</div>
-            <div class="card-eq">sin θ · cos θ · tan θ</div>
-          </div>
-          <div class="card-chevron">›</div>
-        </a>
-      </div>
-
     </div>
   </div>
 
-  <!-- CATEGORY 2 -->
-  <div class="cat-section">
-    <div class="cat-header">
-      <span class="cat-number">02</span>
-      <span class="cat-title">Economic &amp; Financial Functions</span>
-    </div>
-    <div class="cards">
+  <!-- CATEGORY 2 — collapsed by default -->
+  <div class="cat-block" id="cat2">
+    <button class="cat-toggle" onclick="toggleCat('cat2')">
+      <span class="cat-num">02</span>
+      <span class="cat-label">
+        <span class="cat-name">Economic &amp; Financial Functions</span>
+        <span class="cat-sub">Compound Interest · Supply &amp; Demand · Cost/Revenue · Depreciation · PV/FV</span>
+      </span>
+      <span class="cat-count">Coming soon</span>
+      <span class="cat-arrow">▾</span>
+    </button>
+    <div class="cat-panel">
+      <div class="cards">
 
-      <div class="card card-placeholder">
-        <a href="#">
-          <div class="card-graph"><canvas id="e0" width="44" height="44"></canvas></div>
-          <div class="card-meta">
-            <div class="card-title">Compound Interest</div>
-            <div class="card-eq">A = P(1 + r/n)<sup>nt</sup></div>
-          </div>
-          <div class="coming-badge">Soon</div>
-        </a>
+        <div class="card card-ph">
+          <a href="#">
+            <div class="card-graph"><canvas id="e0" width="42" height="42"></canvas></div>
+            <div class="card-meta">
+              <div class="card-title">Compound Interest</div>
+              <div class="card-eq">A = P(1 + r/n)<sup>nt</sup></div>
+            </div>
+            <div class="soon-badge">Soon</div>
+          </a>
+        </div>
+
+        <div class="card card-ph">
+          <a href="#">
+            <div class="card-graph"><canvas id="e1" width="42" height="42"></canvas></div>
+            <div class="card-meta">
+              <div class="card-title">Supply &amp; Demand</div>
+              <div class="card-eq">P = f(Q<sub>s</sub>) · g(Q<sub>d</sub>)</div>
+            </div>
+            <div class="soon-badge">Soon</div>
+          </a>
+        </div>
+
+        <div class="card card-ph">
+          <a href="#">
+            <div class="card-graph"><canvas id="e2" width="42" height="42"></canvas></div>
+            <div class="card-meta">
+              <div class="card-title">Cost / Revenue / Profit</div>
+              <div class="card-eq">π = R − C</div>
+            </div>
+            <div class="soon-badge">Soon</div>
+          </a>
+        </div>
+
+        <div class="card card-ph">
+          <a href="#">
+            <div class="card-graph"><canvas id="e3" width="42" height="42"></canvas></div>
+            <div class="card-meta">
+              <div class="card-title">Depreciation</div>
+              <div class="card-eq">V = V₀(1 − r)<sup>t</sup></div>
+            </div>
+            <div class="soon-badge">Soon</div>
+          </a>
+        </div>
+
+        <div class="card card-ph">
+          <a href="#">
+            <div class="card-graph"><canvas id="e4" width="42" height="42"></canvas></div>
+            <div class="card-meta">
+              <div class="card-title">Present &amp; Future Value</div>
+              <div class="card-eq">PV = FV / (1 + r)<sup>t</sup></div>
+            </div>
+            <div class="soon-badge">Soon</div>
+          </a>
+        </div>
+
       </div>
-
-      <div class="card card-placeholder">
-        <a href="#">
-          <div class="card-graph"><canvas id="e1" width="44" height="44"></canvas></div>
-          <div class="card-meta">
-            <div class="card-title">Supply &amp; Demand</div>
-            <div class="card-eq">P = f(Q<sub>s</sub>) · g(Q<sub>d</sub>)</div>
-          </div>
-          <div class="coming-badge">Soon</div>
-        </a>
-      </div>
-
-      <div class="card card-placeholder">
-        <a href="#">
-          <div class="card-graph"><canvas id="e2" width="44" height="44"></canvas></div>
-          <div class="card-meta">
-            <div class="card-title">Cost / Revenue / Profit</div>
-            <div class="card-eq">π = R − C</div>
-          </div>
-          <div class="coming-badge">Soon</div>
-        </a>
-      </div>
-
-      <div class="card card-placeholder">
-        <a href="#">
-          <div class="card-graph"><canvas id="e3" width="44" height="44"></canvas></div>
-          <div class="card-meta">
-            <div class="card-title">Depreciation</div>
-            <div class="card-eq">V = V₀(1 − r)<sup>t</sup></div>
-          </div>
-          <div class="coming-badge">Soon</div>
-        </a>
-      </div>
-
-      <div class="card card-placeholder">
-        <a href="#">
-          <div class="card-graph"><canvas id="e4" width="44" height="44"></canvas></div>
-          <div class="card-meta">
-            <div class="card-title">Present &amp; Future Value</div>
-            <div class="card-eq">PV = FV / (1 + r)<sup>t</sup></div>
-          </div>
-          <div class="coming-badge">Soon</div>
-        </a>
-      </div>
-
     </div>
   </div>
 
@@ -287,66 +299,76 @@ function toggleNav() {
   document.getElementById('navMenu').classList.toggle('open');
 }
 
-function drawPreview(id, fn, color, xRange, yRange) {
-  const canvas = document.getElementById(id);
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height, pad = 5;
-  const xMin = xRange[0], xMax = xRange[1];
-  const yMin = yRange[0], yMax = yRange[1];
-  ctx.clearRect(0,0,W,H);
-  ctx.strokeStyle='rgba(0,0,0,0.08)'; ctx.lineWidth=0.5;
-  const zx = pad + (0-xMin)/(xMax-xMin)*(W-2*pad);
-  const zy = pad + (yMax-0)/(yMax-yMin)*(H-2*pad);
-  ctx.beginPath(); ctx.moveTo(zx,pad); ctx.lineTo(zx,H-pad); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(pad,zy); ctx.lineTo(W-pad,zy); ctx.stroke();
-  ctx.strokeStyle=color; ctx.lineWidth=2; ctx.lineJoin='round';
-  ctx.beginPath(); let pen=false;
-  for(let px=pad; px<=W-pad; px++) {
-    const x = xMin + (px-pad)/(W-2*pad)*(xMax-xMin);
-    const y = fn(x);
-    if(y===null||!isFinite(y)||y>yMax+0.5||y<yMin-0.5){pen=false;continue;}
-    const sy = pad+(yMax-Math.max(yMin,Math.min(yMax,y)))/(yMax-yMin)*(H-2*pad);
-    if(!pen){ctx.moveTo(px,sy);pen=true;}else ctx.lineTo(px,sy);
+function toggleCat(id) {
+  const block = document.getElementById(id);
+  const wasOpen = block.classList.contains('open');
+  block.classList.toggle('open', !wasOpen);
+  // draw previews when opening for the first time
+  if (!wasOpen) drawPreviews();
+}
+
+let drawn = false;
+function drawPreviews() {
+  if (drawn) return;
+  drawn = true;
+
+  function dp(id, fn, color, xMin, xMax, yMin, yMax) {
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W=canvas.width, H=canvas.height, pad=5;
+    ctx.clearRect(0,0,W,H);
+    const zx=pad+(0-xMin)/(xMax-xMin)*(W-2*pad);
+    const zy=pad+(yMax-0)/(yMax-yMin)*(H-2*pad);
+    ctx.strokeStyle='rgba(0,0,0,0.08)'; ctx.lineWidth=0.5;
+    ctx.beginPath(); ctx.moveTo(Math.max(pad,Math.min(W-pad,zx)),pad); ctx.lineTo(Math.max(pad,Math.min(W-pad,zx)),H-pad); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pad,Math.max(pad,Math.min(H-pad,zy))); ctx.lineTo(W-pad,Math.max(pad,Math.min(H-pad,zy))); ctx.stroke();
+    ctx.strokeStyle=color; ctx.lineWidth=2; ctx.lineJoin='round';
+    ctx.beginPath(); let pen=false;
+    for(let px=pad;px<=W-pad;px++){
+      const x=xMin+(px-pad)/(W-2*pad)*(xMax-xMin);
+      const y=fn(x);
+      if(y===null||!isFinite(y)||y>yMax+0.5||y<yMin-0.5){pen=false;continue;}
+      const sy=pad+(yMax-Math.max(yMin,Math.min(yMax,y)))/(yMax-yMin)*(H-2*pad);
+      if(!pen){ctx.moveTo(px,sy);pen=true;}else ctx.lineTo(px,sy);
+    }
+    ctx.stroke();
   }
-  ctx.stroke();
+
+  function drawCircle() {
+    const canvas=document.getElementById('g6');
+    if(!canvas)return;
+    const ctx=canvas.getContext('2d');
+    const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,R=W/2-5;
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(0,0,0,0.1)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx-R,cy);ctx.lineTo(cx+R,cy);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx,cy-R);ctx.lineTo(cx,cy+R);ctx.stroke();
+    const a=Math.PI/4,px=cx+Math.cos(a)*R,py=cy-Math.sin(a)*R;
+    ctx.strokeStyle='#185FA5';ctx.lineWidth=1.5;ctx.setLineDash([3,2]);
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(px,cy);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(px,cy);ctx.lineTo(px,py);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.strokeStyle='#993C1D';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(px,py);ctx.stroke();
+    ctx.beginPath();ctx.arc(px,py,3,0,Math.PI*2);
+    ctx.fillStyle='#e24b4a';ctx.fill();
+  }
+
+  dp('g0', x=>x,                                       '#185FA5', -4,4,  -4,4);
+  dp('g1', x=>x*x-1,                                   '#0F6E56', -3,3,  -2,5);
+  dp('g2', x=>x<0?null:Math.sqrt(x),                   '#185FA5', -0.5,5,-1,3);
+  dp('g3', x=>Math.abs(x)<0.3?null:1/x,                '#993C1D', -4,4,  -4,4);
+  dp('g4', x=>Math.pow(2,x)/4,                         '#854F0B', -4,4,  -1,4);
+  dp('g5', x=>x<=0?null:Math.log(x)/Math.log(2)*0.8,  '#993C1D', -0.5,5,-3,3);
+  drawCircle();
+  dp('e0', x=>x<0?null:Math.pow(1.4,x)*0.5,            '#0F6E56', -0.5,5,-0.5,5);
+  dp('e1', x=>3-x*0.6,                                 '#185FA5', -0.5,5,-0.5,5);
+  dp('e2', x=>2*x-x*x*0.3-1,                           '#854F0B', -0.5,5,-2,4);
+  dp('e3', x=>x<0?null:3*Math.pow(0.7,x),              '#993C1D', -0.5,5,-0.5,4);
+  dp('e4', x=>x<0?null:2/Math.pow(1.1,x),              '#0F6E56', -0.5,5,-0.5,4);
 }
-
-function drawCirclePreview() {
-  const canvas = document.getElementById('g6');
-  const ctx = canvas.getContext('2d');
-  const W=canvas.width, H=canvas.height, cx=W/2, cy=H/2, R=W/2-5;
-  ctx.clearRect(0,0,W,H);
-  ctx.strokeStyle='rgba(0,0,0,0.1)'; ctx.lineWidth=1;
-  ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(cx-R,cy); ctx.lineTo(cx+R,cy); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(cx,cy-R); ctx.lineTo(cx,cy+R); ctx.stroke();
-  const a=Math.PI/4, px=cx+Math.cos(a)*R, py=cy-Math.sin(a)*R;
-  ctx.strokeStyle='#185FA5'; ctx.lineWidth=1.5; ctx.setLineDash([3,2]);
-  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(px,cy); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(px,cy); ctx.lineTo(px,py); ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.strokeStyle='#993C1D'; ctx.lineWidth=2;
-  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(px,py); ctx.stroke();
-  ctx.beginPath(); ctx.arc(px,py,3,0,Math.PI*2);
-  ctx.fillStyle='#e24b4a'; ctx.fill();
-}
-
-// high school previews
-drawPreview('g0', x=>x,                                      '#185FA5', [-4,4],  [-4,4]);
-drawPreview('g1', x=>x*x-1,                                  '#0F6E56', [-3,3],  [-2,5]);
-drawPreview('g2', x=>x<0?null:Math.sqrt(x),                  '#185FA5', [-0.5,6],[-1,3]);
-drawPreview('g3', x=>Math.abs(x)<0.2?null:1/x,               '#993C1D', [-4,4],  [-4,4]);
-drawPreview('g4', x=>Math.pow(2,x)/4,                        '#854F0B', [-4,4],  [-1,4]);
-drawPreview('g5', x=>x<=0?null:Math.log(x)/Math.log(2)*0.8, '#993C1D', [-0.5,6],[-3,3]);
-drawCirclePreview();
-
-// economic previews (simple representative curves)
-drawPreview('e0', x=>x<0?null:Math.pow(1.5,x)*0.5,          '#0F6E56', [-0.5,5],[-0.5,5]);
-drawPreview('e1', x=>3-x*0.6,                                '#185FA5', [-0.5,5],[-0.5,5]);
-drawPreview('e2', x=>2*x-x*x*0.3-1,                         '#854F0B', [-0.5,5],[-2,4]);
-drawPreview('e3', x=>x<0?null:3*Math.pow(0.7,x),            '#993C1D', [-0.5,5],[-0.5,4]);
-drawPreview('e4', x=>x<0?null:2/Math.pow(1.1,x),            '#0F6E56', [-0.5,5],[-0.5,4]);
 </script>
 </body>
 </html>
