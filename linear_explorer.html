@@ -420,11 +420,12 @@
     document.getElementById('m-val').textContent = m.toFixed(2);
     document.getElementById('b-val').textContent = b.toFixed(2);
 
-    /* live equation */
-    const mStr = m === 0 ? '' : (m === 1 ? 'x' : m === -1 ? '−x' : m.toFixed(2) + 'x');
-    const bStr = b === 0 ? '' : (b > 0 ? ' + ' + b.toFixed(2) : ' − ' + Math.abs(b).toFixed(2));
-    const eq   = 'y = ' + (mStr || '') + (bStr || '') || 'y = 0';
-    document.getElementById('eq-live').textContent = 'current: ' + (mStr ? mStr + bStr : b.toFixed(2));
+    /* live equation — always show full y = mx + b */
+    const sign  = b >= 0 ? ' + ' : ' − ';
+    const bAbs  = Math.abs(b).toFixed(2);
+    const mDisp = m.toFixed(2);
+    document.getElementById('eq-live').textContent =
+      'current: y = ' + mDisp + 'x' + sign + bAbs;
 
     /* facts */
     document.getElementById('f-m').textContent = m.toFixed(2);
