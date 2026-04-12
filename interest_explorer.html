@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Interest & Present Value — Ms. Liu</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  :root { --blue:#185FA5; --green:#0F6E56; --amber:#854F0B; --coral:#993C1D; --bg:#f7f5f0; --card:#ffffff; --border:#d8d4cc; --text:#1a1814; --muted:#4a4844; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+  .topbar { background:var(--text); padding:0; }
+  .topbar-main { display:flex; align-items:center; justify-content:space-between; padding:0.85rem 1.2rem; }
+  .site-title { font-family:'Playfair Display',serif; font-size:1rem; color:#f7f5f0; font-weight:400; text-decoration:none; }
+  .hamburger { background:none; border:none; cursor:pointer; padding:4px; display:flex; flex-direction:column; gap:5px; touch-action:manipulation; }
+  .hamburger span { display:block; width:22px; height:2px; background:#c8c4bc; border-radius:1px; transition:all 0.2s; }
+  .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity:0; }
+  .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+  .nav-menu { display:none; flex-direction:column; border-top:1px solid #2e2c28; padding:0.4rem 0; }
+  .nav-menu.open { display:flex; }
+  .nav-cat { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:#555250; padding:0.7rem 1.4rem 0.3rem; }
+  .nav-menu a { display:block; padding:0.55rem 1.4rem 0.55rem 1.8rem; font-family:'DM Mono',monospace; font-size:0.78rem; color:#c8c4bc; text-decoration:none; letter-spacing:0.03em; transition:background 0.12s; }
+  .nav-menu a:hover { background:#2a2620; color:#f7f5f0; }
+  .nav-menu a.active { color:#f7f5f0; border-left:2px solid #f7f5f0; padding-left:calc(1.8rem - 2px); }
+  .nav-divider { height:1px; background:#2e2c28; margin:0.4rem 0; }
+
+  .container { max-width:760px; margin:0 auto; padding:1.2rem; }
+
+  /* Section tabs */
+  .section-tabs { display:flex; gap:0; margin-bottom:1.4rem; border-radius:10px; overflow:hidden; border:1px solid var(--border); }
+  .sec-btn { flex:1; padding:9px 4px; border:none; background:#f5f3ee; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); border-right:1px solid var(--border); transition:all 0.15s; touch-action:manipulation; text-align:center; line-height:1.4; }
+  .sec-btn:last-child { border-right:none; }
+  .sec-btn:hover { background:#eceae4; }
+  .sec-btn.active { color:white; }
+  .sec-btn[data-sec="simple"].active   { background:var(--blue); }
+  .sec-btn[data-sec="compound"].active { background:var(--green); }
+  .sec-btn[data-sec="continuous"].active { background:var(--amber); }
+  .sec-btn[data-sec="pv"].active       { background:var(--coral); }
+
+  .section { display:none; }
+  .section.active { display:block; }
+
+  /* Readme */
+  .readme { background:#2a2620; border:1px solid #3a3630; border-radius:10px; margin-bottom:1.2rem; overflow:hidden; }
+  .readme-toggle { width:100%; padding:11px 14px; display:flex; justify-content:space-between; align-items:center; background:#2a2620; border:none; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.75rem; letter-spacing:0.06em; color:#c8c4bc; text-align:left; touch-action:manipulation; }
+  .readme-toggle:hover { background:#333028; }
+  .readme-arrow { transition:transform 0.2s; display:inline-block; color:#888480; }
+  .readme.open .readme-arrow { transform:rotate(180deg); }
+  .readme-body { max-height:0; overflow:hidden; transition:max-height 0.3s ease; }
+  .readme.open .readme-body { max-height:500px; }
+  .readme-inner { padding:1rem 1.2rem; border-top:1px solid #3a3630; font-size:0.85rem; color:#b8b4ac; line-height:1.75; }
+  .readme-inner h3 { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:#e8e4dc; margin-bottom:5px; margin-top:12px; }
+  .readme-inner h3:first-child { margin-top:0; }
+  .readme-inner ul { padding-left:1.1rem; }
+  .readme-inner li { margin-bottom:3px; }
+  .readme-inner .param { font-family:'DM Mono',monospace; font-size:0.78rem; background:#3a3630; padding:1px 6px; border-radius:4px; color:#e8e4dc; }
+
+  /* Formula display */
+  .formula-box { padding:10px 16px; background:var(--card); border-radius:10px; border:1px solid var(--border); margin-bottom:1rem; font-family:'DM Mono',monospace; font-size:1rem; color:#444; }
+  .formula-box .formula-big { font-size:1.15rem; }
+  .formula-box .formula-current { font-size:0.82rem; color:var(--muted); margin-top:4px; }
+
+  /* Result card */
+  .result-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:1rem; }
+  .result-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:10px 14px; }
+  .result-label { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px; }
+  .result-val { font-family:'DM Mono',monospace; font-size:1.3rem; color:var(--text); }
+  .result-val.highlight { color:var(--blue); }
+  .result-val.highlight-green { color:var(--green); }
+  .result-val.highlight-amber { color:var(--amber); }
+  .result-val.highlight-coral { color:var(--coral); }
+
+  /* Controls */
+  .controls { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1rem; }
+  @media (max-width:440px) { .controls { grid-template-columns:1fr; } }
+  .group { background:var(--card); border-radius:10px; border:1px solid var(--border); padding:10px 12px; }
+  .group-label { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.06em; color:var(--muted); text-transform:uppercase; margin-bottom:7px; }
+  .ctrl-row { display:flex; align-items:center; gap:8px; }
+  .ctrl-row label { font-family:'DM Mono',monospace; font-size:0.88rem; color:var(--text); min-width:18px; }
+  .ctrl-row input[type=range] { flex:1; accent-color:var(--blue); cursor:pointer; touch-action:manipulation; height:22px; }
+  .val-display { font-family:'DM Mono',monospace; font-size:0.88rem; min-width:56px; text-align:right; color:var(--text); }
+
+  /* n selector */
+  .n-selector { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:1rem; }
+  .n-btn { padding:5px 12px; border-radius:6px; border:1px solid var(--border); background:transparent; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted); touch-action:manipulation; transition:all 0.15s; }
+  .n-btn:hover { background:#f0ede8; }
+  .n-btn.active { background:var(--green); color:white; border-color:transparent; }
+  .n-label { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted); margin-bottom:5px; }
+
+  /* Table */
+  .year-table { width:100%; border-collapse:collapse; font-family:'DM Mono',monospace; font-size:0.78rem; margin-bottom:1rem; background:var(--card); border-radius:10px; overflow:hidden; border:1px solid var(--border); }
+  .year-table th { background:#f5f3ee; color:var(--muted); font-weight:400; padding:7px 10px; text-align:right; border-bottom:1px solid var(--border); letter-spacing:0.04em; font-size:0.68rem; text-transform:uppercase; }
+  .year-table th:first-child { text-align:left; }
+  .year-table td { padding:6px 10px; text-align:right; border-bottom:1px solid #f0ede8; color:var(--text); }
+  .year-table td:first-child { text-align:left; color:var(--muted); }
+  .year-table tr:last-child td { border-bottom:none; font-weight:500; color:var(--blue); }
+
+  canvas { width:100% !important; border-radius:10px; border:1px solid var(--border); display:block; touch-action:none; background:var(--card); margin-bottom:1rem; }
+
+  .reset-btn { padding:7px 16px; border-radius:8px; border:1px solid var(--border); background:transparent; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted); margin-bottom:0.9rem; touch-action:manipulation; }
+  .reset-btn:hover { background:var(--card); }
+
+  .footer { margin-top:1rem; font-size:0.7rem; color:#888480; text-align:center; font-family:'DM Mono',monospace; }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="topbar-main">
+    <a class="site-title" href="index.html">Ms. Liu · <em style="font-style:italic;">Math Tools</em></a>
+    <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-menu" id="navMenu">
+    <a href="index.html" style="padding-left:1.4rem;">Home</a>
+    <div class="nav-divider"></div>
+    <div class="nav-cat">High School Math Functions</div>
+    <a href="linear_explorer.html">Linear &nbsp; y = mx + b</a>
+    <a href="quadratic_explorer.html">Quadratic &nbsp; y = a[k(x−d)]² + c</a>
+    <a href="sqrt_explorer.html">Square Root &nbsp; y = a√[k(x−d)] + c</a>
+    <a href="rational_explorer.html">Rational &nbsp; y = a / k(x−d) + c</a>
+    <a href="exponential_explorer.html">Exponential &nbsp; y = a · b<sup style="font-size:0.65em;">x</sup></a>
+    <a href="log_explorer.html">Logarithm &nbsp; y = a · log<sub style="font-size:0.65em;">b</sub>(x)</a>
+    <a href="trig_explorer.html">Trig Ratios &nbsp; sin · cos · tan</a>
+    <a href="interest_explorer.html" class="active">Interest &amp; Present Value</a>
+    <div class="nav-divider"></div>
+    <div class="nav-cat">Economic &amp; Financial Functions</div>
+    <a href="#" style="opacity:0.4;pointer-events:none;">Coming soon</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="section-tabs">
+    <button class="sec-btn active" data-sec="simple" onclick="setSection('simple')">Simple<br>Interest</button>
+    <button class="sec-btn" data-sec="compound" onclick="setSection('compound')">Compound<br>Interest</button>
+    <button class="sec-btn" data-sec="continuous" onclick="setSection('continuous')">Continuous<br>Compounding</button>
+    <button class="sec-btn" data-sec="pv" onclick="setSection('pv')">Present<br>Value</button>
+  </div>
+
+  <!-- ===== SIMPLE INTEREST ===== -->
+  <div class="section active" id="sec-simple">
+    <div class="readme" id="rm-simple">
+      <button class="readme-toggle" onclick="toggleReadme('rm-simple')"><span>About simple interest</span><span class="readme-arrow">▾</span></button>
+      <div class="readme-body"><div class="readme-inner">
+        <h3>Formula</h3>
+        <span class="param">A = P(1 + rt)</span> &nbsp;·&nbsp; A = final amount, P = principal, r = annual rate, t = time in years
+        <h3>Key idea</h3>
+        <ul>
+          <li>Interest is calculated only on the original principal — never on accumulated interest</li>
+          <li>Growth is linear — the graph is a straight line</li>
+          <li>Interest earned each year = P × r (constant)</li>
+        </ul>
+        <h3>Try this</h3>
+        <ul>
+          <li>Compare two rates — how much difference does 1% make over 10 years?</li>
+          <li>Double the principal — does the final amount double?</li>
+        </ul>
+      </div></div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-big">A = P(1 + rt)</div>
+      <div class="formula-current" id="si-formula">A = $1,000.00 × (1 + 0.05 × t)</div>
+    </div>
+    <div class="result-cards">
+      <div class="result-card"><div class="result-label">Principal (P)</div><div class="result-val highlight" id="si-P">$1,000</div></div>
+      <div class="result-card"><div class="result-label">Rate (r)</div><div class="result-val highlight" id="si-r">5.00%</div></div>
+      <div class="result-card"><div class="result-label">After 10 years</div><div class="result-val highlight" id="si-A10">$1,500</div></div>
+      <div class="result-card"><div class="result-label">Total interest</div><div class="result-val highlight" id="si-I">$500</div></div>
+    </div>
+    <div class="controls">
+      <div class="group">
+        <div class="group-label">P — Principal ($100 to $10,000)</div>
+        <div class="ctrl-row"><label>P</label><input type="range" id="si-slP" min="100" max="10000" step="100" value="1000"><span class="val-display" id="si-vP">$1,000</span></div>
+      </div>
+      <div class="group">
+        <div class="group-label">r — Annual rate (0.5% to 20%)</div>
+        <div class="ctrl-row"><label>r</label><input type="range" id="si-slR" min="0.5" max="20" step="0.5" value="5"><span class="val-display" id="si-vR">5.0%</span></div>
+      </div>
+    </div>
+    <canvas id="si-canvas"></canvas>
+    <table class="year-table" id="si-table"></table>
+  </div>
+
+  <!-- ===== COMPOUND INTEREST ===== -->
+  <div class="section" id="sec-compound">
+    <div class="readme" id="rm-compound">
+      <button class="readme-toggle" onclick="toggleReadme('rm-compound')"><span>About compound interest</span><span class="readme-arrow">▾</span></button>
+      <div class="readme-body"><div class="readme-inner">
+        <h3>Formula</h3>
+        <span class="param">A = P(1 + r/n)^(nt)</span> &nbsp;·&nbsp; n = number of compounding periods per year
+        <h3>Key idea</h3>
+        <ul>
+          <li>Interest is added to the principal, then earns interest itself — exponential growth</li>
+          <li>More compounding periods = more growth</li>
+          <li>n = 1 (annual), n = 2 (semi-annual), n = 4 (quarterly), n = 12 (monthly), n = 365 (daily)</li>
+        </ul>
+        <h3>Try this</h3>
+        <ul>
+          <li>Compare n = 1 vs n = 365 — how much does daily compounding add?</li>
+          <li>Compare simple interest vs compound interest using same P and r</li>
+        </ul>
+      </div></div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-big">A = P(1 + r/n)<sup>nt</sup></div>
+      <div class="formula-current" id="ci-formula">A = $1,000 × (1 + 0.05/12)^(12t)</div>
+    </div>
+    <div class="n-label">Choose compounding frequency (n):</div>
+    <div class="n-selector" id="n-selector">
+      <button class="n-btn" data-n="1">n = 1<br><span style="font-size:0.65em;color:inherit;">Annual</span></button>
+      <button class="n-btn" data-n="2">n = 2<br><span style="font-size:0.65em;color:inherit;">Semi-annual</span></button>
+      <button class="n-btn" data-n="4">n = 4<br><span style="font-size:0.65em;color:inherit;">Quarterly</span></button>
+      <button class="n-btn active" data-n="12">n = 12<br><span style="font-size:0.65em;color:inherit;">Monthly</span></button>
+      <button class="n-btn" data-n="24">n = 24<br><span style="font-size:0.65em;color:inherit;">Bi-weekly</span></button>
+      <button class="n-btn" data-n="52">n = 52<br><span style="font-size:0.65em;color:inherit;">Weekly</span></button>
+      <button class="n-btn" data-n="365">n = 365<br><span style="font-size:0.65em;color:inherit;">Daily</span></button>
+    </div>
+    <div class="result-cards">
+      <div class="result-card"><div class="result-label">Principal (P)</div><div class="result-val highlight-green" id="ci-P">$1,000</div></div>
+      <div class="result-card"><div class="result-label">Rate (r)</div><div class="result-val highlight-green" id="ci-r">5.00%</div></div>
+      <div class="result-card"><div class="result-label">After 10 years</div><div class="result-val highlight-green" id="ci-A10">—</div></div>
+      <div class="result-card"><div class="result-label">Total interest</div><div class="result-val highlight-green" id="ci-I">—</div></div>
+    </div>
+    <div class="controls">
+      <div class="group">
+        <div class="group-label">P — Principal ($100 to $10,000)</div>
+        <div class="ctrl-row"><label>P</label><input type="range" id="ci-slP" min="100" max="10000" step="100" value="1000"><span class="val-display" id="ci-vP">$1,000</span></div>
+      </div>
+      <div class="group">
+        <div class="group-label">r — Annual rate (0.5% to 20%)</div>
+        <div class="ctrl-row"><label>r</label><input type="range" id="ci-slR" min="0.5" max="20" step="0.5" value="5"><span class="val-display" id="ci-vR">5.0%</span></div>
+      </div>
+    </div>
+    <canvas id="ci-canvas"></canvas>
+    <table class="year-table" id="ci-table"></table>
+  </div>
+
+  <!-- ===== CONTINUOUS COMPOUNDING ===== -->
+  <div class="section" id="sec-continuous">
+    <div class="readme" id="rm-continuous">
+      <button class="readme-toggle" onclick="toggleReadme('rm-continuous')"><span>About continuous compounding</span><span class="readme-arrow">▾</span></button>
+      <div class="readme-body"><div class="readme-inner">
+        <h3>Formula</h3>
+        <span class="param">A = Pe^(rt)</span> &nbsp;·&nbsp; e ≈ 2.71828 (Euler's number)
+        <h3>Key idea</h3>
+        <ul>
+          <li>The mathematical limit of compounding — as n → ∞, the formula becomes Pe^(rt)</li>
+          <li>Gives the absolute maximum growth for a given rate</li>
+          <li>The difference between daily (n=365) and continuous is very small in practice</li>
+        </ul>
+        <h3>Try this</h3>
+        <ul>
+          <li>Compare with compound interest (n=365) — how close are they?</li>
+          <li>The "Rule of 72" — divide 72 by the rate to estimate doubling time</li>
+        </ul>
+      </div></div>
+    </div>
+    <div class="formula-box">
+      <div class="formula-big">A = Pe<sup>rt</sup></div>
+      <div class="formula-current" id="cc-formula">A = $1,000 × e^(0.05 × t)</div>
+    </div>
+    <div class="result-cards">
+      <div class="result-card"><div class="result-label">Principal (P)</div><div class="result-val highlight-amber" id="cc-P">$1,000</div></div>
+      <div class="result-card"><div class="result-label">Rate (r)</div><div class="result-val highlight-amber" id="cc-r">5.00%</div></div>
+      <div class="result-card"><div class="result-label">After 10 years</div><div class="result-val highlight-amber" id="cc-A10">—</div></div>
+      <div class="result-card"><div class="result-label">Doubling time</div><div class="result-val highlight-amber" id="cc-double">—</div></div>
+    </div>
+    <div class="controls">
+      <div class="group">
+        <div class="group-label">P — Principal ($100 to $10,000)</div>
+        <div class="ctrl-row"><label>P</label><input type="range" id="cc-slP" min="100" max="10000" step="100" value="1000"><span class="val-display" id="cc-vP">$1,000</span></div>
+      </div>
+      <div class="group">
+        <div class="group-label">r — Annual rate (0.5% to 20%)</div>
+        <div class="ctrl-row"><label>r</label><input type="range" id="cc-slR" min="0.5" max="20" step="0.5" value="5"><span class="val-display" id="cc-vR">5.0%</span></div>
+      </div>
+    </div>
+    <canvas id="cc-canvas"></canvas>
+    <table class="year-table" id="cc-table"></table>
+  </div>
+
+  <!-- ===== PRESENT VALUE ===== -->
+  <div class="section" id="sec-pv">
+    <div class="readme" id="rm-pv">
+      <button class="readme-toggle" onclick="toggleReadme('rm-pv')"><span>About present value</span><span class="readme-arrow">▾</span></button>
+      <div class="readme-body"><div class="readme-inner">
+        <h3>Formula</h3>
+        <span class="param">PV = FV / (1 + r)^t</span> &nbsp;·&nbsp; PV = present value, FV = future value, r = rate, t = years
+        <h3>Key idea</h3>
+        <ul>
+          <li>Money today is worth more than the same amount in the future (time value of money)</li>
+          <li>PV asks: how much do I need to invest today to reach a target future value?</li>
+          <li>Higher rate or longer time = lower present value (you need less today)</li>
+          <li>The curve is a decreasing function — decay as time increases</li>
+        </ul>
+        <h3>Try this</h3>
+        <ul>
+          <li>Set FV = $10,000 at r = 5% for 10 years — what is the PV?</li>
+          <li>Increase r — does PV go up or down?</li>
+          <li>PV × (1+r)^t should equal FV — verify this!</li>
+        </ul>
+      </div></div>
+    </div>
+    <div class="formula-box">
+      <div class="eq-fraction-wrap" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:1rem;color:#444;">
+        <span>PV =</span>
+        <div style="display:inline-flex;flex-direction:column;align-items:center;">
+          <div style="font-size:0.95rem;padding:0 4px;" id="pv-fv-label">FV</div>
+          <div style="width:100%;height:1.5px;background:#444;margin:2px 0;"></div>
+          <div style="font-size:0.95rem;padding:0 4px;">(1 + r)<sup>t</sup></div>
+        </div>
+      </div>
+      <div class="formula-current" id="pv-formula">PV = $10,000 / (1 + 0.05)^t</div>
+    </div>
+    <div class="result-cards">
+      <div class="result-card"><div class="result-label">Future Value (FV)</div><div class="result-val highlight-coral" id="pv-FV">$10,000</div></div>
+      <div class="result-card"><div class="result-label">Rate (r)</div><div class="result-val highlight-coral" id="pv-r">5.00%</div></div>
+      <div class="result-card"><div class="result-label">PV at year 10</div><div class="result-val highlight-coral" id="pv-PV10">—</div></div>
+      <div class="result-card"><div class="result-label">Discount ($)</div><div class="result-val highlight-coral" id="pv-disc">—</div></div>
+    </div>
+    <div class="controls">
+      <div class="group">
+        <div class="group-label">FV — Future value ($1,000 to $50,000)</div>
+        <div class="ctrl-row"><label>FV</label><input type="range" id="pv-slFV" min="1000" max="50000" step="1000" value="10000"><span class="val-display" id="pv-vFV">$10,000</span></div>
+      </div>
+      <div class="group">
+        <div class="group-label">r — Discount rate (0.5% to 20%)</div>
+        <div class="ctrl-row"><label>r</label><input type="range" id="pv-slR" min="0.5" max="20" step="0.5" value="5"><span class="val-display" id="pv-vR">5.0%</span></div>
+      </div>
+    </div>
+    <canvas id="pv-canvas"></canvas>
+    <table class="year-table" id="pv-table"></table>
+  </div>
+
+  <div class="footer">Ms. Liu · Interest &amp; Present Value</div>
+</div>
+
+<script>
+function toggleNav() {
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('navMenu').classList.toggle('open');
+}
+
+function toggleReadme(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+let currentSection = 'simple';
+let compoundN = 12;
+
+function setSection(s) {
+  currentSection = s;
+  document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.sec-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('sec-' + s).classList.add('active');
+  document.querySelector(`.sec-btn[data-sec="${s}"]`).classList.add('active');
+  updateAll();
+}
+
+const DPR = window.devicePixelRatio || 1;
+
+function setupCanvas(id) {
+  const canvas = document.getElementById(id);
+  const w = canvas.parentElement.clientWidth - 24;
+  const h = Math.min(Math.round(w * 0.5), 300);
+  canvas.width = w * DPR; canvas.height = h * DPR;
+  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+  return canvas;
+}
+
+function drawLineChart(canvasId, datasets, yMax, color) {
+  const canvas = setupCanvas(canvasId);
+  const ctx = canvas.getContext('2d');
+  const CW = canvas.width/DPR, CH = canvas.height/DPR;
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.clearRect(0,0,CW,CH);
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,CW,CH);
+
+  const pad={l:70,r:20,t:16,b:36};
+  const W=CW-pad.l-pad.r, H=CH-pad.t-pad.b;
+  const xMin=0, xMax=10;
+  const yMin=0;
+
+  function sx(x){return pad.l+x/xMax*W;}
+  function sy(y){return pad.t+(1-y/yMax)*H;}
+
+  // grid
+  ctx.strokeStyle='rgba(0,0,0,0.06)'; ctx.lineWidth=0.5;
+  for(let x=0;x<=10;x++){ctx.beginPath();ctx.moveTo(sx(x),pad.t);ctx.lineTo(sx(x),pad.t+H);ctx.stroke();}
+  const yStep = yMax > 5000 ? 2000 : yMax > 1000 ? 500 : 200;
+  for(let y=0;y<=yMax;y+=yStep){ctx.beginPath();ctx.moveTo(pad.l,sy(y));ctx.lineTo(pad.l+W,sy(y));ctx.stroke();}
+
+  // axes
+  ctx.strokeStyle='rgba(0,0,0,0.4)'; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(pad.l,pad.t+H);ctx.lineTo(pad.l+W,pad.t+H);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,pad.t+H);ctx.stroke();
+
+  // labels
+  ctx.fillStyle='#666'; ctx.font='10px DM Mono,monospace';
+  ctx.textAlign='center';
+  for(let x=0;x<=10;x++){ctx.fillText(x,sx(x),pad.t+H+14);}
+  ctx.fillText('years',sx(5),pad.t+H+28);
+  ctx.textAlign='right';
+  for(let y=0;y<=yMax;y+=yStep){ctx.fillText('$'+y.toLocaleString(),pad.l-5,sy(y)+4);}
+
+  // lines
+  const colors = ['#185FA5','#0F6E56','#e24b4a','#854F0B'];
+  datasets.forEach((ds, di) => {
+    ctx.strokeStyle = ds.color || colors[di]; ctx.lineWidth=2.5; ctx.lineJoin='round';
+    if (ds.dashed) { ctx.setLineDash([5,4]); } else { ctx.setLineDash([]); }
+    ctx.beginPath();
+    ds.points.forEach((pt,i)=>{
+      if(i===0)ctx.moveTo(sx(pt.x),sy(Math.min(yMax,pt.y)));
+      else ctx.lineTo(sx(pt.x),sy(Math.min(yMax,pt.y)));
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // end dot
+    const last=ds.points[ds.points.length-1];
+    ctx.beginPath();ctx.arc(sx(last.x),sy(Math.min(yMax,last.y)),4,0,Math.PI*2);
+    ctx.fillStyle=ds.color||colors[di];ctx.fill();
+  });
+}
+
+function buildTable(tableId, headers, rows) {
+  const table = document.getElementById(tableId);
+  table.innerHTML = '';
+  const thead = table.createTHead();
+  const tr = thead.insertRow();
+  headers.forEach(h => { const th=document.createElement('th'); th.textContent=h; tr.appendChild(th); });
+  const tbody = table.createTBody();
+  rows.forEach(row => {
+    const tr = tbody.insertRow();
+    row.forEach((cell,i) => { const td=tr.insertCell(); td.textContent=cell; });
+  });
+}
+
+function fmt$(v){ return '$' + v.toLocaleString('en-CA',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+// ===== SIMPLE INTEREST =====
+function updateSimple() {
+  const P = +document.getElementById('si-slP').value;
+  const r = +document.getElementById('si-slR').value / 100;
+  document.getElementById('si-vP').textContent = '$' + P.toLocaleString();
+  document.getElementById('si-vR').textContent = (r*100).toFixed(1) + '%';
+  document.getElementById('si-P').textContent = fmt$(P);
+  document.getElementById('si-r').textContent = (r*100).toFixed(2) + '%';
+
+  const A10 = P*(1+r*10);
+  document.getElementById('si-A10').textContent = fmt$(A10);
+  document.getElementById('si-I').textContent = fmt$(A10-P);
+  document.getElementById('si-formula').textContent = `A = ${fmt$(P)} × (1 + ${(r*100).toFixed(2)}% × t)`;
+
+  const pts = [];
+  for(let t=0;t<=10;t++) pts.push({x:t, y:P*(1+r*t)});
+  const yMax = Math.ceil(A10 * 1.1 / 500) * 500;
+  drawLineChart('si-canvas', [{points:pts, color:'#185FA5'}], yMax);
+
+  const rows = [];
+  for(let t=1;t<=10;t++){
+    const A=P*(1+r*t);
+    rows.push([`Year ${t}`, fmt$(P), fmt$(A-P), fmt$(A)]);
+  }
+  buildTable('si-table', ['Year','Principal','Interest Earned','Total (A)'], rows);
+}
+
+// ===== COMPOUND INTEREST =====
+function updateCompound() {
+  const P = +document.getElementById('ci-slP').value;
+  const r = +document.getElementById('ci-slR').value / 100;
+  const n = compoundN;
+  document.getElementById('ci-vP').textContent = '$' + P.toLocaleString();
+  document.getElementById('ci-vR').textContent = (r*100).toFixed(1) + '%';
+  document.getElementById('ci-P').textContent = fmt$(P);
+  document.getElementById('ci-r').textContent = (r*100).toFixed(2) + '%';
+  document.getElementById('ci-formula').textContent = `A = ${fmt$(P)} × (1 + ${(r*100).toFixed(2)}%/${n})^(${n}t)`;
+
+  const A10 = P*Math.pow(1+r/n, n*10);
+  document.getElementById('ci-A10').textContent = fmt$(A10);
+  document.getElementById('ci-I').textContent = fmt$(A10-P);
+
+  // also draw simple interest for comparison
+  const ptsC=[], ptsS=[];
+  for(let t=0;t<=10;t+=0.2){
+    ptsC.push({x:t, y:P*Math.pow(1+r/n,n*t)});
+    ptsS.push({x:t, y:P*(1+r*t)});
+  }
+  const yMax = Math.ceil(A10*1.1/500)*500;
+  drawLineChart('ci-canvas', [
+    {points:ptsC, color:'#0F6E56'},
+    {points:ptsS, color:'#185FA5', dashed:true}
+  ], yMax);
+
+  const rows=[];
+  for(let t=1;t<=10;t++){
+    const Ac=P*Math.pow(1+r/n,n*t);
+    const As=P*(1+r*t);
+    rows.push([`Year ${t}`, fmt$(Ac), fmt$(Ac-P), fmt$(As)]);
+  }
+  buildTable('ci-table', ['Year','Compound (A)','Interest Earned','Simple (ref)'], rows);
+}
+
+// ===== CONTINUOUS COMPOUNDING =====
+function updateContinuous() {
+  const P = +document.getElementById('cc-slP').value;
+  const r = +document.getElementById('cc-slR').value / 100;
+  document.getElementById('cc-vP').textContent = '$' + P.toLocaleString();
+  document.getElementById('cc-vR').textContent = (r*100).toFixed(1) + '%';
+  document.getElementById('cc-P').textContent = fmt$(P);
+  document.getElementById('cc-r').textContent = (r*100).toFixed(2) + '%';
+  document.getElementById('cc-formula').textContent = `A = ${fmt$(P)} × e^(${(r*100).toFixed(2)}% × t)`;
+
+  const A10 = P*Math.exp(r*10);
+  const doubleT = Math.log(2)/r;
+  document.getElementById('cc-A10').textContent = fmt$(A10);
+  document.getElementById('cc-double').textContent = doubleT.toFixed(2) + ' yrs';
+
+  const ptsCC=[], ptsC365=[];
+  for(let t=0;t<=10;t+=0.2){
+    ptsCC.push({x:t, y:P*Math.exp(r*t)});
+    ptsC365.push({x:t, y:P*Math.pow(1+r/365,365*t)});
+  }
+  const yMax=Math.ceil(A10*1.1/500)*500;
+  drawLineChart('cc-canvas',[
+    {points:ptsCC, color:'#854F0B'},
+    {points:ptsC365, color:'#0F6E56', dashed:true}
+  ], yMax);
+
+  const rows=[];
+  for(let t=1;t<=10;t++){
+    const Acc=P*Math.exp(r*t);
+    const Ac365=P*Math.pow(1+r/365,365*t);
+    rows.push([`Year ${t}`, fmt$(Acc), fmt$(Ac365), fmt$(Acc-Ac365)]);
+  }
+  buildTable('cc-table',['Year','Continuous','Daily (n=365)','Difference'], rows);
+}
+
+// ===== PRESENT VALUE =====
+function updatePV() {
+  const FV = +document.getElementById('pv-slFV').value;
+  const r  = +document.getElementById('pv-slR').value / 100;
+  document.getElementById('pv-vFV').textContent = '$' + FV.toLocaleString();
+  document.getElementById('pv-vR').textContent = (r*100).toFixed(1) + '%';
+  document.getElementById('pv-FV').textContent = fmt$(FV);
+  document.getElementById('pv-r').textContent = (r*100).toFixed(2) + '%';
+  document.getElementById('pv-fv-label').textContent = fmt$(FV);
+  document.getElementById('pv-formula').textContent = `PV = ${fmt$(FV)} / (1 + ${(r*100).toFixed(2)}%)^t`;
+
+  const PV10 = FV/Math.pow(1+r,10);
+  document.getElementById('pv-PV10').textContent = fmt$(PV10);
+  document.getElementById('pv-disc').textContent = fmt$(FV-PV10);
+
+  const pts=[];
+  for(let t=0;t<=10;t+=0.25) pts.push({x:t, y:FV/Math.pow(1+r,t)});
+  drawLineChart('pv-canvas',[{points:pts, color:'#993C1D'}], FV);
+
+  const rows=[];
+  for(let t=1;t<=10;t++){
+    const pv=FV/Math.pow(1+r,t);
+    rows.push([`Year ${t}`, fmt$(FV), fmt$(pv), fmt$(FV-pv)]);
+  }
+  buildTable('pv-table',['Year','Future Value','Present Value','Discount ($)'], rows);
+}
+
+function updateAll() {
+  if(currentSection==='simple') updateSimple();
+  else if(currentSection==='compound') updateCompound();
+  else if(currentSection==='continuous') updateContinuous();
+  else if(currentSection==='pv') updatePV();
+}
+
+// n buttons
+document.querySelectorAll('.n-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.n-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    compoundN=+btn.dataset.n;
+    updateCompound();
+  });
+});
+
+// sliders
+['si-slP','si-slR'].forEach(id=>document.getElementById(id).addEventListener('input',updateSimple));
+['ci-slP','ci-slR'].forEach(id=>document.getElementById(id).addEventListener('input',updateCompound));
+['cc-slP','cc-slR'].forEach(id=>document.getElementById(id).addEventListener('input',updateContinuous));
+['pv-slFV','pv-slR'].forEach(id=>document.getElementById(id).addEventListener('input',updatePV));
+
+window.addEventListener('resize', updateAll);
+
+// init
+updateSimple();
+</script>
+</body>
+</html>

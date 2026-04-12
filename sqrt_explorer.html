@@ -38,9 +38,12 @@
   .readme-inner ul { padding-left:1.1rem; }
   .readme-inner li { margin-bottom:3px; }
   .readme-inner .param { font-family:'DM Mono',monospace; font-size:0.78rem; background:#3a3630; padding:1px 6px; border-radius:4px; color:#e8e4dc; }
-  .eq-display { font-family:'DM Mono',monospace; margin-bottom:1rem; padding:10px 14px; background:var(--card); border-radius:10px; border:1px solid var(--border); border-left:4px solid var(--blue); }
-  .eq-formula { font-size:1.1rem; color:#444; }
-  .eq-current { font-size:0.85rem; color:var(--muted); margin-top:3px; }
+
+  /* Equation display with SVG radical */
+  .eq-display { margin-bottom:1rem; padding:10px 14px; background:var(--card); border-radius:10px; border:1px solid var(--border); border-left:4px solid var(--blue); }
+  .eq-formula-wrap { display:flex; align-items:center; gap:0; font-family:'DM Mono',monospace; font-size:1.1rem; color:#444; flex-wrap:wrap; }
+  .eq-current { font-family:'DM Mono',monospace; font-size:0.85rem; color:var(--muted); margin-top:4px; }
+
   .controls { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1rem; }
   @media (max-width:440px) { .controls { grid-template-columns:1fr; } }
   .group { background:var(--card); border-radius:10px; border:1px solid var(--border); padding:10px 12px; }
@@ -76,7 +79,7 @@
     <a href="linear_explorer.html">Linear &nbsp; y = mx + b</a>
     <a href="quadratic_explorer.html">Quadratic &nbsp; y = a[k(x−d)]² + c</a>
     <a href="sqrt_explorer.html" class="active">Square Root &nbsp; y = a√[k(x−d)] + c</a>
-    <a href="rational_explorer.html">Rational &nbsp; y = a / [k(x−d)] + c</a>
+    <a href="rational_explorer.html">Rational &nbsp; y = a / k(x−d) + c</a>
     <a href="exponential_explorer.html">Exponential &nbsp; y = a · b<sup style="font-size:0.65em;">x</sup></a>
     <a href="log_explorer.html">Logarithm &nbsp; y = a · log<sub style="font-size:0.65em;">b</sub>(x)</a>
     <a href="trig_explorer.html">Trig Ratios &nbsp; sin · cos · tan</a>
@@ -100,38 +103,42 @@
     <div class="readme-body">
       <div class="readme-inner">
         <h3>What this shows</h3>
-        This tool explores <span class="param">y = a√[k(x − d)] + c</span>. The base function is y = √x — a half-parabola starting at the origin. Adjust sliders to transform it.
-
+        This tool explores the square root function with four transformations. The radical sign covers the full expression k(x − d) inside.
         <h3>Parameters</h3>
         <ul>
-          <li><span class="param">a</span> — vertical stretch (|a| &gt; 1) or compression (|a| &lt; 1). Negative a reflects the curve below the x-axis.</li>
-          <li><span class="param">k</span> — horizontal stretch (|k| &lt; 1) or compression (|k| &gt; 1). Negative k reflects the curve left (domain flips).</li>
+          <li><span class="param">a</span> — vertical stretch or compression. Negative a reflects the curve below the x-axis.</li>
+          <li><span class="param">k</span> — horizontal stretch or compression. Negative k flips the domain direction.</li>
           <li><span class="param">d</span> — horizontal shift. Moves the starting point left or right.</li>
-          <li><span class="param">c</span> — vertical shift. Moves the curve up or down.</li>
+          <li><span class="param">c</span> — vertical shift. Moves the whole curve up or down.</li>
         </ul>
-
         <h3>Key concepts</h3>
         <ul>
-          <li>Domain: x ≥ d (when k &gt; 0) — square root requires non-negative input</li>
-          <li>Starting point (endpoint) is always at (d, c) — marked with red dot</li>
+          <li>Domain: k(x − d) ≥ 0 — input under the radical must be non-negative</li>
+          <li>Starting point (endpoint) always at (d, c) — marked with red dot</li>
           <li>Faint ghost curve shows base y = √x for reference</li>
-          <li>Negative k flips the domain: curve goes left instead of right</li>
+          <li>k &lt; 0 flips the domain: curve extends left instead of right</li>
         </ul>
-
         <h3>Try this</h3>
         <ul>
-          <li>Set a &lt; 0 — curve flips downward</li>
-          <li>Move d right — starting point shifts right</li>
-          <li>Move c up/down — whole curve shifts vertically</li>
-          <li>Set k &lt; 0 — what happens to the direction of the curve?</li>
+          <li>Set a &lt; 0 — curve reflects below x-axis</li>
+          <li>Move d — starting point shifts horizontally</li>
+          <li>Move c — curve shifts up or down</li>
+          <li>Set k &lt; 0 — what direction does the curve extend?</li>
         </ul>
       </div>
     </div>
   </div>
 
+  <!-- Equation display with SVG radical -->
   <div class="eq-display">
-    <div class="eq-formula">y = a√[k(x − d)] + c</div>
-    <div class="eq-current" id="eqCurrent">current: y = 1.00√[1.00(x − 0.00)] + 0.00</div>
+    <div class="eq-formula-wrap">
+      <span id="eqA">y = 1.00</span>
+      <svg id="radicalSvg" height="36" style="display:inline-block;vertical-align:middle;margin:0 1px;" xmlns="http://www.w3.org/2000/svg">
+        <text id="radText" x="0" y="0" dominant-baseline="auto" font-family="DM Mono,monospace" font-size="14" fill="#444"></text>
+      </svg>
+      <span id="eqC">&nbsp;+ 0.00</span>
+    </div>
+    <div class="eq-current" id="eqCurrent"></div>
   </div>
 
   <div class="controls">
@@ -208,7 +215,69 @@ function getA() { return signA * (+document.getElementById('slA').value / 100); 
 function getK() { return signK * (+document.getElementById('slK').value / 100); }
 function getD() { return +document.getElementById('slD').value / 100; }
 function getC() { return +document.getElementById('slC').value / 100; }
-function fmt(v) { return (v >= 0 ? '+' : '') + v.toFixed(2); }
+function fmt(v) { return (v >= 0 ? ' + ' : ' − ') + Math.abs(v).toFixed(2); }
+
+function drawRadical(a, k, d, c) {
+  const aStr = a.toFixed(2);
+  const dSign = d >= 0 ? '−' : '+';
+  const dAbs = Math.abs(d).toFixed(2);
+  const inner = `${k.toFixed(2)}(x ${dSign} ${dAbs})`;
+  const cStr = fmt(c);
+
+  // update text parts
+  document.getElementById('eqA').textContent = `y = ${aStr} `;
+  document.getElementById('eqC').textContent = cStr;
+
+  // build SVG radical using canvas text measurement
+  const svg = document.getElementById('radicalSvg');
+  const textEl = document.getElementById('radText');
+
+  const fontSize = 14;
+  const padding = 4;
+  const tickW = 8;   // width of the left check mark
+  const lineH = 3;   // overline thickness
+  const h = 28;
+  const baseline = 22;
+
+  // measure text width
+  const tmpCanvas = document.createElement('canvas');
+  const tmpCtx = tmpCanvas.getContext('2d');
+  tmpCtx.font = `${fontSize}px DM Mono, monospace`;
+  const textW = tmpCtx.measureText(inner).width;
+  const totalW = tickW + padding + textW + padding + 2;
+
+  svg.setAttribute('width', totalW);
+  svg.setAttribute('height', h);
+  svg.setAttribute('viewBox', `0 0 ${totalW} ${h}`);
+
+  // clear old paths
+  while (svg.children.length > 1) svg.removeChild(svg.lastChild);
+
+  // draw the radical symbol path
+  const ns = 'http://www.w3.org/2000/svg';
+  const path = document.createElementNS(ns, 'path');
+  // check mark: start bottom-left, go up-right to baseline start, then flat line over text
+  const x0 = 0;
+  const checkX = tickW;
+  const lineStart = checkX;
+  const lineEnd = totalW - 1;
+  path.setAttribute('d', `M ${x0} ${baseline - 4} L ${checkX - 3} ${baseline + 2} L ${checkX} ${baseline - fontSize + 2} L ${lineEnd} ${baseline - fontSize + 2}`);
+  path.setAttribute('stroke', '#444');
+  path.setAttribute('stroke-width', '1.5');
+  path.setAttribute('fill', 'none');
+  path.setAttribute('stroke-linejoin', 'round');
+  svg.appendChild(path);
+
+  // draw the inner text
+  textEl.setAttribute('x', lineStart + padding);
+  textEl.setAttribute('y', baseline);
+  textEl.setAttribute('font-size', fontSize);
+  textEl.textContent = inner;
+
+  // current equation text
+  document.getElementById('eqCurrent').textContent =
+    `current: y = ${aStr} √[${inner}]${cStr}`;
+}
 
 function updateLabels() {
   const a = getA(), k = getK(), d = getD(), c = getC();
@@ -217,16 +286,13 @@ function updateLabels() {
   document.getElementById('vD').textContent = d.toFixed(2);
   document.getElementById('vC').textContent = c.toFixed(2);
 
-  const dSign = d >= 0 ? '−' : '+';
-  const dAbs = Math.abs(d).toFixed(2);
-  document.getElementById('eqCurrent').textContent =
-    `current: y = ${a.toFixed(2)}√[${k.toFixed(2)}(x ${dSign} ${dAbs})] ${fmt(c)}`;
+  drawRadical(a, k, d, c);
 
   const domainDir = k >= 0 ? `x ≥ ${d.toFixed(2)}` : `x ≤ ${d.toFixed(2)}`;
   const aDesc = Math.abs(a) > 1 ? 'vertical stretch' : 'vertical compression';
   const kDesc = Math.abs(k) > 1 ? 'horiz. compression' : 'horiz. stretch';
   const flip = a < 0 ? ' · reflected below x-axis' : '';
-  const kflip = k < 0 ? ' · domain flipped left' : '';
+  const kflip = k < 0 ? ' · domain extends left' : '';
   const hshift = d !== 0 ? `shift ${d > 0 ? 'right' : 'left'} ${Math.abs(d).toFixed(2)}` : 'no horiz. shift';
   const vshift = c !== 0 ? `shift ${c > 0 ? 'up' : 'down'} ${Math.abs(c).toFixed(2)}` : 'no vert. shift';
 
@@ -248,17 +314,14 @@ function draw(a, k, d, c) {
   function sx(x){return pad.l+(x-xMin)/(xMax-xMin)*W;}
   function sy(y){return pad.t+(yMax-y)/(yMax-yMin)*H;}
 
-  // grid
   ctx.strokeStyle='rgba(0,0,0,0.06)'; ctx.lineWidth=0.5;
   for(let x=xMin;x<=xMax;x++){ctx.beginPath();ctx.moveTo(sx(x),sy(yMin));ctx.lineTo(sx(x),sy(yMax));ctx.stroke();}
   for(let y=yMin;y<=yMax;y+=2){ctx.beginPath();ctx.moveTo(sx(xMin),sy(y));ctx.lineTo(sx(xMax),sy(y));ctx.stroke();}
 
-  // axes
   ctx.strokeStyle='rgba(0,0,0,0.45)'; ctx.lineWidth=1.5;
   ctx.beginPath();ctx.moveTo(sx(xMin),sy(0));ctx.lineTo(sx(xMax),sy(0));ctx.stroke();
   ctx.beginPath();ctx.moveTo(sx(0),sy(yMin));ctx.lineTo(sx(0),sy(yMax));ctx.stroke();
 
-  // tick labels
   ctx.fillStyle='#666'; ctx.font='10px DM Mono,monospace'; ctx.textAlign='center';
   for(let x=xMin;x<=xMax;x++){if(x===0)continue;if(x%2===0)ctx.fillText(x,sx(x),sy(0)+13);}
   ctx.textAlign='right';
@@ -267,7 +330,7 @@ function draw(a, k, d, c) {
   ctx.textAlign='left'; ctx.fillText('y',sx(0)+5,sy(yMax)+4);
   ctx.textAlign='center'; ctx.fillText('x',sx(xMax)+12,sy(0)+4);
 
-  // ghost base y=√x
+  // ghost y=√x
   ctx.strokeStyle='rgba(0,0,0,0.1)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
   ctx.beginPath(); let pen=false;
   for(let i=0;i<=600;i++){
@@ -280,7 +343,7 @@ function draw(a, k, d, c) {
   }
   ctx.stroke(); ctx.setLineDash([]);
 
-  // domain boundary vertical line at x=d
+  // domain boundary
   if(d>=xMin&&d<=xMax){
     ctx.strokeStyle='rgba(180,140,0,0.4)'; ctx.lineWidth=1; ctx.setLineDash([4,3]);
     ctx.beginPath();ctx.moveTo(sx(d),sy(yMin));ctx.lineTo(sx(d),sy(yMax));ctx.stroke();
@@ -301,7 +364,7 @@ function draw(a, k, d, c) {
   }
   ctx.stroke();
 
-  // starting point (d, c)
+  // starting point
   if(d>=xMin&&d<=xMax&&c>=yMin&&c<=yMax){
     ctx.beginPath();ctx.arc(sx(d),sy(c),5,0,Math.PI*2);
     ctx.fillStyle='#e24b4a';ctx.fill();

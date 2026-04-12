@@ -10,7 +10,6 @@
   :root { --bg:#f7f5f0; --card:#ffffff; --border:#d8d4cc; --text:#1a1814; --muted:#4a4844; --blue:#185FA5; }
   body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
 
-  /* NAV */
   .topbar { background:var(--text); padding:0; }
   .topbar-main { display:flex; align-items:center; justify-content:space-between; padding:0.85rem 1.2rem; }
   .site-title { font-family:'Playfair Display',serif; font-size:1rem; color:#f7f5f0; font-weight:400; text-decoration:none; }
@@ -27,62 +26,34 @@
   .nav-menu a.active { color:#f7f5f0; border-left:2px solid #f7f5f0; padding-left:calc(1.8rem - 2px); }
   .nav-divider { height:1px; background:#2e2c28; margin:0.4rem 0; }
 
-  /* MAIN */
   .main { max-width:700px; margin:0 auto; padding:1.8rem 1.2rem 4rem; }
 
-  /* CATEGORY ACCORDION */
   .cat-block { margin-bottom:1.2rem; border:1px solid var(--border); border-radius:14px; overflow:hidden; background:var(--card); }
-
-  .cat-toggle {
-    width:100%; display:flex; align-items:center; gap:14px;
-    padding:1rem 1.3rem; background:var(--card);
-    border:none; cursor:pointer; text-align:left;
-    transition:background 0.15s; touch-action:manipulation;
-    -webkit-tap-highlight-color:transparent;
-  }
+  .cat-toggle { width:100%; display:flex; align-items:center; gap:14px; padding:1rem 1.3rem; background:var(--card); border:none; cursor:pointer; text-align:left; transition:background 0.15s; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
   .cat-toggle:hover { background:#faf8f4; }
   .cat-block.open .cat-toggle { background:#faf8f4; }
-
-  .cat-num {
-    font-family:'DM Mono',monospace; font-size:0.62rem;
-    letter-spacing:0.12em; color:#fff; background:var(--text);
-    padding:2px 8px; border-radius:4px; text-transform:uppercase;
-    flex-shrink:0;
-  }
-
+  .cat-num { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; color:#fff; background:var(--text); padding:2px 8px; border-radius:4px; text-transform:uppercase; flex-shrink:0; }
   .cat-label { flex:1; }
   .cat-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:400; color:var(--text); display:block; }
-  .cat-sub { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); margin-top:2px; display:block; }
-
-  .cat-count {
-    font-family:'DM Mono',monospace; font-size:0.68rem;
-    color:var(--muted); flex-shrink:0;
-  }
-
+  .cat-sub { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); margin-top:2px; display:block; }
+  .cat-count { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); flex-shrink:0; }
   .cat-arrow { font-size:13px; color:var(--muted); flex-shrink:0; transition:transform 0.25s; }
   .cat-block.open .cat-arrow { transform:rotate(180deg); }
-
-  /* CARDS PANEL */
-  .cat-panel { max-height:0; overflow:hidden; transition:max-height 0.4s ease; }
-  .cat-block.open .cat-panel { max-height:1000px; }
+  .cat-panel { max-height:0; overflow:hidden; transition:max-height 0.45s ease; }
+  .cat-block.open .cat-panel { max-height:1400px; }
 
   .cards { display:flex; flex-direction:column; gap:1px; background:var(--border); border-top:1px solid var(--border); }
-
   .card { background:var(--card); }
   .card:last-child { border-radius:0 0 14px 14px; }
-
   .card a { display:flex; align-items:center; gap:14px; padding:0.85rem 1.2rem; text-decoration:none; color:inherit; transition:background 0.15s; }
   .card a:hover { background:#faf8f4; }
-
   .card-graph { flex:0 0 42px; height:42px; border-radius:7px; border:1px solid var(--border); background:#faf8f4; overflow:hidden; }
   .card-graph canvas { display:block; }
-
   .card-meta { flex:1; min-width:0; }
   .card-title { font-family:'Playfair Display',serif; font-size:0.92rem; font-weight:400; color:#1a1814; margin-bottom:2px; }
   .card-eq { font-family:'DM Mono',monospace; font-size:0.7rem; color:#4a4844; }
   .card-chevron { font-size:14px; color:#4a4844; flex-shrink:0; }
 
-  /* placeholder cards for cat 2 */
   .card-ph a { opacity:0.4; cursor:default; pointer-events:none; }
   .soon-badge { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; background:#f0ede8; color:#888480; padding:2px 7px; border-radius:4px; flex-shrink:0; text-transform:uppercase; }
 
@@ -105,31 +76,28 @@
     <a href="linear_explorer.html">Linear &nbsp; y = mx + b</a>
     <a href="quadratic_explorer.html">Quadratic &nbsp; y = a[k(x−d)]² + c</a>
     <a href="sqrt_explorer.html">Square Root &nbsp; y = a√[k(x−d)] + c</a>
-    <a href="rational_explorer.html">Rational &nbsp; y = a / [k(x−d)] + c</a>
+    <a href="rational_explorer.html">Rational &nbsp; y = a / k(x−d) + c</a>
     <a href="exponential_explorer.html">Exponential &nbsp; y = a · b<sup style="font-size:0.65em;">x</sup></a>
     <a href="log_explorer.html">Logarithm &nbsp; y = a · log<sub style="font-size:0.65em;">b</sub>(x)</a>
     <a href="trig_explorer.html">Trig Ratios &nbsp; sin · cos · tan</a>
+    <a href="interest_explorer.html">Interest &amp; Present Value</a>
     <div class="nav-divider"></div>
     <div class="nav-cat">Economic &amp; Financial Functions</div>
-    <a href="#" style="opacity:0.4;pointer-events:none;">Compound Interest</a>
-    <a href="#" style="opacity:0.4;pointer-events:none;">Supply &amp; Demand</a>
-    <a href="#" style="opacity:0.4;pointer-events:none;">Cost / Revenue / Profit</a>
-    <a href="#" style="opacity:0.4;pointer-events:none;">Depreciation</a>
-    <a href="#" style="opacity:0.4;pointer-events:none;">Present &amp; Future Value</a>
+    <a href="#" style="opacity:0.4;pointer-events:none;">Coming soon</a>
   </div>
 </nav>
 
 <div class="main">
 
-  <!-- CATEGORY 1 — collapsed by default, click to open -->
+  <!-- CATEGORY 1 -->
   <div class="cat-block" id="cat1">
     <button class="cat-toggle" onclick="toggleCat('cat1')">
       <span class="cat-num">01</span>
       <span class="cat-label">
         <span class="cat-name">High School Math Functions</span>
-        <span class="cat-sub">Linear · Quadratic · Square Root · Rational · Exponential · Log · Trig</span>
+        <span class="cat-sub">Linear · Quadratic · Square Root · Rational · Exponential · Log · Trig · Interest</span>
       </span>
-      <span class="cat-count">7 tools</span>
+      <span class="cat-count">8 tools</span>
       <span class="cat-arrow">▾</span>
     </button>
     <div class="cat-panel">
@@ -138,10 +106,7 @@
         <div class="card">
           <a href="linear_explorer.html">
             <div class="card-graph"><canvas id="g0" width="42" height="42"></canvas></div>
-            <div class="card-meta">
-              <div class="card-title">Linear</div>
-              <div class="card-eq">y = mx + b</div>
-            </div>
+            <div class="card-meta"><div class="card-title">Linear</div><div class="card-eq">y = mx + b</div></div>
             <div class="card-chevron">›</div>
           </a>
         </div>
@@ -149,10 +114,7 @@
         <div class="card">
           <a href="quadratic_explorer.html">
             <div class="card-graph"><canvas id="g1" width="42" height="42"></canvas></div>
-            <div class="card-meta">
-              <div class="card-title">Quadratic</div>
-              <div class="card-eq">y = a[k(x − d)]² + c</div>
-            </div>
+            <div class="card-meta"><div class="card-title">Quadratic</div><div class="card-eq">y = a[k(x − d)]² + c</div></div>
             <div class="card-chevron">›</div>
           </a>
         </div>
@@ -160,10 +122,7 @@
         <div class="card">
           <a href="sqrt_explorer.html">
             <div class="card-graph"><canvas id="g2" width="42" height="42"></canvas></div>
-            <div class="card-meta">
-              <div class="card-title">Square Root</div>
-              <div class="card-eq">y = a√[k(x − d)] + c</div>
-            </div>
+            <div class="card-meta"><div class="card-title">Square Root</div><div class="card-eq">y = a√[k(x − d)] + c</div></div>
             <div class="card-chevron">›</div>
           </a>
         </div>
@@ -171,10 +130,7 @@
         <div class="card">
           <a href="rational_explorer.html">
             <div class="card-graph"><canvas id="g3" width="42" height="42"></canvas></div>
-            <div class="card-meta">
-              <div class="card-title">Rational / Reciprocal</div>
-              <div class="card-eq">y = a / [k(x − d)] + c</div>
-            </div>
+            <div class="card-meta"><div class="card-title">Rational / Reciprocal</div><div class="card-eq">y = a / k(x − d) + c</div></div>
             <div class="card-chevron">›</div>
           </a>
         </div>
@@ -182,10 +138,7 @@
         <div class="card">
           <a href="exponential_explorer.html">
             <div class="card-graph"><canvas id="g4" width="42" height="42"></canvas></div>
-            <div class="card-meta">
-              <div class="card-title">Exponential</div>
-              <div class="card-eq">y = a · b<sup>x</sup></div>
-            </div>
+            <div class="card-meta"><div class="card-title">Exponential</div><div class="card-eq">y = a · b<sup>x</sup></div></div>
             <div class="card-chevron">›</div>
           </a>
         </div>
@@ -193,10 +146,7 @@
         <div class="card">
           <a href="log_explorer.html">
             <div class="card-graph"><canvas id="g5" width="42" height="42"></canvas></div>
-            <div class="card-meta">
-              <div class="card-title">Logarithmic</div>
-              <div class="card-eq">y = a · log<sub>b</sub>(x)</div>
-            </div>
+            <div class="card-meta"><div class="card-title">Logarithmic</div><div class="card-eq">y = a · log<sub>b</sub>(x)</div></div>
             <div class="card-chevron">›</div>
           </a>
         </div>
@@ -204,10 +154,15 @@
         <div class="card">
           <a href="trig_explorer.html">
             <div class="card-graph"><canvas id="g6" width="42" height="42"></canvas></div>
-            <div class="card-meta">
-              <div class="card-title">Trig Ratios</div>
-              <div class="card-eq">sin θ · cos θ · tan θ</div>
-            </div>
+            <div class="card-meta"><div class="card-title">Trig Ratios</div><div class="card-eq">sin θ · cos θ · tan θ</div></div>
+            <div class="card-chevron">›</div>
+          </a>
+        </div>
+
+        <div class="card">
+          <a href="interest_explorer.html">
+            <div class="card-graph"><canvas id="g7" width="42" height="42"></canvas></div>
+            <div class="card-meta"><div class="card-title">Interest &amp; Present Value</div><div class="card-eq">A = P(1+r/n)<sup>nt</sup> · A = Pe<sup>rt</sup> · PV = FV/(1+r)<sup>t</sup></div></div>
             <div class="card-chevron">›</div>
           </a>
         </div>
@@ -216,13 +171,13 @@
     </div>
   </div>
 
-  <!-- CATEGORY 2 — collapsed by default -->
+  <!-- CATEGORY 2 -->
   <div class="cat-block" id="cat2">
     <button class="cat-toggle" onclick="toggleCat('cat2')">
       <span class="cat-num">02</span>
       <span class="cat-label">
         <span class="cat-name">Economic &amp; Financial Functions</span>
-        <span class="cat-sub">Compound Interest · Supply &amp; Demand · Cost/Revenue · Depreciation · PV/FV</span>
+        <span class="cat-sub">Utility · Production · Cost · Demand · Growth</span>
       </span>
       <span class="cat-count">Coming soon</span>
       <span class="cat-arrow">▾</span>
@@ -233,10 +188,7 @@
         <div class="card card-ph">
           <a href="#">
             <div class="card-graph"><canvas id="e0" width="42" height="42"></canvas></div>
-            <div class="card-meta">
-              <div class="card-title">Compound Interest</div>
-              <div class="card-eq">A = P(1 + r/n)<sup>nt</sup></div>
-            </div>
+            <div class="card-meta"><div class="card-title">Cobb-Douglas Utility</div><div class="card-eq">U = x<sup>a</sup> · y<sup>b</sup></div></div>
             <div class="soon-badge">Soon</div>
           </a>
         </div>
@@ -244,10 +196,7 @@
         <div class="card card-ph">
           <a href="#">
             <div class="card-graph"><canvas id="e1" width="42" height="42"></canvas></div>
-            <div class="card-meta">
-              <div class="card-title">Supply &amp; Demand</div>
-              <div class="card-eq">P = f(Q<sub>s</sub>) · g(Q<sub>d</sub>)</div>
-            </div>
+            <div class="card-meta"><div class="card-title">Supply &amp; Demand</div><div class="card-eq">P = f(Q<sub>s</sub>) · g(Q<sub>d</sub>)</div></div>
             <div class="soon-badge">Soon</div>
           </a>
         </div>
@@ -255,10 +204,7 @@
         <div class="card card-ph">
           <a href="#">
             <div class="card-graph"><canvas id="e2" width="42" height="42"></canvas></div>
-            <div class="card-meta">
-              <div class="card-title">Cost / Revenue / Profit</div>
-              <div class="card-eq">π = R − C</div>
-            </div>
+            <div class="card-meta"><div class="card-title">Cost / Revenue / Profit</div><div class="card-eq">π = R − C</div></div>
             <div class="soon-badge">Soon</div>
           </a>
         </div>
@@ -266,10 +212,7 @@
         <div class="card card-ph">
           <a href="#">
             <div class="card-graph"><canvas id="e3" width="42" height="42"></canvas></div>
-            <div class="card-meta">
-              <div class="card-title">Depreciation</div>
-              <div class="card-eq">V = V₀(1 − r)<sup>t</sup></div>
-            </div>
+            <div class="card-meta"><div class="card-title">Logistic Growth</div><div class="card-eq">P(t) = K / (1 + Ae<sup>−rt</sup>)</div></div>
             <div class="soon-badge">Soon</div>
           </a>
         </div>
@@ -277,10 +220,7 @@
         <div class="card card-ph">
           <a href="#">
             <div class="card-graph"><canvas id="e4" width="42" height="42"></canvas></div>
-            <div class="card-meta">
-              <div class="card-title">Present &amp; Future Value</div>
-              <div class="card-eq">PV = FV / (1 + r)<sup>t</sup></div>
-            </div>
+            <div class="card-meta"><div class="card-title">Average Cost</div><div class="card-eq">AC = TC / Q</div></div>
             <div class="soon-badge">Soon</div>
           </a>
         </div>
@@ -303,7 +243,6 @@ function toggleCat(id) {
   const block = document.getElementById(id);
   const wasOpen = block.classList.contains('open');
   block.classList.toggle('open', !wasOpen);
-  // draw previews when opening for the first time
   if (!wasOpen) drawPreviews();
 }
 
@@ -321,8 +260,8 @@ function drawPreviews() {
     const zx=pad+(0-xMin)/(xMax-xMin)*(W-2*pad);
     const zy=pad+(yMax-0)/(yMax-yMin)*(H-2*pad);
     ctx.strokeStyle='rgba(0,0,0,0.08)'; ctx.lineWidth=0.5;
-    ctx.beginPath(); ctx.moveTo(Math.max(pad,Math.min(W-pad,zx)),pad); ctx.lineTo(Math.max(pad,Math.min(W-pad,zx)),H-pad); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(pad,Math.max(pad,Math.min(H-pad,zy))); ctx.lineTo(W-pad,Math.max(pad,Math.min(H-pad,zy))); ctx.stroke();
+    ctx.beginPath();ctx.moveTo(Math.max(pad,Math.min(W-pad,zx)),pad);ctx.lineTo(Math.max(pad,Math.min(W-pad,zx)),H-pad);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(pad,Math.max(pad,Math.min(H-pad,zy)));ctx.lineTo(W-pad,Math.max(pad,Math.min(H-pad,zy)));ctx.stroke();
     ctx.strokeStyle=color; ctx.lineWidth=2; ctx.lineJoin='round';
     ctx.beginPath(); let pen=false;
     for(let px=pad;px<=W-pad;px++){
@@ -356,6 +295,28 @@ function drawPreviews() {
     ctx.fillStyle='#e24b4a';ctx.fill();
   }
 
+  // interest preview - exponential curve
+  function drawInterest() {
+    const canvas=document.getElementById('g7');
+    if(!canvas)return;
+    const ctx=canvas.getContext('2d');
+    const W=canvas.width,H=canvas.height,pad=5;
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(0,0,0,0.08)';ctx.lineWidth=0.5;
+    ctx.beginPath();ctx.moveTo(pad,H-pad);ctx.lineTo(W-pad,H-pad);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(pad,pad);ctx.lineTo(pad,H-pad);ctx.stroke();
+    ctx.strokeStyle='#0F6E56';ctx.lineWidth=2;ctx.lineJoin='round';
+    ctx.beginPath();
+    for(let px=pad;px<=W-pad;px++){
+      const t=(px-pad)/(W-2*pad)*10;
+      const y=1000*Math.pow(1+0.05/12,12*t);
+      const yMax=1650,yMin=1000;
+      const sy=H-pad-(y-yMin)/(yMax-yMin)*(H-2*pad);
+      if(px===pad)ctx.moveTo(px,sy);else ctx.lineTo(px,sy);
+    }
+    ctx.stroke();
+  }
+
   dp('g0', x=>x,                                       '#185FA5', -4,4,  -4,4);
   dp('g1', x=>x*x-1,                                   '#0F6E56', -3,3,  -2,5);
   dp('g2', x=>x<0?null:Math.sqrt(x),                   '#185FA5', -0.5,5,-1,3);
@@ -363,11 +324,12 @@ function drawPreviews() {
   dp('g4', x=>Math.pow(2,x)/4,                         '#854F0B', -4,4,  -1,4);
   dp('g5', x=>x<=0?null:Math.log(x)/Math.log(2)*0.8,  '#993C1D', -0.5,5,-3,3);
   drawCircle();
-  dp('e0', x=>x<0?null:Math.pow(1.4,x)*0.5,            '#0F6E56', -0.5,5,-0.5,5);
-  dp('e1', x=>3-x*0.6,                                 '#185FA5', -0.5,5,-0.5,5);
+  drawInterest();
+  dp('e0', x=>x<0?null:Math.pow(x,0.5)*Math.pow(Math.max(0,4-x),0.5), '#0F6E56', 0,4, 0,2);
+  dp('e1', x=>3-x*0.6,                                 '#185FA5', -0.5,5,-0.5,4);
   dp('e2', x=>2*x-x*x*0.3-1,                           '#854F0B', -0.5,5,-2,4);
-  dp('e3', x=>x<0?null:3*Math.pow(0.7,x),              '#993C1D', -0.5,5,-0.5,4);
-  dp('e4', x=>x<0?null:2/Math.pow(1.1,x),              '#0F6E56', -0.5,5,-0.5,4);
+  dp('e3', x=>4/(1+3*Math.exp(-x)),                    '#993C1D', -2,6,  0,4);
+  dp('e4', x=>x<=0?null:(2+0.5*x)/x,                  '#185FA5', 0.2,5, 0,5);
 }
 </script>
 </body>

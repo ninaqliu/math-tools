@@ -38,9 +38,33 @@
   .readme-inner ul { padding-left:1.1rem; }
   .readme-inner li { margin-bottom:3px; }
   .readme-inner .param { font-family:'DM Mono',monospace; font-size:0.78rem; background:#3a3630; padding:1px 6px; border-radius:4px; color:#e8e4dc; }
-  .eq-display { font-family:'DM Mono',monospace; margin-bottom:1rem; padding:10px 14px; background:var(--card); border-radius:10px; border:1px solid var(--border); border-left:4px solid var(--blue); }
-  .eq-formula { font-size:1.1rem; color:#444; }
-  .eq-current { font-size:0.85rem; color:var(--muted); margin-top:3px; }
+
+  /* Fraction equation display */
+  .eq-display { margin-bottom:1rem; padding:12px 16px; background:var(--card); border-radius:10px; border:1px solid var(--border); border-left:4px solid var(--blue); }
+
+  .eq-fraction-wrap {
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'DM Mono',monospace; font-size:1rem; color:#444;
+  }
+
+  .fraction {
+    display:inline-flex; flex-direction:column;
+    align-items:center; gap:0; vertical-align:middle;
+  }
+  .frac-num {
+    font-family:'DM Mono',monospace; font-size:0.95rem; color:#444;
+    padding:0 4px; line-height:1.3;
+  }
+  .frac-line {
+    width:100%; height:1.5px; background:#444; margin:2px 0;
+  }
+  .frac-den {
+    font-family:'DM Mono',monospace; font-size:0.95rem; color:#444;
+    padding:0 4px; line-height:1.3;
+  }
+
+  .eq-current { font-family:'DM Mono',monospace; font-size:0.82rem; color:var(--muted); margin-top:6px; }
+
   .controls { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1rem; }
   @media (max-width:440px) { .controls { grid-template-columns:1fr; } }
   .group { background:var(--card); border-radius:10px; border:1px solid var(--border); padding:10px 12px; }
@@ -76,7 +100,7 @@
     <a href="linear_explorer.html">Linear &nbsp; y = mx + b</a>
     <a href="quadratic_explorer.html">Quadratic &nbsp; y = a[k(x−d)]² + c</a>
     <a href="sqrt_explorer.html">Square Root &nbsp; y = a√[k(x−d)] + c</a>
-    <a href="rational_explorer.html" class="active">Rational &nbsp; y = a / [k(x−d)] + c</a>
+    <a href="rational_explorer.html" class="active">Rational &nbsp; y = a / k(x−d) + c</a>
     <a href="exponential_explorer.html">Exponential &nbsp; y = a · b<sup style="font-size:0.65em;">x</sup></a>
     <a href="log_explorer.html">Logarithm &nbsp; y = a · log<sub style="font-size:0.65em;">b</sub>(x)</a>
     <a href="trig_explorer.html">Trig Ratios &nbsp; sin · cos · tan</a>
@@ -100,45 +124,50 @@
     <div class="readme-body">
       <div class="readme-inner">
         <h3>What this shows</h3>
-        This tool explores <span class="param">y = a / [k(x − d)] + c</span>. The base function is y = 1/x — a hyperbola with two branches. Adjust sliders to transform it.
-
+        This tool explores the rational (reciprocal) function. The numerator is <span class="param">a</span> and the denominator is <span class="param">k(x − d)</span>, producing a hyperbola with two branches.
         <h3>Parameters</h3>
         <ul>
-          <li><span class="param">a</span> — vertical stretch (|a| &gt; 1) or compression (|a| &lt; 1). Negative a reflects both branches.</li>
-          <li><span class="param">k</span> — horizontal stretch or compression. Affects how quickly the curve approaches the asymptote.</li>
-          <li><span class="param">d</span> — horizontal shift. Moves the vertical asymptote left or right.</li>
-          <li><span class="param">c</span> — vertical shift. Moves the horizontal asymptote up or down.</li>
+          <li><span class="param">a</span> — scales the numerator. Larger |a| = branches further from centre. Negative a flips both branches.</li>
+          <li><span class="param">k</span> — scales the denominator. Larger |k| = branches compress toward the asymptote.</li>
+          <li><span class="param">d</span> — shifts the vertical asymptote left or right.</li>
+          <li><span class="param">c</span> — shifts the horizontal asymptote up or down.</li>
         </ul>
-
         <h3>Key concepts</h3>
         <ul>
-          <li>Vertical asymptote: x = d — the curve never crosses this line</li>
-          <li>Horizontal asymptote: y = c — the curve approaches but never reaches this</li>
-          <li>Two branches — one on each side of the vertical asymptote</li>
+          <li>Vertical asymptote: x = d — denominator = 0 here, curve undefined</li>
+          <li>Horizontal asymptote: y = c — curve approaches this as x → ±∞</li>
+          <li>Two branches, one in each pair of opposite quadrants from centre (d, c)</li>
           <li>Domain: all x ≠ d &nbsp;·&nbsp; Range: all y ≠ c</li>
-          <li>Centre of the hyperbola is always at (d, c)</li>
         </ul>
-
         <h3>Try this</h3>
         <ul>
-          <li>Move d — watch the vertical asymptote shift</li>
-          <li>Move c — watch the horizontal asymptote shift</li>
-          <li>Set a &lt; 0 — branches flip to opposite quadrants</li>
-          <li>Increase |a| — branches stretch further from centre</li>
-          <li>Increase |k| — branches compress closer to asymptote</li>
+          <li>Move d — watch the vertical asymptote move</li>
+          <li>Move c — watch the horizontal asymptote move</li>
+          <li>Set a &lt; 0 — branches switch quadrants</li>
+          <li>Increase |a| — branches stretch further</li>
+          <li>Increase |k| — branches squeeze toward the asymptote</li>
         </ul>
       </div>
     </div>
   </div>
 
+  <!-- Fraction equation display -->
   <div class="eq-display">
-    <div class="eq-formula">y = a / [k(x − d)] + c</div>
+    <div class="eq-fraction-wrap">
+      <span>y =</span>
+      <div class="fraction">
+        <div class="frac-num" id="fracNum">a</div>
+        <div class="frac-line" id="fracLine"></div>
+        <div class="frac-den" id="fracDen">k(x − d)</div>
+      </div>
+      <span id="fracC">+ c</span>
+    </div>
     <div class="eq-current" id="eqCurrent">current: y = 1.00 / [1.00(x − 0.00)] + 0.00</div>
   </div>
 
   <div class="controls">
     <div class="group">
-      <div class="group-label">a — vertical stretch/flip</div>
+      <div class="group-label">a — numerator (0.1 to 5)</div>
       <div class="sign-row">
         <button class="sign-btn active" data-param="a" data-sign="pos">a &gt; 0</button>
         <button class="sign-btn" data-param="a" data-sign="neg">a &lt; 0 (flip)</button>
@@ -151,7 +180,7 @@
     </div>
 
     <div class="group">
-      <div class="group-label">k — horizontal factor</div>
+      <div class="group-label">k — denominator factor</div>
       <div class="sign-row">
         <button class="sign-btn active" data-param="k" data-sign="pos">k &gt; 0</button>
         <button class="sign-btn" data-param="k" data-sign="neg">k &lt; 0</button>
@@ -210,7 +239,8 @@ function getA() { return signA * (+document.getElementById('slA').value / 100); 
 function getK() { return signK * (+document.getElementById('slK').value / 100); }
 function getD() { return +document.getElementById('slD').value / 100; }
 function getC() { return +document.getElementById('slC').value / 100; }
-function fmt(v) { return (v >= 0 ? '+' : '') + v.toFixed(2); }
+
+function fmtSign(v) { return (v >= 0 ? ' + ' : ' − ') + Math.abs(v).toFixed(2); }
 
 function updateLabels() {
   const a = getA(), k = getK(), d = getD(), c = getC();
@@ -219,15 +249,19 @@ function updateLabels() {
   document.getElementById('vD').textContent = d.toFixed(2);
   document.getElementById('vC').textContent = c.toFixed(2);
 
-  const dSign = d >= 0 ? '−' : '+';
+  // update fraction display
+  const dSign = d >= 0 ? ' − ' : ' + ';
   const dAbs = Math.abs(d).toFixed(2);
+  document.getElementById('fracNum').textContent = a.toFixed(2);
+  document.getElementById('fracDen').textContent = `${k.toFixed(2)}(x${dSign}${dAbs})`;
+  document.getElementById('fracC').textContent = fmtSign(c);
+
+  // update current equation text
   document.getElementById('eqCurrent').textContent =
-    `current: y = ${a.toFixed(2)} / [${k.toFixed(2)}(x ${dSign} ${dAbs})] ${fmt(c)}`;
+    `current: y = ${a.toFixed(2)} / [${k.toFixed(2)}(x${dSign}${dAbs})]${fmtSign(c)}`;
 
   const aDesc = Math.abs(a) > 1 ? 'vertical stretch' : 'vertical compression';
   const flip = a < 0 ? ' · branches reflected' : '';
-  const hshift = d !== 0 ? `vert. asymptote at x = ${d.toFixed(2)}` : 'vert. asymptote at x = 0';
-  const vshift = `horiz. asymptote at y = ${c.toFixed(2)}`;
 
   document.getElementById('info').innerHTML =
     `<strong>Vertical asymptote:</strong> x = ${d.toFixed(2)} &nbsp;·&nbsp; <strong>Horizontal asymptote:</strong> y = ${c.toFixed(2)}<br>` +
@@ -248,17 +282,14 @@ function draw(a, k, d, c) {
   function sx(x){return pad.l+(x-xMin)/(xMax-xMin)*W;}
   function sy(y){return pad.t+(yMax-y)/(yMax-yMin)*H;}
 
-  // grid
   ctx.strokeStyle='rgba(0,0,0,0.06)'; ctx.lineWidth=0.5;
   for(let x=xMin;x<=xMax;x++){ctx.beginPath();ctx.moveTo(sx(x),sy(yMin));ctx.lineTo(sx(x),sy(yMax));ctx.stroke();}
   for(let y=yMin;y<=yMax;y+=2){ctx.beginPath();ctx.moveTo(sx(xMin),sy(y));ctx.lineTo(sx(xMax),sy(y));ctx.stroke();}
 
-  // axes
   ctx.strokeStyle='rgba(0,0,0,0.45)'; ctx.lineWidth=1.5;
   ctx.beginPath();ctx.moveTo(sx(xMin),sy(0));ctx.lineTo(sx(xMax),sy(0));ctx.stroke();
   ctx.beginPath();ctx.moveTo(sx(0),sy(yMin));ctx.lineTo(sx(0),sy(yMax));ctx.stroke();
 
-  // tick labels
   ctx.fillStyle='#666'; ctx.font='10px DM Mono,monospace'; ctx.textAlign='center';
   for(let x=xMin;x<=xMax;x++){if(x===0)continue;if(x%2===0)ctx.fillText(x,sx(x),sy(0)+13);}
   ctx.textAlign='right';
@@ -281,11 +312,11 @@ function draw(a, k, d, c) {
     ctx.strokeStyle='rgba(15,110,86,0.45)'; ctx.lineWidth=1.5; ctx.setLineDash([5,4]);
     ctx.beginPath();ctx.moveTo(sx(xMin),sy(c));ctx.lineTo(sx(xMax),sy(c));ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle='#0F6E56'; ctx.font='10px DM Mono,monospace'; ctx.textAlign='left';
-    ctx.fillText('y='+c.toFixed(1), sx(xMax)+2, sy(c)-4);
+    ctx.fillStyle='#0F6E56'; ctx.font='10px DM Mono,monospace'; ctx.textAlign='right';
+    ctx.fillText('y='+c.toFixed(1), sx(xMax)-2, sy(c)-5);
   }
 
-  // ghost base y=1/x
+  // ghost y=1/x
   ctx.strokeStyle='rgba(0,0,0,0.09)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
   ctx.beginPath(); let pen=false;
   for(let i=1;i<=800;i++){
@@ -298,13 +329,13 @@ function draw(a, k, d, c) {
   }
   ctx.stroke(); ctx.setLineDash([]);
 
-  // main curve — draw each branch separately
-  const drawBranch = (xStart, xEnd) => {
+  // two branches
+  const gap=0.08;
+  const drawBranch=(x1,x2)=>{
     ctx.strokeStyle='#185FA5'; ctx.lineWidth=2.5; ctx.lineJoin='round';
     ctx.beginPath(); pen=false;
-    const steps=600;
-    for(let i=0;i<=steps;i++){
-      const x=xStart+i*(xEnd-xStart)/steps;
+    for(let i=0;i<=600;i++){
+      const x=x1+i*(x2-x1)/600;
       const denom=k*(x-d);
       if(Math.abs(denom)<0.001){pen=false;continue;}
       const v=a/denom+c;
@@ -314,15 +345,13 @@ function draw(a, k, d, c) {
     }
     ctx.stroke();
   };
-
-  const gap=0.08;
   drawBranch(xMin, d-gap);
   drawBranch(d+gap, xMax);
 
   // centre dot
   if(d>=xMin&&d<=xMax&&c>=yMin&&c<=yMax){
     ctx.beginPath();ctx.arc(sx(d),sy(c),5,0,Math.PI*2);
-    ctx.fillStyle='rgba(24,95,165,0.3)';ctx.fill();
+    ctx.fillStyle='rgba(24,95,165,0.25)';ctx.fill();
     ctx.strokeStyle='#185FA5';ctx.lineWidth=1.5;ctx.stroke();
   }
 }
