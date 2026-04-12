@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fraction Concepts — Ms. Liu</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #faf9f7; --surface: #ffffff; --border: #e8e5df;
+    --text: #1a1917; --muted: #6b6860; --tag-bg: #f0ede6; --panel-bg: #f7f5f1;
+    --blue: #2a5bd7; --blue-bg: #e8f0fd; --blue-light: #c8d8f8;
+    --green: #2d7a4f; --green-bg: #e6f4ed;
+    --amber: #7a5000; --amber-bg: #fdf3dc;
+    --red: #b33a2a; --red-bg: #fdecea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141312; --surface: #1e1d1b; --border: #2e2d2a;
+      --text: #f0ede6; --muted: #8a8780; --tag-bg: #2a2926; --panel-bg: #1a1917;
+      --blue: #7aa4f0; --blue-bg: #1a2a50; --blue-light: #2a3f70;
+      --green: #5ab87a; --green-bg: #0f2a1a;
+      --amber: #d4a030; --amber-bg: #2a1f00;
+      --red: #e07060; --red-bg: #2a1010;
+    }
+  }
+
+  body { font-family: 'Georgia', 'Times New Roman', serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  nav { border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; gap: 2rem; height: 52px; background: var(--surface); position: sticky; top: 0; z-index: 100; }
+  .nav-brand { font-size: 14px; color: var(--text); text-decoration: none; white-space: nowrap; }
+  .nav-brand em { font-style: italic; color: var(--muted); }
+  .nav-links { display: flex; overflow-x: auto; scrollbar-width: none; flex: 1; }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a { font-size: 12px; color: var(--muted); text-decoration: none; padding: 0 14px; height: 52px; display: flex; align-items: center; white-space: nowrap; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  .nav-links a:hover { color: var(--text); border-bottom-color: var(--text); }
+  .nav-links a.active { color: var(--text); border-bottom-color: var(--text); }
+
+  .page-header { max-width: 820px; margin: 0 auto; padding: 3rem 2rem 1.5rem; border-bottom: 1px solid var(--border); }
+  .breadcrumb { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px; color: var(--muted); margin-bottom: 0.6rem; }
+  .breadcrumb a { color: var(--muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--text); }
+  .page-title { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: normal; letter-spacing: -0.02em; line-height: 1.2; }
+  .page-subtitle { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 13px; color: var(--muted); margin-top: 0.35rem; }
+
+  .how-to { max-width: 820px; margin: 0 auto; border-bottom: 1px solid var(--border); }
+  .how-to-header { padding: 1rem 2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; color: var(--muted); user-select: none; }
+  .how-to-header:hover { color: var(--text); }
+  .how-to-arrow { transition: transform 0.2s; display: inline-block; }
+  .how-to-body { display: none; padding: 0 2rem 1.5rem; }
+  .how-to-body.open { display: block; }
+  .how-to-body h3 { font-size: 13px; font-weight: normal; font-family: 'Helvetica Neue', Arial, sans-serif; color: var(--text); margin: 1rem 0 0.3rem; }
+  .how-to-body p, .how-to-body li { font-size: 13px; color: var(--muted); font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.65; }
+  .how-to-body ul { padding-left: 1.2rem; }
+  .how-to-body li { margin-bottom: 0.2rem; }
+
+  .main { max-width: 820px; margin: 0 auto; padding: 2rem; display: grid; gap: 2rem; }
+
+  .section-label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+
+  .panel { background: var(--surface); border: 1px solid var(--border); padding: 1.5rem; }
+
+  /* FRACTION BAR */
+  .frac {
+    display: inline-flex; flex-direction: column; align-items: center;
+    font-family: 'Georgia', serif; line-height: 1; vertical-align: middle;
+  }
+  .frac .fn { padding-bottom: 3px; min-width: 1.6ch; text-align: center; display: block; }
+  .frac .fd { padding-top: 3px; border-top: 2px solid var(--text); min-width: 1.6ch; text-align: center; display: block; }
+
+  .badge { display: inline-block; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.03em; }
+  .badge-proper  { background: var(--green-bg); color: var(--green); }
+  .badge-improper { background: var(--red-bg); color: var(--red); }
+  .badge-whole   { background: var(--amber-bg); color: var(--amber); }
+
+  .slider-row { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }
+  .slider-row label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 13px; color: var(--muted); width: 140px; flex-shrink: 0; }
+  .slider-row input[type=range] { flex: 1; }
+  .slider-row .val { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 13px; font-weight: 500; min-width: 26px; text-align: right; color: var(--text); }
+
+  .pie-wrap { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; margin-top: 0.75rem; }
+  .pie-unit { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .pie-lbl { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px; color: var(--muted); }
+
+  .steps { margin-top: 1.25rem; }
+  .step { display: grid; grid-template-columns: 1.5rem 1fr; gap: 0 0.75rem; padding: 0.65rem 0; border-top: 1px solid var(--border); align-items: start; }
+  .step:first-child { border-top: none; }
+  .step-n { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px; color: var(--muted); padding-top: 1px; }
+  .step-b { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 13px; color: var(--text); line-height: 1.6; }
+  .step-b em { font-style: normal; color: var(--blue); font-weight: 500; }
+  .step-math { font-family: 'Georgia', serif; font-size: 14px; margin-top: 5px; display: block; }
+
+  .result-box { background: var(--blue-bg); border: 1px solid var(--blue-light); padding: 1rem 1.25rem; margin-top: 1rem; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .result-label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; color: var(--blue); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+
+  .tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+  .tab { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; color: var(--muted); padding: 0.6rem 1rem; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; user-select: none; transition: color 0.15s, border-color 0.15s; white-space: nowrap; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--text); border-bottom-color: var(--text); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .btn-reset { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; color: var(--muted); background: none; border: 1px solid var(--border); padding: 5px 14px; cursor: pointer; }
+  .btn-reset:hover { color: var(--text); background: var(--tag-bg); }
+
+  footer { border-top: 1px solid var(--border); padding: 1.5rem 2rem; text-align: center; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px; color: var(--muted); margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">Ms. Liu · <em>Math Tools</em></a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="fraction_concepts.html" class="active">Fraction Concepts &nbsp; ¾</a>
+    <a href="linear_explorer.html">Linear &nbsp; y = mx + b</a>
+    <a href="quadratic_explorer.html">Quadratic</a>
+    <a href="exponential_explorer.html">Exponential</a>
+    <a href="trig_explorer.html">Trig Ratios</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="breadcrumb"><a href="index.html">Home</a> &nbsp;·&nbsp; Middle School Math &nbsp;·&nbsp; Number &amp; Operations</div>
+  <h1 class="page-title">Fraction Concepts</h1>
+  <p class="page-subtitle">proper fractions · improper fractions · mixed numbers · conversion</p>
+</div>
+
+<div class="how-to">
+  <div class="how-to-header" onclick="toggleHow(this)">
+    How to use this tool &nbsp;<span class="how-to-arrow">▾</span>
+  </div>
+  <div class="how-to-body">
+    <h3>What this shows</h3>
+    <p>Set a numerator and denominator with the sliders. The tool displays the fraction using a proper fraction bar, classifies it, and draws a visual circle model. Use the Conversion section to see step-by-step working.</p>
+    <h3>Key concepts</h3>
+    <ul>
+      <li><strong>Proper fraction</strong> — numerator &lt; denominator. Value is less than 1. Example: ³⁄₄</li>
+      <li><strong>Improper fraction</strong> — numerator ≥ denominator. Value is 1 or greater. Example: ⁷⁄₄</li>
+      <li><strong>Mixed number</strong> — a whole number plus a proper fraction. Example: 1¾</li>
+      <li>Improper fractions and mixed numbers represent the <em>same value</em>, written differently.</li>
+    </ul>
+    <h3>Try this</h3>
+    <ul>
+      <li>Set numerator = denominator — what kind of fraction is that? What value is it?</li>
+      <li>Make the numerator much larger than the denominator — how many whole circles appear?</li>
+      <li>Switch to the Conversion tab and adjust the sliders to see step-by-step working.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- SECTION 1: FRACTION EXPLORER -->
+  <div>
+    <div class="section-label">Fraction Explorer</div>
+    <div class="panel">
+
+      <div class="slider-row">
+        <label>Numerator (top)</label>
+        <input type="range" id="num" min="1" max="20" value="3" step="1" oninput="update()">
+        <span class="val" id="num-val">3</span>
+      </div>
+      <div class="slider-row">
+        <label>Denominator (bottom)</label>
+        <input type="range" id="den" min="1" max="12" value="4" step="1" oninput="update()">
+        <span class="val" id="den-val">4</span>
+      </div>
+      <button class="btn-reset" onclick="document.getElementById('num').value=3;document.getElementById('den').value=4;update()">↺ Reset</button>
+
+      <!-- FRACTION DISPLAY -->
+      <div style="margin-top:1.75rem; display:flex; align-items:center; gap:2rem; flex-wrap:wrap;">
+        <div class="frac" style="font-size:2.4rem;" id="main-frac">
+          <span class="fn" id="disp-n">3</span>
+          <span class="fd" id="disp-d">4</span>
+        </div>
+        <div>
+          <div id="badge-area" style="margin-bottom:6px;"></div>
+          <div id="value-desc" style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:var(--muted);line-height:1.5;"></div>
+        </div>
+      </div>
+
+      <!-- PIE MODEL -->
+      <div style="margin-top:1.5rem;">
+        <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:8px;">Visual model</div>
+        <div class="pie-wrap" id="pie-area"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION 2: CONVERSION -->
+  <div>
+    <div class="section-label">Conversion</div>
+    <div class="panel">
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('i2m',this)">Improper → Mixed number</div>
+        <div class="tab" onclick="switchTab('m2i',this)">Mixed number → Improper</div>
+      </div>
+
+      <!-- TAB A: improper to mixed -->
+      <div class="tab-panel active" id="tab-i2m">
+        <div class="slider-row">
+          <label>Numerator</label>
+          <input type="range" id="a-num" min="1" max="30" value="7" step="1" oninput="updateA()">
+          <span class="val" id="a-num-val">7</span>
+        </div>
+        <div class="slider-row">
+          <label>Denominator</label>
+          <input type="range" id="a-den" min="2" max="12" value="4" step="1" oninput="updateA()">
+          <span class="val" id="a-den-val">4</span>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:1rem;margin:1.25rem 0 0.5rem;flex-wrap:wrap;">
+          <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:var(--muted);">Converting:</span>
+          <div class="frac" style="font-size:1.5rem;">
+            <span class="fn" id="a-disp-n">7</span>
+            <span class="fd" id="a-disp-d">4</span>
+          </div>
+          <span id="a-badge"></span>
+        </div>
+
+        <div id="a-steps" class="steps"></div>
+        <div id="a-result" class="result-box" style="margin-top:1rem;"></div>
+      </div>
+
+      <!-- TAB B: mixed to improper -->
+      <div class="tab-panel" id="tab-m2i">
+        <div class="slider-row">
+          <label>Whole number</label>
+          <input type="range" id="b-whole" min="1" max="10" value="1" step="1" oninput="updateB()">
+          <span class="val" id="b-whole-val">1</span>
+        </div>
+        <div class="slider-row">
+          <label>Numerator (part)</label>
+          <input type="range" id="b-num" min="1" max="11" value="3" step="1" oninput="updateB()">
+          <span class="val" id="b-num-val">3</span>
+        </div>
+        <div class="slider-row">
+          <label>Denominator</label>
+          <input type="range" id="b-den" min="2" max="12" value="4" step="1" oninput="updateB()">
+          <span class="val" id="b-den-val">4</span>
+        </div>
+        <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:11px;color:var(--muted);margin-bottom:1rem;">Note: numerator must be less than denominator for a valid mixed number.</div>
+
+        <div style="display:flex;align-items:center;gap:0.75rem;margin:0 0 0.5rem;flex-wrap:wrap;">
+          <span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;color:var(--muted);">Converting:</span>
+          <span id="b-display" style="font-size:1.4rem;font-family:'Georgia',serif;display:flex;align-items:center;gap:3px;"></span>
+        </div>
+
+        <div id="b-steps" class="steps"></div>
+        <div id="b-result" class="result-box" style="margin-top:1rem;"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<footer>Ms. Liu · Fraction Concepts</footer>
+
+<script>
+  function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+
+  function frac(n, d, sz) {
+    sz = sz || '1.2rem';
+    return `<span class="frac" style="font-size:${sz}"><span class="fn">${n}</span><span class="fd">${d}</span></span>`;
+  }
+
+  function pie(filled, total) {
+    const r = 28, cx = 30, cy = 30, sz = 60;
+    if (total === 1) {
+      const fill = filled ? 'var(--blue)' : 'var(--panel-bg)';
+      return `<svg width="${sz}" height="${sz}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" stroke="var(--border)" stroke-width="1.5"/></svg>`;
+    }
+    let paths = '';
+    const step = (2 * Math.PI) / total;
+    for (let i = 0; i < total; i++) {
+      const a1 = -Math.PI/2 + i * step, a2 = a1 + step;
+      const x1 = cx + r*Math.cos(a1), y1 = cy + r*Math.sin(a1);
+      const x2 = cx + r*Math.cos(a2), y2 = cy + r*Math.sin(a2);
+      const lg = step > Math.PI ? 1 : 0;
+      const fill = i < filled ? 'var(--blue)' : 'var(--panel-bg)';
+      paths += `<path d="M${cx},${cy}L${x1.toFixed(2)},${y1.toFixed(2)}A${r},${r} 0 ${lg},1 ${x2.toFixed(2)},${y2.toFixed(2)}Z" fill="${fill}" stroke="var(--surface)" stroke-width="1.5"/>`;
+    }
+    return `<svg width="${sz}" height="${sz}">${paths}<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--border)" stroke-width="1.5"/></svg>`;
+  }
+
+  /* ── PART 1 ── */
+  function update() {
+    const n = +document.getElementById('num').value;
+    const d = +document.getElementById('den').value;
+    document.getElementById('num-val').textContent = n;
+    document.getElementById('den-val').textContent = d;
+    document.getElementById('disp-n').textContent = n;
+    document.getElementById('disp-d').textContent = d;
+
+    const whole = Math.floor(n / d);
+    const rem   = n % d;
+    const dec   = (n / d).toFixed(2);
+
+    let badge, desc;
+    if (n === d) {
+      badge = '<span class="badge badge-whole">Whole number = 1</span>';
+      desc  = `${n} ÷ ${d} = 1 exactly`;
+    } else if (rem === 0) {
+      badge = '<span class="badge badge-whole">Whole number</span>';
+      desc  = `${n} ÷ ${d} = ${whole} exactly`;
+    } else if (n < d) {
+      badge = '<span class="badge badge-proper">Proper fraction</span>';
+      desc  = `Value = ${dec} &nbsp;(less than 1)`;
+    } else {
+      badge = '<span class="badge badge-improper">Improper fraction</span>';
+      desc  = `Value = ${dec} &nbsp;= ${whole} whole${whole!==1?'s':''} and ${rem}/${d}`;
+    }
+    document.getElementById('badge-area').innerHTML = badge;
+    document.getElementById('value-desc').innerHTML = desc;
+
+    // pies
+    const pa = document.getElementById('pie-area');
+    pa.innerHTML = '';
+    if (n < d) {
+      const div = document.createElement('div');
+      div.className = 'pie-unit';
+      div.innerHTML = pie(n, d) + `<span class="pie-lbl">${n}/${d}</span>`;
+      pa.appendChild(div);
+    } else {
+      const wholes = Math.floor(n / d), leftover = n % d;
+      const count  = wholes + (leftover > 0 ? 1 : 0);
+      for (let i = 0; i < count; i++) {
+        const f   = i < wholes ? d : leftover;
+        const lbl = i < wholes ? `${d}/${d}` : `${leftover}/${d}`;
+        const div = document.createElement('div');
+        div.className = 'pie-unit';
+        div.innerHTML = pie(f, d) + `<span class="pie-lbl">${lbl}</span>`;
+        pa.appendChild(div);
+      }
+    }
+  }
+
+  /* ── PART 2A: improper → mixed ── */
+  function updateA() {
+    const n = +document.getElementById('a-num').value;
+    const d = +document.getElementById('a-den').value;
+    document.getElementById('a-num-val').textContent = n;
+    document.getElementById('a-den-val').textContent = d;
+    document.getElementById('a-disp-n').textContent  = n;
+    document.getElementById('a-disp-d').textContent  = d;
+
+    const isImp = n >= d;
+    document.getElementById('a-badge').innerHTML = isImp
+      ? '<span class="badge badge-improper">Improper</span>'
+      : '<span class="badge badge-proper">Proper — already less than 1</span>';
+
+    const stEl = document.getElementById('a-steps');
+    const rEl  = document.getElementById('a-result');
+
+    if (!isImp) {
+      stEl.innerHTML = '';
+      rEl.innerHTML  = `<div><div class="result-label">Note</div><span style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:var(--muted);">This is a proper fraction. Its value is already less than 1 — no conversion needed.</span></div>`;
+      return;
+    }
+
+    const whole = Math.floor(n / d);
+    const rem   = n % d;
+    const g     = rem > 0 ? gcd(rem, d) : 1;
+    const rn    = rem / g, rd = d / g;
+    const simplified = g > 1;
+
+    stEl.innerHTML = `
+      <div class="step"><span class="step-n">1</span>
+        <div class="step-b">Divide the numerator by the denominator to find the whole number part.<span class="step-math"><em>${n}</em> ÷ <em>${d}</em> = <em>${whole}</em> remainder <em>${rem}</em></span></div>
+      </div>
+      <div class="step"><span class="step-n">2</span>
+        <div class="step-b">The <em>quotient (${whole})</em> is the whole number. The <em>remainder (${rem})</em> becomes the new numerator. The denominator stays <em>${d}</em>.</div>
+      </div>
+      ${rem === 0 ? '' : `<div class="step"><span class="step-n">3</span>
+        <div class="step-b">${simplified
+          ? `Simplify the fraction part: ${frac(rem,d,'1rem')} — both divisible by ${g} — gives ${frac(rn,rd,'1rem')}.`
+          : `Check if ${frac(rem,d,'1rem')} can be simplified. GCD(${rem}, ${d}) = 1, so it is already in simplest form.`}
+        </div>
+      </div>`}
+    `;
+
+    if (rem === 0) {
+      rEl.innerHTML = `<div><div class="result-label">Result</div><span style="font-size:1.6rem;font-family:'Georgia',serif;">${whole}</span></div>
+        <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:var(--muted);">${frac(n,d,'1rem')} divides evenly — it equals the whole number <strong>${whole}</strong>.</div>`;
+    } else {
+      rEl.innerHTML = `
+        <div>
+          <div class="result-label">Result</div>
+          <div style="display:flex;align-items:center;gap:4px;font-family:'Georgia',serif;font-size:1.6rem;">${whole}${frac(rn,rd,'1.4rem')}</div>
+        </div>
+        <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:var(--muted);line-height:1.6;">
+          ${frac(n,d,'1rem')} = ${whole}${frac(rn,rd,'1rem')}
+          ${simplified ? `<br>(fraction part simplified from ${frac(rem,d,'0.95rem')} ÷ ${g})` : ''}
+        </div>`;
+    }
+  }
+
+  /* ── PART 2B: mixed → improper ── */
+  function updateB() {
+    let w  = +document.getElementById('b-whole').value;
+    let mn = +document.getElementById('b-num').value;
+    let md = +document.getElementById('b-den').value;
+    if (mn >= md) { mn = md - 1; document.getElementById('b-num').value = mn; }
+    document.getElementById('b-whole-val').textContent = w;
+    document.getElementById('b-num-val').textContent   = mn;
+    document.getElementById('b-den-val').textContent   = md;
+
+    const imp = w * md + mn;
+
+    // show mixed number
+    document.getElementById('b-display').innerHTML =
+      `<span>${w}</span>${frac(mn, md, '1.3rem')}`;
+
+    const stEl = document.getElementById('b-steps');
+    const rEl  = document.getElementById('b-result');
+
+    stEl.innerHTML = `
+      <div class="step"><span class="step-n">1</span>
+        <div class="step-b">Multiply the whole number by the denominator.<span class="step-math"><em>${w}</em> × <em>${md}</em> = <em>${w*md}</em></span></div>
+      </div>
+      <div class="step"><span class="step-n">2</span>
+        <div class="step-b">Add the numerator of the fraction part to that product.<span class="step-math"><em>${w*md}</em> + <em>${mn}</em> = <em>${imp}</em></span></div>
+      </div>
+      <div class="step"><span class="step-n">3</span>
+        <div class="step-b">Write the result over the original denominator. The denominator never changes.</div>
+      </div>
+    `;
+
+    rEl.innerHTML = `
+      <div>
+        <div class="result-label">Result</div>
+        ${frac(imp, md, '1.6rem')}
+      </div>
+      <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:var(--muted);line-height:1.6;">
+        ${w}${frac(mn,md,'1rem')} = ${frac(imp,md,'1rem')}
+        &nbsp;= ${(imp/md).toFixed(4)}
+      </div>`;
+  }
+
+  function switchTab(id, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('tab-'+id).classList.add('active');
+  }
+
+  function toggleHow(el) {
+    const body  = el.nextElementSibling;
+    const arrow = el.querySelector('.how-to-arrow');
+    const open  = body.classList.toggle('open');
+    arrow.style.transform = open ? 'rotate(180deg)' : '';
+  }
+
+  update(); updateA(); updateB();
+</script>
+</body>
+</html>

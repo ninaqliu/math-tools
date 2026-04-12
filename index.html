@@ -1,336 +1,634 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ms. Liu — Math Tools</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Math Tools</title>
 <style>
-  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-  :root { --bg:#f7f5f0; --card:#ffffff; --border:#d8d4cc; --text:#1a1814; --muted:#4a4844; --blue:#185FA5; }
-  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  .topbar { background:var(--text); padding:0; }
-  .topbar-main { display:flex; align-items:center; justify-content:space-between; padding:0.85rem 1.2rem; }
-  .site-title { font-family:'Playfair Display',serif; font-size:1rem; color:#f7f5f0; font-weight:400; text-decoration:none; }
-  .hamburger { background:none; border:none; cursor:pointer; padding:4px; display:flex; flex-direction:column; gap:5px; touch-action:manipulation; }
-  .hamburger span { display:block; width:22px; height:2px; background:#c8c4bc; border-radius:1px; transition:all 0.2s; }
-  .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
-  .hamburger.open span:nth-child(2) { opacity:0; }
-  .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
-  .nav-menu { display:none; flex-direction:column; border-top:1px solid #2e2c28; padding:0.4rem 0; }
-  .nav-menu.open { display:flex; }
-  .nav-cat { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:#555250; padding:0.7rem 1.4rem 0.3rem; }
-  .nav-menu a { display:block; padding:0.55rem 1.4rem 0.55rem 1.8rem; font-family:'DM Mono',monospace; font-size:0.78rem; color:#c8c4bc; text-decoration:none; letter-spacing:0.03em; transition:background 0.12s; }
-  .nav-menu a:hover { background:#2a2620; color:#f7f5f0; }
-  .nav-menu a.active { color:#f7f5f0; border-left:2px solid #f7f5f0; padding-left:calc(1.8rem - 2px); }
-  .nav-divider { height:1px; background:#2e2c28; margin:0.4rem 0; }
+  :root {
+    --bg: #faf9f7;
+    --surface: #ffffff;
+    --border: #e8e5df;
+    --border-hover: #ccc9c0;
+    --text: #1a1917;
+    --muted: #6b6860;
+    --accent: #1a1917;
+    --tag-bg: #f0ede6;
+    --tag-text: #4a4840;
+    --soon-bg: #f5f3ef;
+    --soon-text: #9a9790;
+    --pill-ms-bg: #e8f0fd;
+    --pill-ms: #2a5bd7;
+    --pill-hs-bg: #f0ede6;
+    --pill-hs: #5a4830;
+  }
 
-  .main { max-width:700px; margin:0 auto; padding:1.8rem 1.2rem 4rem; }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141312;
+      --surface: #1e1d1b;
+      --border: #2e2d2a;
+      --border-hover: #3e3d3a;
+      --text: #f0ede6;
+      --muted: #8a8780;
+      --accent: #f0ede6;
+      --tag-bg: #2a2926;
+      --tag-text: #b0ada6;
+      --soon-bg: #1a1917;
+      --soon-text: #5a5850;
+      --pill-ms-bg: #1a2a50;
+      --pill-ms: #7aa4f0;
+      --pill-hs-bg: #2a2518;
+      --pill-hs: #c0a870;
+    }
+  }
 
-  .cat-block { margin-bottom:1.2rem; border:1px solid var(--border); border-radius:14px; overflow:hidden; background:var(--card); }
-  .cat-toggle { width:100%; display:flex; align-items:center; gap:14px; padding:1rem 1.3rem; background:var(--card); border:none; cursor:pointer; text-align:left; transition:background 0.15s; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
-  .cat-toggle:hover { background:#faf8f4; }
-  .cat-block.open .cat-toggle { background:#faf8f4; }
-  .cat-num { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; color:#fff; background:var(--text); padding:2px 8px; border-radius:4px; text-transform:uppercase; flex-shrink:0; }
-  .cat-label { flex:1; }
-  .cat-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:400; color:var(--text); display:block; }
-  .cat-sub { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--muted); margin-top:2px; display:block; }
-  .cat-count { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--muted); flex-shrink:0; }
-  .cat-arrow { font-size:13px; color:var(--muted); flex-shrink:0; transition:transform 0.25s; }
-  .cat-block.open .cat-arrow { transform:rotate(180deg); }
-  .cat-panel { max-height:0; overflow:hidden; transition:max-height 0.45s ease; }
-  .cat-block.open .cat-panel { max-height:1400px; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
 
-  .cards { display:flex; flex-direction:column; gap:1px; background:var(--border); border-top:1px solid var(--border); }
-  .card { background:var(--card); }
-  .card:last-child { border-radius:0 0 14px 14px; }
-  .card a { display:flex; align-items:center; gap:14px; padding:0.85rem 1.2rem; text-decoration:none; color:inherit; transition:background 0.15s; }
-  .card a:hover { background:#faf8f4; }
-  .card-graph { flex:0 0 42px; height:42px; border-radius:7px; border:1px solid var(--border); background:#faf8f4; overflow:hidden; }
-  .card-graph canvas { display:block; }
-  .card-meta { flex:1; min-width:0; }
-  .card-title { font-family:'Playfair Display',serif; font-size:0.92rem; font-weight:400; color:#1a1814; margin-bottom:2px; }
-  .card-eq { font-family:'DM Mono',monospace; font-size:0.7rem; color:#4a4844; }
-  .card-chevron { font-size:14px; color:#4a4844; flex-shrink:0; }
+  /* NAV */
+  nav {
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    height: 52px;
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-brand {
+    font-size: 14px;
+    font-weight: normal;
+    letter-spacing: 0.01em;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav-brand em { font-style: italic; color: var(--muted); }
+  .nav-links {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex: 1;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a {
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0 14px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    font-family: 'Helvetica Neue', sans-serif;
+  }
+  .nav-links a:hover { color: var(--text); border-bottom-color: var(--text); }
+  .nav-links a.active { color: var(--text); border-bottom-color: var(--text); }
 
-  .card-ph a { opacity:0.4; cursor:default; pointer-events:none; }
-  .soon-badge { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; background:#f0ede8; color:#888480; padding:2px 7px; border-radius:4px; flex-shrink:0; text-transform:uppercase; }
+  /* HERO */
+  .hero {
+    padding: 4rem 2rem 2.5rem;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: normal;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+  .hero h1 em { font-style: italic; color: var(--muted); }
+  .hero p {
+    font-size: 15px;
+    color: var(--muted);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    max-width: 480px;
+    line-height: 1.6;
+  }
 
-  .footer { text-align:center; font-family:'DM Mono',monospace; font-size:0.7rem; color:#888480; padding-bottom:2rem; letter-spacing:0.06em; }
+  /* SECTIONS */
+  .sections { max-width: 820px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+  .section-block { margin-bottom: 1px; }
+
+  .section-header {
+    display: grid;
+    grid-template-columns: 3rem 1fr auto;
+    align-items: start;
+    gap: 0 1.25rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+  .section-header:hover .section-toggle { color: var(--text); }
+
+  .section-num {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    padding-top: 4px;
+  }
+
+  .section-meta { min-width: 0; }
+
+  .section-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: normal;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  .level-pill {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  .pill-ms { background: var(--pill-ms-bg); color: var(--pill-ms); }
+  .pill-hs { background: var(--pill-hs-bg); color: var(--pill-hs); }
+
+  .section-subtitle {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    line-height: 1.5;
+  }
+
+  .section-count {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .section-count span { color: var(--text); }
+
+  .section-toggle {
+    font-size: 13px;
+    color: var(--muted);
+    padding-top: 4px;
+    transition: color 0.15s, transform 0.25s;
+    line-height: 1;
+  }
+  .section-toggle.open { transform: rotate(180deg); }
+
+  /* TOOL GRID */
+  .tool-grid {
+    display: none;
+    padding-bottom: 1.5rem;
+    padding-left: calc(3rem + 1.25rem);
+  }
+  .tool-grid.open { display: block; }
+
+  /* Sub-categories for MS */
+  .subcategory { margin-bottom: 1.5rem; }
+  .subcategory-label {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tool-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  @media (max-width: 540px) {
+    .tool-cards { grid-template-columns: 1fr; }
+  }
+
+  .tool-card {
+    background: var(--surface);
+    padding: 1rem 1.1rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.12s;
+    gap: 0.75rem;
+  }
+  .tool-card:hover { background: var(--tag-bg); }
+  .tool-card.soon {
+    background: var(--soon-bg);
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .tool-card-left { min-width: 0; }
+  .tool-card-name {
+    font-size: 13.5px;
+    color: var(--text);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 500;
+    margin-bottom: 2px;
+    display: block;
+  }
+  .tool-card.soon .tool-card-name { color: var(--soon-text); }
+  .tool-card-formula {
+    font-family: 'Georgia', serif;
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+    display: block;
+  }
+  .tool-card.soon .tool-card-formula { color: var(--soon-text); }
+
+  .tool-card-arrow {
+    font-size: 14px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .tool-card.soon .tool-card-arrow { font-size: 11px; font-family: 'Helvetica Neue', sans-serif; color: var(--soon-text); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+  }
 </style>
 </head>
 <body>
 
-<nav class="topbar">
-  <div class="topbar-main">
-    <a class="site-title" href="index.html">Ms. Liu · <em style="font-style:italic;">Math Tools</em></a>
-    <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-  <div class="nav-menu" id="navMenu">
-    <a href="index.html" class="active" style="padding-left:1.4rem;">Home</a>
-    <div class="nav-divider"></div>
-    <div class="nav-cat">High School Math Functions</div>
+<nav>
+  <a class="nav-brand" href="#">Ms. Liu · <em>Math Tools</em></a>
+  <div class="nav-links">
+    <a href="#" class="active">Home</a>
     <a href="linear_explorer.html">Linear &nbsp; y = mx + b</a>
     <a href="quadratic_explorer.html">Quadratic &nbsp; y = a[k(x−d)]² + c</a>
     <a href="sqrt_explorer.html">Square Root &nbsp; y = a√[k(x−d)] + c</a>
     <a href="rational_explorer.html">Rational &nbsp; y = a / k(x−d) + c</a>
-    <a href="exponential_explorer.html">Exponential &nbsp; y = a · b<sup style="font-size:0.65em;">x</sup></a>
-    <a href="log_explorer.html">Logarithm &nbsp; y = a · log<sub style="font-size:0.65em;">b</sub>(x)</a>
+    <a href="exponential_explorer.html">Exponential &nbsp; y = a · bˣ</a>
+    <a href="log_explorer.html">Logarithm &nbsp; y = a · log<sub>b</sub>(x)</a>
     <a href="trig_explorer.html">Trig Ratios &nbsp; sin · cos · tan</a>
     <a href="interest_explorer.html">Interest &amp; Present Value</a>
-    <div class="nav-divider"></div>
-    <div class="nav-cat">Economic &amp; Financial Functions</div>
-    <a href="#" style="opacity:0.4;pointer-events:none;">Coming soon</a>
   </div>
 </nav>
 
-<div class="main">
-
-  <!-- CATEGORY 1 -->
-  <div class="cat-block" id="cat1">
-    <button class="cat-toggle" onclick="toggleCat('cat1')">
-      <span class="cat-num">01</span>
-      <span class="cat-label">
-        <span class="cat-name">High School Math Functions</span>
-        <span class="cat-sub">Linear · Quadratic · Square Root · Rational · Exponential · Log · Trig · Interest</span>
-      </span>
-      <span class="cat-count">8 tools</span>
-      <span class="cat-arrow">▾</span>
-    </button>
-    <div class="cat-panel">
-      <div class="cards">
-
-        <div class="card">
-          <a href="linear_explorer.html">
-            <div class="card-graph"><canvas id="g0" width="42" height="42"></canvas></div>
-            <div class="card-meta"><div class="card-title">Linear</div><div class="card-eq">y = mx + b</div></div>
-            <div class="card-chevron">›</div>
-          </a>
-        </div>
-
-        <div class="card">
-          <a href="quadratic_explorer.html">
-            <div class="card-graph"><canvas id="g1" width="42" height="42"></canvas></div>
-            <div class="card-meta"><div class="card-title">Quadratic</div><div class="card-eq">y = a[k(x − d)]² + c</div></div>
-            <div class="card-chevron">›</div>
-          </a>
-        </div>
-
-        <div class="card">
-          <a href="sqrt_explorer.html">
-            <div class="card-graph"><canvas id="g2" width="42" height="42"></canvas></div>
-            <div class="card-meta"><div class="card-title">Square Root</div><div class="card-eq">y = a√[k(x − d)] + c</div></div>
-            <div class="card-chevron">›</div>
-          </a>
-        </div>
-
-        <div class="card">
-          <a href="rational_explorer.html">
-            <div class="card-graph"><canvas id="g3" width="42" height="42"></canvas></div>
-            <div class="card-meta"><div class="card-title">Rational / Reciprocal</div><div class="card-eq">y = a / k(x − d) + c</div></div>
-            <div class="card-chevron">›</div>
-          </a>
-        </div>
-
-        <div class="card">
-          <a href="exponential_explorer.html">
-            <div class="card-graph"><canvas id="g4" width="42" height="42"></canvas></div>
-            <div class="card-meta"><div class="card-title">Exponential</div><div class="card-eq">y = a · b<sup>x</sup></div></div>
-            <div class="card-chevron">›</div>
-          </a>
-        </div>
-
-        <div class="card">
-          <a href="log_explorer.html">
-            <div class="card-graph"><canvas id="g5" width="42" height="42"></canvas></div>
-            <div class="card-meta"><div class="card-title">Logarithmic</div><div class="card-eq">y = a · log<sub>b</sub>(x)</div></div>
-            <div class="card-chevron">›</div>
-          </a>
-        </div>
-
-        <div class="card">
-          <a href="trig_explorer.html">
-            <div class="card-graph"><canvas id="g6" width="42" height="42"></canvas></div>
-            <div class="card-meta"><div class="card-title">Trig Ratios</div><div class="card-eq">sin θ · cos θ · tan θ</div></div>
-            <div class="card-chevron">›</div>
-          </a>
-        </div>
-
-        <div class="card">
-          <a href="interest_explorer.html">
-            <div class="card-graph"><canvas id="g7" width="42" height="42"></canvas></div>
-            <div class="card-meta"><div class="card-title">Interest &amp; Present Value</div><div class="card-eq">A = P(1+r/n)<sup>nt</sup> · A = Pe<sup>rt</sup> · PV = FV/(1+r)<sup>t</sup></div></div>
-            <div class="card-chevron">›</div>
-          </a>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- CATEGORY 2 -->
-  <div class="cat-block" id="cat2">
-    <button class="cat-toggle" onclick="toggleCat('cat2')">
-      <span class="cat-num">02</span>
-      <span class="cat-label">
-        <span class="cat-name">Economic &amp; Financial Functions</span>
-        <span class="cat-sub">Utility · Production · Cost · Demand · Growth</span>
-      </span>
-      <span class="cat-count">Coming soon</span>
-      <span class="cat-arrow">▾</span>
-    </button>
-    <div class="cat-panel">
-      <div class="cards">
-
-        <div class="card card-ph">
-          <a href="#">
-            <div class="card-graph"><canvas id="e0" width="42" height="42"></canvas></div>
-            <div class="card-meta"><div class="card-title">Cobb-Douglas Utility</div><div class="card-eq">U = x<sup>a</sup> · y<sup>b</sup></div></div>
-            <div class="soon-badge">Soon</div>
-          </a>
-        </div>
-
-        <div class="card card-ph">
-          <a href="#">
-            <div class="card-graph"><canvas id="e1" width="42" height="42"></canvas></div>
-            <div class="card-meta"><div class="card-title">Supply &amp; Demand</div><div class="card-eq">P = f(Q<sub>s</sub>) · g(Q<sub>d</sub>)</div></div>
-            <div class="soon-badge">Soon</div>
-          </a>
-        </div>
-
-        <div class="card card-ph">
-          <a href="#">
-            <div class="card-graph"><canvas id="e2" width="42" height="42"></canvas></div>
-            <div class="card-meta"><div class="card-title">Cost / Revenue / Profit</div><div class="card-eq">π = R − C</div></div>
-            <div class="soon-badge">Soon</div>
-          </a>
-        </div>
-
-        <div class="card card-ph">
-          <a href="#">
-            <div class="card-graph"><canvas id="e3" width="42" height="42"></canvas></div>
-            <div class="card-meta"><div class="card-title">Logistic Growth</div><div class="card-eq">P(t) = K / (1 + Ae<sup>−rt</sup>)</div></div>
-            <div class="soon-badge">Soon</div>
-          </a>
-        </div>
-
-        <div class="card card-ph">
-          <a href="#">
-            <div class="card-graph"><canvas id="e4" width="42" height="42"></canvas></div>
-            <div class="card-meta"><div class="card-title">Average Cost</div><div class="card-eq">AC = TC / Q</div></div>
-            <div class="soon-badge">Soon</div>
-          </a>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
+<div class="hero">
+  <h1>Ms. Liu —<br><em>Math Tools</em></h1>
+  <p>Interactive explorers for middle school and high school mathematics. Adjust, explore, and understand concepts in real time.</p>
 </div>
 
-<div class="footer">Ms. Liu · Math Tools</div>
+<div class="sections">
+
+  <!-- SECTION 00: MIDDLE SCHOOL -->
+  <div class="section-block">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-num">1</div>
+      <div class="section-meta">
+        <div class="section-title-row">
+          <span class="section-title">Middle School Math</span>
+          <span class="level-pill pill-ms">Grades 6–8</span>
+        </div>
+        <div class="section-subtitle">Fractions · Decimals · Geometry · Probability · Algebra Foundations</div>
+        <div class="section-count">Coming soon</div>
+      </div>
+      <div class="section-toggle">▾</div>
+    </div>
+
+    <div class="tool-grid">
+
+      <!-- Number & Operations -->
+      <div class="subcategory">
+        <div class="subcategory-label">Number &amp; Operations</div>
+        <div class="tool-cards">
+          <a href="fraction_concepts.html" class="tool-card">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Fraction Concepts</span>
+              <span class="tool-card-formula">numerator / denominator · equivalent fractions</span>
+            </div>
+            <span class="tool-card-arrow">›</span>
+          </a>
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Fraction Operations</span>
+              <span class="tool-card-formula">+  −  ×  ÷  fractions &amp; mixed numbers</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Fraction · Decimal · Percent</span>
+              <span class="tool-card-formula">½ = 0.5 = 50% · conversion explorer</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Integer Operations</span>
+              <span class="tool-card-formula">negative numbers · number line · rules</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Ratios &amp; Proportions</span>
+              <span class="tool-card-formula">a : b · unit rates · scale factors</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Percent Problems</span>
+              <span class="tool-card-formula">discount · tax · tip · percent change</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Algebra Foundations -->
+      <div class="subcategory">
+        <div class="subcategory-label">Algebra Foundations</div>
+        <div class="tool-cards">
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Order of Operations</span>
+              <span class="tool-card-formula">PEMDAS / BEDMAS · step-by-step</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Solving Equations</span>
+              <span class="tool-card-formula">one-step · two-step · balance model</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Inequalities</span>
+              <span class="tool-card-formula">x &gt; a · x ≤ b · number line</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Coordinate Plane</span>
+              <span class="tool-card-formula">(x, y) · four quadrants · plotting</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Geometry -->
+      <div class="subcategory">
+        <div class="subcategory-label">Geometry</div>
+        <div class="tool-cards">
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Pythagorean Theorem</span>
+              <span class="tool-card-formula">a² + b² = c² · right triangles</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Area &amp; Perimeter</span>
+              <span class="tool-card-formula">composite shapes · triangles · polygons</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Volume &amp; Surface Area</span>
+              <span class="tool-card-formula">prisms · cylinders · nets</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Angle Relationships</span>
+              <span class="tool-card-formula">supplementary · complementary · vertical</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Statistics & Data -->
+      <div class="subcategory">
+        <div class="subcategory-label">Statistics &amp; Data</div>
+        <div class="tool-cards">
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Probability Concepts</span>
+              <span class="tool-card-formula">P(event) · sample space · outcomes</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Tree Diagrams</span>
+              <span class="tool-card-formula">compound events · counting principle</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Mean · Median · Mode · Range</span>
+              <span class="tool-card-formula">measures of centre &amp; spread</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+          <a href="#" class="tool-card soon">
+            <div class="tool-card-left">
+              <span class="tool-card-name">Data Displays</span>
+              <span class="tool-card-formula">bar · line · circle graph · box plot</span>
+            </div>
+            <span class="tool-card-arrow">Soon</span>
+          </a>
+        </div>
+      </div>
+
+    </div><!-- end tool-grid -->
+  </div><!-- end section-block -->
+
+
+  <!-- SECTION 01: HIGH SCHOOL -->
+  <div class="section-block">
+    <div class="section-header" onclick="toggle(this)" style="border-top: 1px solid var(--border);">
+      <div class="section-num">2</div>
+      <div class="section-meta">
+        <div class="section-title-row">
+          <span class="section-title">High School Math Functions</span>
+          <span class="level-pill pill-hs">Grades 9–12</span>
+        </div>
+        <div class="section-subtitle">Linear · Quadratic · Square Root · Rational · Exponential · Log · Trig · Interest</div>
+        <div class="section-count"><span>8</span> tools</div>
+      </div>
+      <div class="section-toggle">▾</div>
+    </div>
+
+    <div class="tool-grid">
+      <div class="tool-cards">
+        <a href="linear_explorer.html" class="tool-card">
+          <div class="tool-card-left">
+            <span class="tool-card-name">Linear</span>
+            <span class="tool-card-formula">y = mx + b</span>
+          </div>
+          <span class="tool-card-arrow">›</span>
+        </a>
+        <a href="quadratic_explorer.html" class="tool-card">
+          <div class="tool-card-left">
+            <span class="tool-card-name">Quadratic</span>
+            <span class="tool-card-formula">y = a[k(x − d)]² + c</span>
+          </div>
+          <span class="tool-card-arrow">›</span>
+        </a>
+        <a href="sqrt_explorer.html" class="tool-card">
+          <div class="tool-card-left">
+            <span class="tool-card-name">Square Root</span>
+            <span class="tool-card-formula">y = a√[k(x − d)] + c</span>
+          </div>
+          <span class="tool-card-arrow">›</span>
+        </a>
+        <a href="rational_explorer.html" class="tool-card">
+          <div class="tool-card-left">
+            <span class="tool-card-name">Rational / Reciprocal</span>
+            <span class="tool-card-formula">y = a / k(x − d) + c</span>
+          </div>
+          <span class="tool-card-arrow">›</span>
+        </a>
+        <a href="exponential_explorer.html" class="tool-card">
+          <div class="tool-card-left">
+            <span class="tool-card-name">Exponential</span>
+            <span class="tool-card-formula">y = a · bˣ</span>
+          </div>
+          <span class="tool-card-arrow">›</span>
+        </a>
+        <a href="log_explorer.html" class="tool-card">
+          <div class="tool-card-left">
+            <span class="tool-card-name">Logarithmic</span>
+            <span class="tool-card-formula">y = a · log<sub>b</sub>(x)</span>
+          </div>
+          <span class="tool-card-arrow">›</span>
+        </a>
+        <a href="trig_explorer.html" class="tool-card">
+          <div class="tool-card-left">
+            <span class="tool-card-name">Trig Ratios</span>
+            <span class="tool-card-formula">sin θ · cos θ · tan θ</span>
+          </div>
+          <span class="tool-card-arrow">›</span>
+        </a>
+        <a href="interest_explorer.html" class="tool-card">
+          <div class="tool-card-left">
+            <span class="tool-card-name">Interest &amp; Present Value</span>
+            <span class="tool-card-formula">A = P(1+r/n)ⁿᵗ · A = Peʳᵗ · PV = FV/(1+r)ᵗ</span>
+          </div>
+          <span class="tool-card-arrow">›</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SECTION 02: ECONOMIC & FINANCIAL -->
+  <div class="section-block">
+    <div class="section-header" onclick="toggle(this)">
+      <div class="section-num">3</div>
+      <div class="section-meta">
+        <div class="section-title-row">
+          <span class="section-title">Economic &amp; Financial Functions</span>
+        </div>
+        <div class="section-subtitle">Utility · Production · Cost · Demand · Growth</div>
+        <div class="section-count">Coming soon</div>
+      </div>
+      <div class="section-toggle">▾</div>
+    </div>
+
+    <div class="tool-grid">
+      <div class="tool-cards">
+        <a href="#" class="tool-card soon">
+          <div class="tool-card-left">
+            <span class="tool-card-name">Cobb-Douglas Utility</span>
+            <span class="tool-card-formula">U = xᵃ · yᵇ</span>
+          </div>
+          <span class="tool-card-arrow">Soon</span>
+        </a>
+        <a href="#" class="tool-card soon">
+          <div class="tool-card-left">
+            <span class="tool-card-name">Supply &amp; Demand</span>
+            <span class="tool-card-formula">P = f(Qs) · g(Qd)</span>
+          </div>
+          <span class="tool-card-arrow">Soon</span>
+        </a>
+        <a href="#" class="tool-card soon">
+          <div class="tool-card-left">
+            <span class="tool-card-name">Cost / Revenue / Profit</span>
+            <span class="tool-card-formula">π = R − C</span>
+          </div>
+          <span class="tool-card-arrow">Soon</span>
+        </a>
+        <a href="#" class="tool-card soon">
+          <div class="tool-card-left">
+            <span class="tool-card-name">Logistic Growth</span>
+            <span class="tool-card-formula">P(t) = K / (1 + Ae⁻ʳᵗ)</span>
+          </div>
+          <span class="tool-card-arrow">Soon</span>
+        </a>
+        <a href="#" class="tool-card soon">
+          <div class="tool-card-left">
+            <span class="tool-card-name">Average Cost</span>
+            <span class="tool-card-formula">AC = TC / Q</span>
+          </div>
+          <span class="tool-card-arrow">Soon</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end sections -->
+
+<footer>Ms. Liu · Math Tools</footer>
 
 <script>
-function toggleNav() {
-  document.getElementById('hamburger').classList.toggle('open');
-  document.getElementById('navMenu').classList.toggle('open');
-}
-
-function toggleCat(id) {
-  const block = document.getElementById(id);
-  const wasOpen = block.classList.contains('open');
-  block.classList.toggle('open', !wasOpen);
-  if (!wasOpen) drawPreviews();
-}
-
-let drawn = false;
-function drawPreviews() {
-  if (drawn) return;
-  drawn = true;
-
-  function dp(id, fn, color, xMin, xMax, yMin, yMax) {
-    const canvas = document.getElementById(id);
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const W=canvas.width, H=canvas.height, pad=5;
-    ctx.clearRect(0,0,W,H);
-    const zx=pad+(0-xMin)/(xMax-xMin)*(W-2*pad);
-    const zy=pad+(yMax-0)/(yMax-yMin)*(H-2*pad);
-    ctx.strokeStyle='rgba(0,0,0,0.08)'; ctx.lineWidth=0.5;
-    ctx.beginPath();ctx.moveTo(Math.max(pad,Math.min(W-pad,zx)),pad);ctx.lineTo(Math.max(pad,Math.min(W-pad,zx)),H-pad);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(pad,Math.max(pad,Math.min(H-pad,zy)));ctx.lineTo(W-pad,Math.max(pad,Math.min(H-pad,zy)));ctx.stroke();
-    ctx.strokeStyle=color; ctx.lineWidth=2; ctx.lineJoin='round';
-    ctx.beginPath(); let pen=false;
-    for(let px=pad;px<=W-pad;px++){
-      const x=xMin+(px-pad)/(W-2*pad)*(xMax-xMin);
-      const y=fn(x);
-      if(y===null||!isFinite(y)||y>yMax+0.5||y<yMin-0.5){pen=false;continue;}
-      const sy=pad+(yMax-Math.max(yMin,Math.min(yMax,y)))/(yMax-yMin)*(H-2*pad);
-      if(!pen){ctx.moveTo(px,sy);pen=true;}else ctx.lineTo(px,sy);
-    }
-    ctx.stroke();
+  function toggle(header) {
+    const grid = header.nextElementSibling;
+    const arrow = header.querySelector('.section-toggle');
+    const isOpen = grid.classList.contains('open');
+    grid.classList.toggle('open', !isOpen);
+    arrow.classList.toggle('open', !isOpen);
   }
-
-  function drawCircle() {
-    const canvas=document.getElementById('g6');
-    if(!canvas)return;
-    const ctx=canvas.getContext('2d');
-    const W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,R=W/2-5;
-    ctx.clearRect(0,0,W,H);
-    ctx.strokeStyle='rgba(0,0,0,0.1)';ctx.lineWidth=1;
-    ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(cx-R,cy);ctx.lineTo(cx+R,cy);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(cx,cy-R);ctx.lineTo(cx,cy+R);ctx.stroke();
-    const a=Math.PI/4,px=cx+Math.cos(a)*R,py=cy-Math.sin(a)*R;
-    ctx.strokeStyle='#185FA5';ctx.lineWidth=1.5;ctx.setLineDash([3,2]);
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(px,cy);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(px,cy);ctx.lineTo(px,py);ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.strokeStyle='#993C1D';ctx.lineWidth=2;
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(px,py);ctx.stroke();
-    ctx.beginPath();ctx.arc(px,py,3,0,Math.PI*2);
-    ctx.fillStyle='#e24b4a';ctx.fill();
-  }
-
-  // interest preview - exponential curve
-  function drawInterest() {
-    const canvas=document.getElementById('g7');
-    if(!canvas)return;
-    const ctx=canvas.getContext('2d');
-    const W=canvas.width,H=canvas.height,pad=5;
-    ctx.clearRect(0,0,W,H);
-    ctx.strokeStyle='rgba(0,0,0,0.08)';ctx.lineWidth=0.5;
-    ctx.beginPath();ctx.moveTo(pad,H-pad);ctx.lineTo(W-pad,H-pad);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(pad,pad);ctx.lineTo(pad,H-pad);ctx.stroke();
-    ctx.strokeStyle='#0F6E56';ctx.lineWidth=2;ctx.lineJoin='round';
-    ctx.beginPath();
-    for(let px=pad;px<=W-pad;px++){
-      const t=(px-pad)/(W-2*pad)*10;
-      const y=1000*Math.pow(1+0.05/12,12*t);
-      const yMax=1650,yMin=1000;
-      const sy=H-pad-(y-yMin)/(yMax-yMin)*(H-2*pad);
-      if(px===pad)ctx.moveTo(px,sy);else ctx.lineTo(px,sy);
-    }
-    ctx.stroke();
-  }
-
-  dp('g0', x=>x,                                       '#185FA5', -4,4,  -4,4);
-  dp('g1', x=>x*x-1,                                   '#0F6E56', -3,3,  -2,5);
-  dp('g2', x=>x<0?null:Math.sqrt(x),                   '#185FA5', -0.5,5,-1,3);
-  dp('g3', x=>Math.abs(x)<0.3?null:1/x,                '#993C1D', -4,4,  -4,4);
-  dp('g4', x=>Math.pow(2,x)/4,                         '#854F0B', -4,4,  -1,4);
-  dp('g5', x=>x<=0?null:Math.log(x)/Math.log(2)*0.8,  '#993C1D', -0.5,5,-3,3);
-  drawCircle();
-  drawInterest();
-  dp('e0', x=>x<0?null:Math.pow(x,0.5)*Math.pow(Math.max(0,4-x),0.5), '#0F6E56', 0,4, 0,2);
-  dp('e1', x=>3-x*0.6,                                 '#185FA5', -0.5,5,-0.5,4);
-  dp('e2', x=>2*x-x*x*0.3-1,                           '#854F0B', -0.5,5,-2,4);
-  dp('e3', x=>4/(1+3*Math.exp(-x)),                    '#993C1D', -2,6,  0,4);
-  dp('e4', x=>x<=0?null:(2+0.5*x)/x,                  '#185FA5', 0.2,5, 0,5);
-}
 </script>
 </body>
 </html>
