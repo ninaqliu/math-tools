@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Present &amp; Future Value — Ms. Liu</title>
+<link rel="stylesheet" href="nav.css"/>
+<style>
+  /* mode tabs */
+  .mode-tabs{display:flex;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:1.5rem;}
+  .mode-tab{flex:1;padding:.65rem .5rem;font-size:12px;font-weight:600;background:var(--surface);color:var(--muted);cursor:pointer;text-align:center;border:none;transition:background .1s,color .1s;line-height:1.4;}
+  .mode-tab:hover{background:var(--tag-bg);color:var(--text);}
+  .mode-tab.active{background:var(--blue-bg);color:var(--blue);}
+  /* formula box — prominent, shown before sliders */
+  .formula-box{background:var(--surface);border:2px solid var(--border);padding:1.25rem 1.5rem;margin-bottom:1.75rem;}
+  .formula-box-title{font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--subtle);margin-bottom:.75rem;display:block;}
+  .formula-main{font-family:'Georgia',serif;font-size:1.3rem;color:var(--text);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+  .formula-vars{font-size:12px;color:var(--muted);line-height:1.7;}
+  .formula-vars span{color:var(--text);font-weight:500;}
+  /* inline fraction */
+  .fi{display:inline-flex;flex-direction:column;align-items:center;font-family:'Georgia',serif;vertical-align:middle;line-height:1;}
+  .fi .fn{padding-bottom:2px;text-align:center;display:block;}
+  .fi .fd{padding-top:2px;border-top:1.5px solid currentColor;text-align:center;display:block;}
+  /* steps */
+  .step{display:grid;grid-template-columns:1.5rem 1fr;gap:0 .75rem;padding:.65rem 0;border-top:1px solid var(--border);align-items:start;}
+  .step:first-child{border-top:none;}
+  .step-n{font-size:11px;color:var(--subtle);padding-top:2px;}
+  .step-b{font-size:13px;color:var(--text);line-height:1.6;}
+  .step-b em{font-style:normal;color:var(--blue);font-weight:600;}
+  .step-math{margin-top:5px;font-family:'Georgia',serif;font-size:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="topbar-brand">Ms. Liu <span>· Math Tools</span></a>
+  <button class="menu-btn" id="menu-btn" aria-label="Open menu"><span></span><span></span><span></span></button>
+</div>
+<div class="sheet-overlay" id="sheet-overlay" style="display:none;"></div>
+<div class="sheet" id="nav-sheet" style="display:none;"><div id="sheet-mount"></div></div>
+
+<div class="app-shell">
+  <aside class="sidebar"><div id="sidebar-mount"></div></aside>
+
+  <main class="content">
+    <div class="page-header">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a><span class="breadcrumb-sep">·</span>
+        <span>High School Math</span><span class="breadcrumb-sep">·</span>
+        <span>Financial Literacy</span>
+      </div>
+      <h1 class="page-title">Present &amp; Future Value</h1>
+      <p class="page-formula">PV = FV / (1+r)ᵗ &nbsp;·&nbsp; FV = PV × (1+r)ᵗ</p>
+    </div>
+
+    <div class="readme">
+      <div class="readme-header" id="readme-hdr" onclick="toggleReadme()">
+        <span class="readme-label">Read me first</span>
+        <span class="readme-hint">Time value of money — the core idea</span>
+        <span class="readme-arrow">▾</span>
+      </div>
+      <div class="readme-body" id="readme-body">
+        <h3>The core idea</h3>
+        <ul>
+          <li>Money today is worth <strong>more</strong> than the same amount in the future — because today's money can be invested and earn returns</li>
+          <li>This is called the <strong>Time Value of Money</strong></li>
+        </ul>
+        <h3>Present Value (PV)</h3>
+        <ul>
+          <li>Asks: "How much do I need to invest <em>today</em> to reach a target future amount?"</li>
+          <li>The higher the rate or the longer the time, the lower the PV (you need less today)</li>
+          <li>PV is a <strong>decreasing</strong> function of time — money needs discounting</li>
+        </ul>
+        <h3>Future Value (FV)</h3>
+        <ul>
+          <li>Asks: "How much will my money grow to after t years?"</li>
+          <li>The higher the rate or the longer the time, the higher the FV</li>
+          <li>FV is an <strong>increasing exponential</strong> function of time</li>
+        </ul>
+        <h3>They are exact inverses</h3>
+        <ul>
+          <li>PV × (1+r)ᵗ = FV — always</li>
+          <li>Switch tabs to see both perspectives with the same numbers</li>
+        </ul>
+        <h3>Try this</h3>
+        <ul>
+          <li>PV: set FV=$10,000, r=5%, t=10 — how much to invest today?</li>
+          <li>FV: set PV=$5,000, r=7%, t=10 — what does it grow to?</li>
+          <li>Increase r — PV drops, FV rises. Why?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tool-body">
+
+      <!-- MODE TABS -->
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Mode</div>
+        <div class="mode-tabs">
+          <button class="mode-tab active" id="tab-0" onclick="setMode(0)">
+            Present Value (PV)<br><small>What is a future amount worth today?</small>
+          </button>
+          <button class="mode-tab" id="tab-1" onclick="setMode(1)">
+            Future Value (FV)<br><small>How much will money grow to?</small>
+          </button>
+        </div>
+      </div>
+
+      <!-- FORMULA BOX — always shown first -->
+      <div class="formula-box" id="formula-box">
+        <span class="formula-box-title">Formula</span>
+        <div class="formula-main" id="formula-main">
+          <span>PV =</span>
+          <span class="fi" style="font-size:1.3rem;">
+            <span class="fn">FV</span>
+            <span class="fd">(1 + r)ᵗ</span>
+          </span>
+        </div>
+        <div class="formula-vars" id="formula-vars">
+          <span>PV</span> = present value (today's worth) &nbsp;·&nbsp;
+          <span>FV</span> = future value (target amount) &nbsp;·&nbsp;
+          <span>r</span> = annual discount rate &nbsp;·&nbsp;
+          <span>t</span> = number of years
+        </div>
+      </div>
+
+      <!-- SLIDERS -->
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Parameters</div>
+        <div class="panel">
+          <div class="slider-row" id="fv-row">
+            <span class="slider-label"><strong>FV</strong> — Future Value</span>
+            <input type="range" id="sFV" min="1000" max="50000" step="500" value="10000" oninput="update()">
+            <span class="slider-val" id="FV-val">$10,000</span>
+          </div>
+          <div class="slider-row" id="pv-row" style="display:none;">
+            <span class="slider-label"><strong>PV</strong> — Present Value</span>
+            <input type="range" id="sPV" min="500" max="25000" step="500" value="5000" oninput="update()">
+            <span class="slider-val" id="PV-val">$5,000</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-label"><strong>r</strong> — Annual rate</span>
+            <input type="range" id="sr" min="0.5" max="20" step="0.5" value="5" oninput="update()">
+            <span class="slider-val" id="r-val">5.0%</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-label"><strong>t</strong> — Years</span>
+            <input type="range" id="st" min="1" max="30" step="1" value="10" oninput="update()">
+            <span class="slider-val" id="t-val">10 yr</span>
+          </div>
+          <button class="btn-reset" onclick="resetSliders()">↺ Reset</button>
+        </div>
+      </div>
+
+      <!-- STEP-BY-STEP -->
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Step-by-step calculation</div>
+        <div class="panel"><div id="steps-wrap"></div></div>
+      </div>
+
+      <!-- RESULT -->
+      <div id="result-wrap" style="margin-bottom:1.75rem;"></div>
+
+      <!-- GRAPH -->
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Value over time (t = 0 to <span id="t-label">10</span> years)</div>
+        <div class="graph-wrap" style="max-width:540px;aspect-ratio:16/9;">
+          <canvas id="graph" width="540" height="304"></canvas>
+        </div>
+      </div>
+
+      <!-- FACTS -->
+      <div class="facts">
+        <div class="fact"><div class="fact-label" id="fl-1">Future Value</div><div class="fact-val" id="fv-1">$10,000.00</div></div>
+        <div class="fact"><div class="fact-label" id="fl-2">Present Value</div><div class="fact-val" id="fv-2">—</div></div>
+        <div class="fact"><div class="fact-label" id="fl-3">Discount / Growth</div><div class="fact-val" id="fv-3">—</div></div>
+        <div class="fact"><div class="fact-label">Discount factor (1+r)ᵗ</div><div class="fact-val" id="fv-4">—</div></div>
+      </div>
+
+    </div>
+    <div class="page-footer">Ms. Liu · Present &amp; Future Value</div>
+  </main>
+</div>
+
+<script src="nav.js"></script>
+<script>
+  function toggleReadme(){
+    const hdr=document.getElementById('readme-hdr'),body=document.getElementById('readme-body');
+    const open=body.classList.toggle('open');hdr.classList.toggle('open',open);
+  }
+
+  let modeIdx=0;
+
+  function setMode(i){
+    modeIdx=i;
+    [0,1].forEach(j=>document.getElementById('tab-'+j).classList.toggle('active',j===i));
+    document.getElementById('fv-row').style.display=i===0?'flex':'none';
+    document.getElementById('pv-row').style.display=i===1?'flex':'none';
+    const fm=document.getElementById('formula-main');
+    const fv=document.getElementById('formula-vars');
+    if(i===0){
+      fm.innerHTML=`<span>PV =</span><span class="fi" style="font-size:1.3rem;"><span class="fn">FV</span><span class="fd">(1 + r)ᵗ</span></span>`;
+      fv.innerHTML=`<span>PV</span> = present value (today's worth) &nbsp;·&nbsp; <span>FV</span> = future target amount &nbsp;·&nbsp; <span>r</span> = annual discount rate &nbsp;·&nbsp; <span>t</span> = years`;
+    } else {
+      fm.innerHTML=`<span>FV = PV × (1 + r)ᵗ</span>`;
+      fv.innerHTML=`<span>FV</span> = future value &nbsp;·&nbsp; <span>PV</span> = amount invested today &nbsp;·&nbsp; <span>r</span> = annual growth rate &nbsp;·&nbsp; <span>t</span> = years`;
+    }
+    update();
+  }
+
+  function fmt(v){return '$'+v.toLocaleString('en-CA',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+  function update(){
+    const FV=+document.getElementById('sFV').value;
+    const PV0=+document.getElementById('sPV').value;
+    const r=+document.getElementById('sr').value/100;
+    const t=+document.getElementById('st').value;
+
+    document.getElementById('FV-val').textContent='$'+FV.toLocaleString();
+    document.getElementById('PV-val').textContent='$'+PV0.toLocaleString();
+    document.getElementById('r-val').textContent=(r*100).toFixed(1)+'%';
+    document.getElementById('t-val').textContent=t+' yr';
+    document.getElementById('t-label').textContent=t;
+
+    const factor=Math.pow(1+r,t);
+
+    if(modeIdx===0){
+      /* PV mode */
+      const PV=FV/factor;
+      const discount=FV-PV;
+
+      document.getElementById('steps-wrap').innerHTML=`
+        <div class="step"><span class="step-n">1</span><div class="step-b">Write the Present Value formula.<div class="step-math">PV = <span class="fi" style="font-size:1rem;"><span class="fn">FV</span><span class="fd">(1 + r)ᵗ</span></span></div></div></div>
+        <div class="step"><span class="step-n">2</span><div class="step-b">Identify the values.<div class="step-math">FV = ${fmt(FV)} &nbsp; r = ${(r*100).toFixed(1)}% = ${r.toFixed(4)} &nbsp; t = ${t} years</div></div></div>
+        <div class="step"><span class="step-n">3</span><div class="step-b">Calculate the discount factor (1 + r)ᵗ.<div class="step-math">(1 + ${r.toFixed(4)})^${t} = ${(1+r).toFixed(4)}^${t} = <em>${factor.toFixed(6)}</em></div></div></div>
+        <div class="step"><span class="step-n">4</span><div class="step-b">Divide FV by the discount factor.<div class="step-math">PV = <span class="fi" style="font-size:1rem;"><span class="fn">${fmt(FV)}</span><span class="fd">${factor.toFixed(6)}</span></span> = <em>${fmt(PV)}</em></div></div></div>
+        <div class="step"><span class="step-n">5</span><div class="step-b">Interpret the answer: investing <em>${fmt(PV)}</em> today at ${(r*100).toFixed(1)}% per year will grow to <em>${fmt(FV)}</em> in ${t} years.</div></div>`;
+
+      document.getElementById('result-wrap').innerHTML=`
+        <div class="result-box" style="background:var(--blue-bg);border:1px solid var(--border);padding:1rem 1.25rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+          <div><div style="font-size:10px;font-weight:600;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">Present Value</div>
+            <div style="font-family:'Georgia',serif;font-size:1.6rem;color:var(--text);">${fmt(PV)}</div></div>
+          <div style="font-size:13px;color:var(--muted);font-family:'Georgia',serif;">
+            Invest ${fmt(PV)} today → grows to ${fmt(FV)} in ${t} yr<br>
+            Discount = ${fmt(discount)}
+          </div>
+        </div>`;
+
+      document.getElementById('fl-1').textContent='Future Value (FV)';   document.getElementById('fv-1').textContent=fmt(FV);
+      document.getElementById('fl-2').textContent='Present Value (PV)';  document.getElementById('fv-2').textContent=fmt(PV);
+      document.getElementById('fl-3').textContent='Discount ($)';         document.getElementById('fv-3').textContent=fmt(discount);
+      document.getElementById('fv-4').textContent=factor.toFixed(4);
+      draw(r,t,'pv',FV,PV0);
+
+    } else {
+      /* FV mode */
+      const FVcalc=PV0*factor;
+      const growth=FVcalc-PV0;
+
+      document.getElementById('steps-wrap').innerHTML=`
+        <div class="step"><span class="step-n">1</span><div class="step-b">Write the Future Value formula.<div class="step-math">FV = PV × (1 + r)ᵗ</div></div></div>
+        <div class="step"><span class="step-n">2</span><div class="step-b">Identify the values.<div class="step-math">PV = ${fmt(PV0)} &nbsp; r = ${(r*100).toFixed(1)}% = ${r.toFixed(4)} &nbsp; t = ${t} years</div></div></div>
+        <div class="step"><span class="step-n">3</span><div class="step-b">Calculate the growth factor (1 + r)ᵗ.<div class="step-math">(1 + ${r.toFixed(4)})^${t} = <em>${factor.toFixed(6)}</em></div></div></div>
+        <div class="step"><span class="step-n">4</span><div class="step-b">Multiply PV by the growth factor.<div class="step-math">FV = ${fmt(PV0)} × ${factor.toFixed(6)} = <em>${fmt(FVcalc)}</em></div></div></div>
+        <div class="step"><span class="step-n">5</span><div class="step-b">Interpret: <em>${fmt(PV0)}</em> invested at ${(r*100).toFixed(1)}% per year grows to <em>${fmt(FVcalc)}</em> in ${t} years.</div></div>`;
+
+      document.getElementById('result-wrap').innerHTML=`
+        <div class="result-box" style="background:var(--blue-bg);border:1px solid var(--border);padding:1rem 1.25rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+          <div><div style="font-size:10px;font-weight:600;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">Future Value</div>
+            <div style="font-family:'Georgia',serif;font-size:1.6rem;color:var(--text);">${fmt(FVcalc)}</div></div>
+          <div style="font-size:13px;color:var(--muted);font-family:'Georgia',serif;">
+            ${fmt(PV0)} today → ${fmt(FVcalc)} in ${t} yr<br>
+            Total growth = ${fmt(growth)}
+          </div>
+        </div>`;
+
+      document.getElementById('fl-1').textContent='Present Value (PV)';  document.getElementById('fv-1').textContent=fmt(PV0);
+      document.getElementById('fl-2').textContent='Future Value (FV)';   document.getElementById('fv-2').textContent=fmt(FVcalc);
+      document.getElementById('fl-3').textContent='Growth ($)';           document.getElementById('fv-3').textContent=fmt(growth);
+      document.getElementById('fv-4').textContent=factor.toFixed(4);
+      draw(r,t,'fv',FV,PV0);
+    }
+  }
+
+  function draw(r,t,mode,FV,PV0){
+    const cv=document.getElementById('graph');
+    const W=cv.width,H=cv.height,ctx=cv.getContext('2d');
+    const dk=window.matchMedia('(prefers-color-scheme:dark)').matches;
+    const col={
+      bg:dk?'#1c1b1a':'#fff', grid:dk?'#2c2b28':'#e8e6e0',
+      axis:dk?'#4a4845':'#c0bdb6', txt:dk?'#6a6865':'#9a9890',
+      pv:dk?'#e07060':'#c0392b', fv:dk?'#6a9ef0':'#2a5bd7',
+    };
+    ctx.clearRect(0,0,W,H); ctx.fillStyle=col.bg; ctx.fillRect(0,0,W,H);
+
+    const pL=58,pR=16,pT=20,pB=32,iW=W-pL-pR,iH=H-pT-pB;
+    const factor=tv=>Math.pow(1+r,tv);
+
+    /* y range */
+    let maxY,minY;
+    if(mode==='pv'){
+      maxY=FV*1.08; minY=FV/factor(t)*0.9;
+    } else {
+      maxY=PV0*factor(t)*1.08; minY=PV0*0.9;
+    }
+    const yRange=maxY-minY;
+    const tx=tv=>pL+tv/t*iW;
+    const ty=v=>pT+iH-(v-minY)/yRange*iH;
+
+    /* grid lines */
+    ctx.strokeStyle=col.grid; ctx.lineWidth=1;
+    for(let i=0;i<=4;i++){
+      const y=pT+iH*(i/4);
+      ctx.beginPath(); ctx.moveTo(pL,y); ctx.lineTo(W-pR,y); ctx.stroke();
+      const val=minY+yRange*(1-i/4);
+      ctx.fillStyle=col.txt; ctx.font='9px Helvetica Neue,Arial,sans-serif';
+      ctx.textAlign='right'; ctx.fillText('$'+Math.round(val).toLocaleString(),pL-4,y+3);
+    }
+    /* x labels */
+    const step=Math.ceil(t/6);
+    for(let ti=0;ti<=t;ti+=step){
+      ctx.fillStyle=col.txt; ctx.textAlign='center';
+      ctx.fillText(ti+'yr',tx(ti),H-pB+12);
+    }
+    /* axes */
+    ctx.strokeStyle=col.axis; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(pL,pT); ctx.lineTo(pL,H-pB); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pL,H-pB); ctx.lineTo(W-pR,H-pB); ctx.stroke();
+
+    ctx.save(); ctx.beginPath(); ctx.rect(pL,pT,iW,iH); ctx.clip();
+
+    const lineColor=mode==='pv'?col.pv:col.fv;
+    ctx.strokeStyle=lineColor; ctx.lineWidth=2.5; ctx.lineJoin='round';
+    ctx.beginPath();
+    for(let step2=0;step2<=200;step2++){
+      const tv=step2/200*t;
+      const val=mode==='pv' ? FV/factor(tv) : PV0*factor(tv);
+      if(step2===0) ctx.moveTo(tx(tv),ty(val));
+      else ctx.lineTo(tx(tv),ty(val));
+    }
+    ctx.stroke();
+
+    ctx.restore();
+
+    /* endpoint dot */
+    const endVal=mode==='pv' ? FV/factor(t) : PV0*factor(t);
+    ctx.beginPath(); ctx.arc(tx(t),ty(endVal),5,0,Math.PI*2);
+    ctx.fillStyle=lineColor; ctx.fill();
+    /* label */
+    ctx.fillStyle=col.txt; ctx.font='10px Helvetica Neue,Arial,sans-serif';
+    ctx.textAlign='right';
+    ctx.fillText('$'+Math.round(endVal).toLocaleString(),tx(t)-8,ty(endVal)-6);
+  }
+
+  function resetSliders(){
+    document.getElementById('sFV').value=10000;
+    document.getElementById('sPV').value=5000;
+    document.getElementById('sr').value=5;
+    document.getElementById('st').value=10;
+    setMode(0);
+  }
+
+  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>update());
+  update();
+</script>
+</body>
+</html>

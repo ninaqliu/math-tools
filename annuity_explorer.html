@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Annuity &amp; Growing Annuity — Ms. Liu</title>
+<link rel="stylesheet" href="nav.css"/>
+<style>
+  .mode-tabs{display:flex;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:1.5rem;flex-wrap:wrap;}
+  .mode-tab{flex:1;min-width:120px;padding:.65rem .5rem;font-size:11.5px;font-weight:600;background:var(--surface);color:var(--muted);cursor:pointer;text-align:center;border:none;transition:background .1s,color .1s;line-height:1.4;}
+  .mode-tab:hover{background:var(--tag-bg);color:var(--text);}
+  .mode-tab.active{background:var(--blue-bg);color:var(--blue);}
+
+  /* formula box — prominent, before sliders */
+  .formula-box{background:var(--surface);border:2px solid var(--border);padding:1.25rem 1.5rem;margin-bottom:1.75rem;}
+  .formula-box-title{font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--subtle);margin-bottom:.75rem;display:block;}
+  .formula-row{margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+  .formula-main{font-family:'Georgia',serif;font-size:1.2rem;color:var(--text);}
+  .formula-note{font-size:11.5px;color:var(--muted);margin-top:.25rem;line-height:1.6;}
+  .formula-note span{color:var(--text);font-weight:500;}
+
+  /* inline fraction */
+  .fi{display:inline-flex;flex-direction:column;align-items:center;font-family:'Georgia',serif;vertical-align:middle;line-height:1;}
+  .fi .fn{padding-bottom:2px;text-align:center;display:block;}
+  .fi .fd{padding-top:2px;border-top:1.5px solid currentColor;text-align:center;display:block;}
+
+  /* steps */
+  .step{display:grid;grid-template-columns:1.5rem 1fr;gap:0 .75rem;padding:.65rem 0;border-top:1px solid var(--border);align-items:start;}
+  .step:first-child{border-top:none;}
+  .step-n{font-size:11px;color:var(--subtle);padding-top:2px;}
+  .step-b{font-size:13px;color:var(--text);line-height:1.6;}
+  .step-b em{font-style:normal;color:var(--blue);font-weight:600;}
+  .step-math{margin-top:5px;font-family:'Georgia',serif;font-size:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+
+  :root{--green:#2d7a4f;--green-bg:#e6f4ed;}
+  @media(prefers-color-scheme:dark){:root{--green:#5ab87a;--green-bg:#0f2a1a;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="topbar-brand">Ms. Liu <span>· Math Tools</span></a>
+  <button class="menu-btn" id="menu-btn" aria-label="Open menu"><span></span><span></span><span></span></button>
+</div>
+<div class="sheet-overlay" id="sheet-overlay" style="display:none;"></div>
+<div class="sheet" id="nav-sheet" style="display:none;"><div id="sheet-mount"></div></div>
+
+<div class="app-shell">
+  <aside class="sidebar"><div id="sidebar-mount"></div></aside>
+
+  <main class="content">
+    <div class="page-header">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a><span class="breadcrumb-sep">·</span>
+        <span>High School Math</span><span class="breadcrumb-sep">·</span>
+        <span>Financial Literacy</span>
+      </div>
+      <h1 class="page-title">Annuity &amp; Growing Annuity</h1>
+      <p class="page-formula">Regular payments · constant or growing · present &amp; future value</p>
+    </div>
+
+    <div class="readme">
+      <div class="readme-header" id="readme-hdr" onclick="toggleReadme()">
+        <span class="readme-label">Read me first</span>
+        <span class="readme-hint">What is an annuity?</span>
+        <span class="readme-arrow">▾</span>
+      </div>
+      <div class="readme-body" id="readme-body">
+        <h3>What is an annuity?</h3>
+        <ul>
+          <li>A series of <strong>equal payments</strong> made at regular intervals (monthly, annually)</li>
+          <li>Examples: mortgage payments, pension payouts, loan repayments, savings plans</li>
+        </ul>
+        <h3>Ordinary Annuity vs Annuity Due</h3>
+        <ul>
+          <li><strong>Ordinary annuity</strong> — payment made at the <em>end</em> of each period (most common)</li>
+          <li><strong>Annuity due</strong> — payment made at the <em>beginning</em> of each period (e.g. rent)</li>
+          <li>Annuity due is worth slightly more because each payment earns one extra period of interest</li>
+        </ul>
+        <h3>Growing Annuity</h3>
+        <ul>
+          <li>Payments grow at a constant rate g each period (e.g. salary rising 3% per year)</li>
+          <li>Requires r ≠ g</li>
+          <li>If r = g, PV = C × t / (1+r)</li>
+        </ul>
+        <h3>Key formulas at a glance</h3>
+        <ul>
+          <li>Ordinary Annuity PV = C/r × [1 − (1+r)⁻ᵗ]</li>
+          <li>Ordinary Annuity FV = C/r × [(1+r)ᵗ − 1]</li>
+          <li>Annuity Due: multiply ordinary result by (1+r)</li>
+          <li>Growing Annuity PV = C/(r−g) × [1 − ((1+g)/(1+r))ᵗ]</li>
+          <li>Perpetuity (t→∞) PV = C/r</li>
+        </ul>
+        <h3>Try this</h3>
+        <ul>
+          <li>Set C=$500/mo, r=6%, t=30 — what is the PV of a 30-year mortgage stream?</li>
+          <li>Compare ordinary vs annuity due with same values — which is larger?</li>
+          <li>Growing annuity: set g=3%, r=7% — how does growth change the PV?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tool-body">
+
+      <!-- MODE TABS -->
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Type</div>
+        <div class="mode-tabs">
+          <button class="mode-tab active" id="tab-0" onclick="setMode(0)">Ordinary Annuity<br><small>payment at end of period</small></button>
+          <button class="mode-tab" id="tab-1" onclick="setMode(1)">Annuity Due<br><small>payment at start of period</small></button>
+          <button class="mode-tab" id="tab-2" onclick="setMode(2)">Growing Annuity<br><small>payments grow at rate g</small></button>
+          <button class="mode-tab" id="tab-3" onclick="setMode(3)">Perpetuity<br><small>payments forever</small></button>
+        </div>
+      </div>
+
+      <!-- FORMULA BOX -->
+      <div class="formula-box">
+        <span class="formula-box-title">Formula</span>
+        <div id="formula-content"><!-- filled by JS --></div>
+      </div>
+
+      <!-- SLIDERS -->
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Parameters</div>
+        <div class="panel">
+          <div class="slider-row">
+            <span class="slider-label"><strong>C</strong> — Payment per period</span>
+            <input type="range" id="sC" min="100" max="5000" step="50" value="500" oninput="update()">
+            <span class="slider-val" id="C-val">$500</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-label"><strong>r</strong> — Discount rate</span>
+            <input type="range" id="sr" min="0.5" max="20" step="0.5" value="6" oninput="update()">
+            <span class="slider-val" id="r-val">6.0%</span>
+          </div>
+          <div class="slider-row" id="t-row">
+            <span class="slider-label"><strong>t</strong> — Number of periods</span>
+            <input type="range" id="st" min="1" max="40" step="1" value="10" oninput="update()">
+            <span class="slider-val" id="t-val">10</span>
+          </div>
+          <div class="slider-row" id="g-row" style="display:none;">
+            <span class="slider-label"><strong>g</strong> — Growth rate per period</span>
+            <input type="range" id="sg" min="0.5" max="15" step="0.5" value="3" oninput="update()">
+            <span class="slider-val" id="g-val">3.0%</span>
+          </div>
+          <button class="btn-reset" onclick="resetSliders()">↺ Reset</button>
+        </div>
+      </div>
+
+      <!-- STEP-BY-STEP -->
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Step-by-step calculation</div>
+        <div class="panel"><div id="steps-wrap"></div></div>
+      </div>
+
+      <!-- RESULT -->
+      <div id="result-wrap" style="margin-bottom:1.75rem;"></div>
+
+      <!-- GRAPH -->
+      <div style="margin-bottom:1.75rem;" id="graph-section">
+        <div class="section-label">Cumulative payment value over time</div>
+        <div class="graph-wrap" style="max-width:540px;aspect-ratio:16/9;">
+          <canvas id="graph" width="540" height="304"></canvas>
+        </div>
+      </div>
+
+      <!-- FACTS -->
+      <div class="facts" id="facts-grid">
+        <div class="fact"><div class="fact-label">Payment (C)</div><div class="fact-val" id="f-C">$500</div></div>
+        <div class="fact"><div class="fact-label" id="f-PV-label">Present Value (PV)</div><div class="fact-val" id="f-PV">—</div></div>
+        <div class="fact"><div class="fact-label" id="f-FV-label">Future Value (FV)</div><div class="fact-val" id="f-FV">—</div></div>
+        <div class="fact"><div class="fact-label">Total Payments</div><div class="fact-val" id="f-total">—</div></div>
+      </div>
+
+    </div>
+    <div class="page-footer">Ms. Liu · Annuity &amp; Growing Annuity</div>
+  </main>
+</div>
+
+<script src="nav.js"></script>
+<script>
+  function toggleReadme(){
+    const hdr=document.getElementById('readme-hdr'),body=document.getElementById('readme-body');
+    const open=body.classList.toggle('open');hdr.classList.toggle('open',open);
+  }
+
+  let modeIdx=0;
+
+  /* formula display for each mode */
+  const formulas=[
+    /* 0: ordinary annuity */
+    `<div class="formula-row">
+       <span class="formula-main">PV = </span>
+       <span class="fi" style="font-size:1.1rem;"><span class="fn">C</span><span class="fd">r</span></span>
+       <span class="formula-main"> × [1 − (1 + r)⁻ᵗ]</span>
+     </div>
+     <div class="formula-row">
+       <span class="formula-main">FV = </span>
+       <span class="fi" style="font-size:1.1rem;"><span class="fn">C</span><span class="fd">r</span></span>
+       <span class="formula-main"> × [(1 + r)ᵗ − 1]</span>
+     </div>
+     <div class="formula-note"><span>C</span> = payment per period &nbsp;·&nbsp; <span>r</span> = discount rate per period &nbsp;·&nbsp; <span>t</span> = number of periods<br>Payment made at the <strong>end</strong> of each period.</div>`,
+
+    /* 1: annuity due */
+    `<div class="formula-row">
+       <span class="formula-main">PV = </span>
+       <span class="fi" style="font-size:1.1rem;"><span class="fn">C</span><span class="fd">r</span></span>
+       <span class="formula-main"> × [1 − (1 + r)⁻ᵗ] × (1 + r)</span>
+     </div>
+     <div class="formula-row">
+       <span class="formula-main">FV = </span>
+       <span class="fi" style="font-size:1.1rem;"><span class="fn">C</span><span class="fd">r</span></span>
+       <span class="formula-main"> × [(1 + r)ᵗ − 1] × (1 + r)</span>
+     </div>
+     <div class="formula-note"><span>C</span> = payment per period &nbsp;·&nbsp; <span>r</span> = discount rate &nbsp;·&nbsp; <span>t</span> = periods<br>Payment made at the <strong>beginning</strong> of each period — multiply ordinary annuity by (1+r).</div>`,
+
+    /* 2: growing annuity */
+    `<div class="formula-row">
+       <span class="formula-main">PV = </span>
+       <span class="fi" style="font-size:1.1rem;"><span class="fn">C</span><span class="fd">r − g</span></span>
+       <span class="formula-main"> × </span>
+       <span class="fi" style="font-size:1rem;"><span class="fn" style="white-space:nowrap;">1 − <span class="fi" style="font-size:.85rem;"><span class="fn">(1+g)ᵗ</span><span class="fd">(1+r)ᵗ</span></span></span><span class="fd">1</span></span>
+       <span class="formula-main">= </span>
+       <span class="fi" style="font-size:1.1rem;"><span class="fn">C</span><span class="fd">r − g</span></span>
+       <span class="formula-main"> × [1 − ((1+g)/(1+r))ᵗ]</span>
+     </div>
+     <div class="formula-note"><span>C</span> = first payment &nbsp;·&nbsp; <span>r</span> = discount rate &nbsp;·&nbsp; <span>g</span> = growth rate per period &nbsp;·&nbsp; <span>t</span> = periods<br>Each payment grows by factor (1+g) vs the previous period. Requires <strong>r ≠ g</strong>.</div>`,
+
+    /* 3: perpetuity */
+    `<div class="formula-row">
+       <span class="formula-main">PV = </span>
+       <span class="fi" style="font-size:1.2rem;"><span class="fn">C</span><span class="fd">r</span></span>
+     </div>
+     <div class="formula-note"><span>C</span> = constant payment per period &nbsp;·&nbsp; <span>r</span> = discount rate<br>A perpetuity pays <strong>forever</strong> (t → ∞). The PV converges to C/r because distant payments have negligible present value.</div>`,
+  ];
+
+  function setMode(i){
+    modeIdx=i;
+    [0,1,2,3].forEach(j=>document.getElementById('tab-'+j).classList.toggle('active',j===i));
+    document.getElementById('formula-content').innerHTML=formulas[i];
+    document.getElementById('g-row').style.display=i===2?'flex':'none';
+    document.getElementById('t-row').style.display=i===3?'none':'flex';
+    document.getElementById('graph-section').style.display=i===3?'none':'block';
+    update();
+  }
+
+  function fmt(v){return '$'+v.toLocaleString('en-CA',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+  function update(){
+    const C=+document.getElementById('sC').value;
+    const r=+document.getElementById('sr').value/100;
+    const t=+document.getElementById('st').value;
+    const g=+document.getElementById('sg').value/100;
+
+    document.getElementById('C-val').textContent='$'+C.toLocaleString();
+    document.getElementById('r-val').textContent=(r*100).toFixed(1)+'%';
+    document.getElementById('t-val').textContent=t;
+    document.getElementById('g-val').textContent=(g*100).toFixed(1)+'%';
+    document.getElementById('f-C').textContent='$'+C.toLocaleString();
+
+    let PV,FV,steps='',totalPmt;
+
+    if(modeIdx===0){
+      /* ordinary annuity */
+      const factor=Math.pow(1+r,t);
+      const annFactor=(1-Math.pow(1+r,-t))/r;
+      const fvFactor=(factor-1)/r;
+      PV=C*annFactor; FV=C*fvFactor; totalPmt=C*t;
+      steps=`
+        <div class="step"><span class="step-n">1</span><div class="step-b">Write the formula.<div class="step-math">PV = C/r × [1 − (1+r)⁻ᵗ]</div></div></div>
+        <div class="step"><span class="step-n">2</span><div class="step-b">Identify values: <em>C = $${C.toLocaleString()}</em>, <em>r = ${(r*100).toFixed(1)}%</em>, <em>t = ${t}</em>.</div></div>
+        <div class="step"><span class="step-n">3</span><div class="step-b">Calculate (1+r)⁻ᵗ.<div class="step-math">(1 + ${r.toFixed(4)})^−${t} = <em>${Math.pow(1+r,-t).toFixed(6)}</em></div></div></div>
+        <div class="step"><span class="step-n">4</span><div class="step-b">Calculate the annuity factor [1 − (1+r)⁻ᵗ] / r.<div class="step-math">[1 − ${Math.pow(1+r,-t).toFixed(6)}] / ${r.toFixed(4)} = <em>${annFactor.toFixed(4)}</em></div></div></div>
+        <div class="step"><span class="step-n">5</span><div class="step-b">Multiply by C to get PV.<div class="step-math">PV = $${C.toLocaleString()} × ${annFactor.toFixed(4)} = <em>${fmt(PV)}</em></div></div></div>
+        <div class="step"><span class="step-n">6</span><div class="step-b">Calculate FV = C/r × [(1+r)ᵗ − 1].<div class="step-math">FV = $${C.toLocaleString()} × ${fvFactor.toFixed(4)} = <em>${fmt(FV)}</em></div></div></div>
+        <div class="step"><span class="step-n">7</span><div class="step-b">Total cash paid vs PV.<div class="step-math">Total paid = $${C.toLocaleString()} × ${t} = ${fmt(totalPmt)} &nbsp; Interest implied = ${fmt(FV-totalPmt)}</div></div></div>`;
+      document.getElementById('f-PV-label').textContent='Present Value (PV)'; document.getElementById('f-FV-label').textContent='Future Value (FV)';
+      document.getElementById('f-FV').textContent=fmt(FV);
+
+    } else if(modeIdx===1){
+      /* annuity due */
+      const annFactor=(1-Math.pow(1+r,-t))/r;
+      const fvFactor=(Math.pow(1+r,t)-1)/r;
+      PV=C*annFactor*(1+r); FV=C*fvFactor*(1+r); totalPmt=C*t;
+      steps=`
+        <div class="step"><span class="step-n">1</span><div class="step-b">An annuity due pays at the <em>start</em> of each period — worth one extra period of interest vs ordinary annuity.</div></div>
+        <div class="step"><span class="step-n">2</span><div class="step-b">Calculate ordinary annuity PV first.<div class="step-math">PV_ordinary = $${C.toLocaleString()}/r × [1−(1+r)⁻ᵗ] = ${fmt(C*annFactor)}</div></div></div>
+        <div class="step"><span class="step-n">3</span><div class="step-b">Multiply by (1+r) to get annuity due PV.<div class="step-math">PV = ${fmt(C*annFactor)} × (1 + ${r.toFixed(4)}) = <em>${fmt(PV)}</em></div></div></div>
+        <div class="step"><span class="step-n">4</span><div class="step-b">Similarly, FV due = FV_ordinary × (1+r).<div class="step-math">FV = ${fmt(C*fvFactor)} × ${(1+r).toFixed(4)} = <em>${fmt(FV)}</em></div></div></div>`;
+      document.getElementById('f-PV-label').textContent='Present Value (PV)'; document.getElementById('f-FV-label').textContent='Future Value (FV)';
+      document.getElementById('f-FV').textContent=fmt(FV);
+
+    } else if(modeIdx===2){
+      /* growing annuity */
+      totalPmt=0;
+      for(let i=0;i<t;i++) totalPmt+=C*Math.pow(1+g,i);
+      if(Math.abs(r-g)<0.0001){
+        PV=C*t/(1+r); FV=PV*Math.pow(1+r,t);
+        steps=`<div class="step"><span class="step-n">1</span><div class="step-b">Special case: r = g. PV = C × t / (1+r).<div class="step-math">PV = $${C.toLocaleString()} × ${t} / ${(1+r).toFixed(4)} = <em>${fmt(PV)}</em></div></div></div>`;
+      } else {
+        const ratio=Math.pow((1+g)/(1+r),t);
+        PV=C/(r-g)*(1-ratio);
+        FV=PV*Math.pow(1+r,t);
+        steps=`
+          <div class="step"><span class="step-n">1</span><div class="step-b">Write the formula.<div class="step-math">PV = C/(r−g) × [1 − ((1+g)/(1+r))ᵗ]</div></div></div>
+          <div class="step"><span class="step-n">2</span><div class="step-b">Identify values: <em>C=$${C.toLocaleString()}</em>, <em>r=${(r*100).toFixed(1)}%</em>, <em>g=${(g*100).toFixed(1)}%</em>, <em>t=${t}</em>.</div></div>
+          <div class="step"><span class="step-n">3</span><div class="step-b">Calculate C/(r−g).<div class="step-math">$${C.toLocaleString()} / (${r.toFixed(4)} − ${g.toFixed(4)}) = $${C.toLocaleString()} / ${(r-g).toFixed(4)} = <em>${(C/(r-g)).toFixed(2)}</em></div></div></div>
+          <div class="step"><span class="step-n">4</span><div class="step-b">Calculate ((1+g)/(1+r))ᵗ.<div class="step-math">((1+${g.toFixed(4)})/(1+${r.toFixed(4)}))^${t} = ${((1+g)/(1+r)).toFixed(6)}^${t} = <em>${ratio.toFixed(6)}</em></div></div></div>
+          <div class="step"><span class="step-n">5</span><div class="step-b">Multiply.<div class="step-math">PV = ${(C/(r-g)).toFixed(2)} × (1 − ${ratio.toFixed(6)}) = ${(C/(r-g)).toFixed(2)} × ${(1-ratio).toFixed(6)} = <em>${fmt(PV)}</em></div></div></div>
+          <div class="step"><span class="step-n">6</span><div class="step-b">Total cash paid (growing): first payment $${C} growing at ${(g*100).toFixed(1)}% per period.<div class="step-math">Total = <em>${fmt(totalPmt)}</em></div></div></div>`;
+      }
+      document.getElementById('f-PV-label').textContent='Present Value (PV)'; document.getElementById('f-FV-label').textContent='Future Value (FV)';
+      document.getElementById('f-FV').textContent=fmt(FV);
+
+    } else {
+      /* perpetuity */
+      PV=C/r; totalPmt=Infinity;
+      steps=`
+        <div class="step"><span class="step-n">1</span><div class="step-b">A perpetuity pays C every period <em>forever</em>. As t → ∞, the PV formula simplifies.</div></div>
+        <div class="step"><span class="step-n">2</span><div class="step-b">As t→∞, (1+r)⁻ᵗ → 0, so [1−(1+r)⁻ᵗ]/r → 1/r.<div class="step-math">PV = C/r</div></div></div>
+        <div class="step"><span class="step-n">3</span><div class="step-b">Substitute values.<div class="step-math">PV = $${C.toLocaleString()} / ${r.toFixed(4)} = <em>${fmt(PV)}</em></div></div></div>
+        <div class="step"><span class="step-n">4</span><div class="step-b">Interpretation: you would pay <em>${fmt(PV)}</em> today for a stream of $${C.toLocaleString()} payments forever at a ${(r*100).toFixed(1)}% discount rate.</div></div>`;
+      document.getElementById('f-PV-label').textContent='Present Value (PV)';
+      document.getElementById('f-FV-label').textContent='FV'; document.getElementById('f-FV').textContent='∞';
+    }
+
+    document.getElementById('steps-wrap').innerHTML=steps;
+    document.getElementById('f-PV').textContent=fmt(PV);
+    document.getElementById('f-total').textContent=totalPmt===Infinity?'∞':fmt(totalPmt);
+
+    document.getElementById('result-wrap').innerHTML=`
+      <div style="background:var(--blue-bg);border:1px solid var(--border);padding:1rem 1.25rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+        <div><div style="font-size:10px;font-weight:600;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">Present Value</div>
+          <div style="font-family:'Georgia',serif;font-size:1.6rem;color:var(--text);">${fmt(PV)}</div></div>
+        ${modeIdx!==3?`<div style="font-size:13px;color:var(--muted);font-family:'Georgia',serif;">
+          ${modeIdx===2?'Growing p':'P'}ayment of $${C.toLocaleString()}, ${modeIdx===2?'growing at '+(g*100).toFixed(1)+'%, ':''}${(r*100).toFixed(1)}% discount, ${t} periods</div>`:''}
+      </div>`;
+
+    if(modeIdx!==3) drawGraph(C,r,t,g);
+  }
+
+  function drawGraph(C,r,t,g){
+    const cv=document.getElementById('graph');
+    if(!cv) return;
+    const W=cv.width,H=cv.height,ctx=cv.getContext('2d');
+    const dk=window.matchMedia('(prefers-color-scheme:dark)').matches;
+    const col={bg:dk?'#1c1b1a':'#fff',grid:dk?'#2c2b28':'#e8e6e0',axis:dk?'#4a4845':'#c0bdb6',txt:dk?'#6a6865':'#9a9890',pv:dk?'#6a9ef0':'#2a5bd7',fv:dk?'#5ab87a':'#27ae60'};
+    ctx.clearRect(0,0,W,H); ctx.fillStyle=col.bg; ctx.fillRect(0,0,W,H);
+
+    const pL=60,pR=16,pT=20,pB=32,iW=W-pL-pR,iH=H-pT-pB;
+
+    /* cumulative PV and FV at each period */
+    const pvArr=[],fvArr=[];
+    for(let i=1;i<=t;i++){
+      let pv=0,fv=0;
+      for(let j=1;j<=i;j++){
+        const payment=modeIdx===2?C*Math.pow(1+g,j-1):C;
+        const dueMult=modeIdx===1?(1+r):1;
+        pv+=payment*dueMult/Math.pow(1+r,j);
+        fv+=payment*dueMult*Math.pow(1+r,i-j);
+      }
+      pvArr.push(pv); fvArr.push(fv);
+    }
+    const maxY=Math.max(...fvArr)*1.05;
+    const tx=i=>pL+i/t*iW;
+    const ty=v=>pT+iH-(v/maxY)*iH;
+
+    ctx.strokeStyle=col.grid; ctx.lineWidth=1;
+    for(let i=0;i<=4;i++){
+      const y=pT+iH*(i/4); ctx.beginPath(); ctx.moveTo(pL,y); ctx.lineTo(W-pR,y); ctx.stroke();
+      const val=maxY*(1-i/4);
+      ctx.fillStyle=col.txt; ctx.font='9px Helvetica Neue,Arial,sans-serif';
+      ctx.textAlign='right'; ctx.fillText('$'+Math.round(val).toLocaleString(),pL-4,y+3);
+    }
+    for(let i=0;i<=t;i+=Math.ceil(t/6)){
+      ctx.fillStyle=col.txt; ctx.textAlign='center'; ctx.fillText('t='+i,tx(i),H-pB+12);
+    }
+    ctx.strokeStyle=col.axis; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(pL,pT); ctx.lineTo(pL,H-pB); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pL,H-pB); ctx.lineTo(W-pR,H-pB); ctx.stroke();
+
+    ctx.save(); ctx.beginPath(); ctx.rect(pL,pT,iW,iH); ctx.clip();
+
+    /* PV line */
+    ctx.strokeStyle=col.pv; ctx.lineWidth=2; ctx.setLineDash([]);
+    ctx.beginPath();
+    pvArr.forEach((v,i)=>{ if(i===0) ctx.moveTo(tx(i+1),ty(v)); else ctx.lineTo(tx(i+1),ty(v)); });
+    ctx.stroke();
+
+    /* FV line */
+    ctx.strokeStyle=col.fv; ctx.lineWidth=2;
+    ctx.beginPath();
+    fvArr.forEach((v,i)=>{ if(i===0) ctx.moveTo(tx(i+1),ty(v)); else ctx.lineTo(tx(i+1),ty(v)); });
+    ctx.stroke();
+
+    ctx.restore();
+
+    /* legend */
+    ctx.fillStyle=col.pv; ctx.fillRect(pL+4,pT+4,18,3); ctx.fillStyle=col.txt; ctx.font='9px Helvetica Neue,Arial,sans-serif'; ctx.textAlign='left'; ctx.fillText('Cumul. PV',pL+26,pT+8);
+    ctx.fillStyle=col.fv; ctx.fillRect(pL+90,pT+4,18,3); ctx.fillStyle=col.txt; ctx.fillText('Cumul. FV',pL+112,pT+8);
+  }
+
+  function resetSliders(){
+    document.getElementById('sC').value=500;
+    document.getElementById('sr').value=6;
+    document.getElementById('st').value=10;
+    document.getElementById('sg').value=3;
+    setMode(0);
+  }
+
+  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>update());
+  setMode(0);
+</script>
+</body>
+</html>
