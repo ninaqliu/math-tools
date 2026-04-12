@@ -21,19 +21,14 @@
       var sidebarMount = document.getElementById('sidebar-mount');
       var sidebarTpl   = doc.getElementById('nav-sidebar-template');
       if (sidebarMount && sidebarTpl) {
-        /* move children out of the hidden wrapper */
-        while (sidebarTpl.firstChild) {
-          sidebarMount.appendChild(document.importNode(sidebarTpl.firstChild, true));
-        }
+        sidebarMount.innerHTML = sidebarTpl.innerHTML;
       }
 
       /* inject mobile sheet */
       var sheetMount = document.getElementById('sheet-mount');
       var sheetTpl   = doc.getElementById('nav-sheet-template');
       if (sheetMount && sheetTpl) {
-        while (sheetTpl.firstChild) {
-          sheetMount.appendChild(document.importNode(sheetTpl.firstChild, true));
-        }
+        sheetMount.innerHTML = sheetTpl.innerHTML;
       }
 
       /* mark active links — match href filename to current page */
