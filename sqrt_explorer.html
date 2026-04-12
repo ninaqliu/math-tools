@@ -5,33 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Square Root Functions — Ms. Liu</title>
 <link rel="stylesheet" href="nav.css"/>
-<style>
-  /* radical display — SVG-based so the vinculum stretches */
-  .radical-wrap {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 1.25rem;
-  }
-  .radical-static {
-    font-family: 'Georgia', serif;
-    font-size: 1.25rem;
-    color: var(--text);
-  }
-  /* live radical rendered as inline SVG updated by JS */
-  #radical-svg-wrap {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .radical-current-label {
-    font-family: 'Georgia', serif;
-    font-size: 13px;
-    color: var(--muted);
-    font-style: italic;
-  }
-</style>
+
 </head>
 <body>
 
@@ -252,11 +226,13 @@
       <div style="margin-bottom:1.75rem;">
         <div class="section-label">Equation</div>
         <div class="eq-display" style="flex-direction:column; align-items:flex-start; gap:0.6rem;">
+          <!-- static label -->
           <span class="eq-formula">y = a√[k(x − d)] + c</span>
-          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span class="radical-current-label">current:&nbsp; y =</span>
-            <span id="radical-svg-wrap"></span>
-            <span class="radical-current-label" id="plus-c"></span>
+          <!-- live current -->
+          <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+            <span style="font-family:'Georgia',serif;font-size:13px;color:var(--muted);font-style:italic;">current:&nbsp; y =</span>
+            <span id="radical-svg-wrap" style="display:inline-flex;align-items:center;"></span>
+            <span id="plus-c" style="font-family:'Georgia',serif;font-size:14px;color:var(--muted);"></span>
           </div>
         </div>
       </div>
@@ -330,50 +306,52 @@
     hdr.classList.toggle('open', open);
   }
 
-  /* ── build SVG radical that stretches over the expression ── */
+  /* ── build SVG radical covering k(x−d), with a outside ── */
   function buildRadical(aVal, kVal, dVal) {
-    const dk      = window.matchMedia('(prefers-color-scheme:dark)').matches;
-    const clr     = dk ? '#edeae2' : '#111110';
-    const muted   = dk ? '#8a8780' : '#6b6860';
+    const dk    = window.matchMedia('(prefers-color-scheme:dark)').matches;
+    const clr   = dk ? '#edeae2' : '#111110';
+    const muted = dk ? '#8a8780' : '#6b6860';
 
-    /* expression text inside the radical */
-    const dSign   = dVal >= 0 ? ' − ' : ' + ';
-    const dAbs    = Math.abs(dVal).toFixed(2);
-    const inner   = kVal.toFixed(2) + '(x' + dSign + dAbs + ')';
+    /* text inside the radical: k(x − d) */
+    const dSign = dVal >= 0 ? ' − ' : ' + ';
+    const dAbs  = Math.abs(dVal).toFixed(2);
+    const inner = kVal.toFixed(2) + '(x' + dSign + dAbs + ')';
 
-    /* measure text width roughly: ~7px per char at 14px font */
-    const charW   = 7;
-    const textW   = inner.length * charW;
-    const padL    = 6;   /* space between tick and text */
-    const padR    = 6;
-    const tickW   = 10;  /* the small left tick of √ */
-    const hookW   = 8;   /* horizontal hook bottom-left */
-    const vinH    = 18;  /* height of vinculum above text */
-    const textH   = 16;  /* approximate text cap height */
-    const totalH  = vinH + textH + 4;
-    const totalW  = hookW + tickW + padL + textW + padR + 2;
+    /* geometry — match surrounding 14px Georgia text */
+    const fs     = 14;          /* font-size px */
+    const charW  = 7.5;        /* ~px per char at 14px Georgia */
+    const textW  = inner.length * charW;
+    const padR   = 4;           /* small gap after text under vinculum */
 
-    /* path: hook bottom-left → tick up-right → vinculum across → right end down-tick */
-    const x0 = 0,           y0 = totalH - 4;   /* bottom of hook */
-    const x1 = hookW,       y1 = totalH - 4;   /* end of hook */
-    const x2 = hookW + tickW, y2 = 2;          /* top of tick = under vinculum */
-    const x3 = totalW,      y3 = 2;            /* right end of vinculum */
-    const x4 = totalW,      y4 = 10;           /* small right descender */
+    /* radical shape dimensions */
+    const hookX  = 6;           /* small back-serif width */
+    const tickX  = 10;          /* width of the rising diagonal */
+    const gap    = 3;           /* gap between tick top and text start */
+    const vinTop = 3;           /* y of vinculum from SVG top */
+    const textY  = 17;          /* baseline of text from SVG top */
+    const svgH   = textY + 3;  /* total SVG height — just enough */
+    const svgW   = hookX + tickX + gap + textW + padR;
 
-    const path = `M${x0},${y0} L${x1},${y1} L${x2},${y2} L${x3},${y3} L${x4},${y4}`;
+    /* path points */
+    const p = [
+      [0,            textY - 2],          /* bottom-left of back hook */
+      [hookX,        textY - 2],          /* end of hook / base of tick */
+      [hookX + tickX, vinTop],            /* top of tick = left end of vinculum */
+      [svgW,          vinTop],            /* right end of vinculum */
+    ];
+    const d = p.map((pt, i) => (i === 0 ? 'M' : 'L') + pt[0] + ',' + pt[1]).join(' ');
 
-    /* text sits just below vinculum */
-    const textX = hookW + tickW + padL;
-    const textY = totalH - 2;
+    /* text x starts after tick + small gap */
+    const textX = hookX + tickX + gap;
 
-    /* coefficient before radical */
-    const aStr  = aVal.toFixed(2);
-
-    return `<span style="font-family:'Georgia',serif;font-size:14px;color:${muted};">${aStr}</span>` +
-      `<svg width="${totalW}" height="${totalH}" viewBox="0 0 ${totalW} ${totalH}" style="overflow:visible;vertical-align:middle;">` +
-      `<path d="${path}" fill="none" stroke="${clr}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>` +
-      `<text x="${textX}" y="${textY}" font-family="Georgia,serif" font-size="14" fill="${muted}">${inner}</text>` +
-      `</svg>`;
+    return (
+      `<span style="font-family:'Georgia',serif;font-size:${fs}px;color:${muted};vertical-align:middle;">${aVal.toFixed(2)}</span>` +
+      `<svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" ` +
+        `style="overflow:visible;vertical-align:middle;display:inline-block;">` +
+        `<path d="${d}" fill="none" stroke="${clr}" stroke-width="1.5" stroke-linejoin="miter" stroke-linecap="round"/>` +
+        `<text x="${textX}" y="${textY}" font-family="Georgia,serif" font-size="${fs}" fill="${muted}">${inner}</text>` +
+      `</svg>`
+    );
   }
 
   /* ── colours ── */
@@ -486,8 +464,6 @@
     document.getElementById('radical-svg-wrap').innerHTML = buildRadical(a, k, d);
 
     /* +c part */
-    const dk = window.matchMedia('(prefers-color-scheme:dark)').matches;
-    const muted = dk ? '#8a8780' : '#6b6860';
     const cSign = c >= 0 ? ' + ' : ' − ';
     document.getElementById('plus-c').textContent = cSign + Math.abs(c).toFixed(2);
 
