@@ -277,7 +277,7 @@ function draw(a, b) {
   ctx.fillStyle='#fff'; ctx.fillRect(0,0,CW,CH);
 
   const pad={l:44,r:16,t:16,b:34};
-  const xMin=-0.5, xMax=12, yMin=-8, yMax=8;
+  const xMin=-0.5, xMax=12, yMin=-20, yMax=20;
   const W=CW-pad.l-pad.r, H=CH-pad.t-pad.b;
   function sx(x){return pad.l+(x-xMin)/(xMax-xMin)*W;}
   function sy(y){return pad.t+(yMax-y)/(yMax-yMin)*H;}
@@ -285,7 +285,7 @@ function draw(a, b) {
   // grid
   ctx.strokeStyle='rgba(0,0,0,0.06)'; ctx.lineWidth=0.5;
   for(let x=0;x<=xMax;x++){ctx.beginPath();ctx.moveTo(sx(x),sy(yMin));ctx.lineTo(sx(x),sy(yMax));ctx.stroke();}
-  for(let y=yMin;y<=yMax;y+=2){ctx.beginPath();ctx.moveTo(sx(xMin),sy(y));ctx.lineTo(sx(xMax),sy(y));ctx.stroke();}
+  for(let y=yMin;y<=yMax;y+=4){ctx.beginPath();ctx.moveTo(sx(xMin),sy(y));ctx.lineTo(sx(xMax),sy(y));ctx.stroke();}
 
   // axes
   ctx.strokeStyle='rgba(0,0,0,0.45)'; ctx.lineWidth=1.5;
@@ -295,7 +295,7 @@ function draw(a, b) {
   ctx.fillStyle='#666'; ctx.font='10px DM Mono,monospace'; ctx.textAlign='center';
   for(let x=1;x<=xMax;x++){if(x%2===0||x===1)ctx.fillText(x,sx(x),sy(0)+13);}
   ctx.textAlign='right';
-  for(let y=yMin;y<=yMax;y+=2){if(y===0)continue;ctx.fillText(y,sx(0)-4,sy(y)+4);}
+  for(let y=yMin;y<=yMax;y+=4){if(y===0)continue;ctx.fillText(y,sx(0)-4,sy(y)+4);}
   ctx.font='12px DM Sans,sans-serif';
   ctx.textAlign='left'; ctx.fillText('y',sx(0)+5,sy(yMax)+4);
   ctx.textAlign='center'; ctx.fillText('x',sx(xMax)+12,sy(0)+4);
