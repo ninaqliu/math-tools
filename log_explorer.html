@@ -1,367 +1,389 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Logarithmic Functions — Ms. Liu</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nav.css"/>
 <style>
-  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
-  :root { --blue:#185FA5; --green:#0F6E56; --amber:#854F0B; --bg:#f7f5f0; --card:#ffffff; --border:#d8d4cc; --text:#1a1814; --muted:#4a4844; }
-  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
-
-  .topbar { background:var(--text); padding:0; }
-  .topbar-main { display:flex; align-items:center; justify-content:space-between; padding:0.85rem 1.2rem; }
-  .site-title { font-family:'Playfair Display',serif; font-size:1rem; color:#f7f5f0; font-weight:400; text-decoration:none; }
-  .hamburger { background:none; border:none; cursor:pointer; padding:4px; display:flex; flex-direction:column; gap:5px; touch-action:manipulation; }
-  .hamburger span { display:block; width:22px; height:2px; background:#c8c4bc; border-radius:1px; transition:all 0.2s; }
-  .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
-  .hamburger.open span:nth-child(2) { opacity:0; }
-  .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
-  .nav-menu { display:none; flex-direction:column; border-top:1px solid #2e2c28; padding:0.5rem 0; }
-  .nav-menu.open { display:flex; }
-  .nav-menu a { display:block; padding:0.65rem 1.4rem; font-family:'DM Mono',monospace; font-size:0.8rem; color:#c8c4bc; text-decoration:none; letter-spacing:0.04em; transition:background 0.12s; }
-  .nav-menu a:hover { background:#2a2620; color:#f7f5f0; }
-  .nav-menu a.active { color:#f7f5f0; border-left:2px solid #f7f5f0; padding-left:calc(1.4rem - 2px); }
-
-  .container { max-width:720px; margin:0 auto; padding:1.2rem; }
-
-  .readme { background:#2a2620; border:1px solid #3a3630; border-radius:10px; margin-bottom:1.2rem; overflow:hidden; }
-  .readme-toggle { width:100%; padding:11px 14px; display:flex; justify-content:space-between; align-items:center; background:#2a2620; border:none; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.75rem; letter-spacing:0.06em; color:#c8c4bc; text-align:left; touch-action:manipulation; }
-  .readme-toggle:hover { background:#333028; }
-  .readme-arrow { transition:transform 0.2s; display:inline-block; color:#888480; }
-  .readme.open .readme-arrow { transform:rotate(180deg); }
-  .readme-body { max-height:0; overflow:hidden; transition:max-height 0.3s ease; }
-  .readme.open .readme-body { max-height:700px; }
-  .readme-inner { padding:1rem 1.2rem; border-top:1px solid #3a3630; font-size:0.85rem; color:#b8b4ac; line-height:1.75; }
-  .readme-inner h3 { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:#e8e4dc; margin-bottom:5px; margin-top:12px; }
-  .readme-inner h3:first-child { margin-top:0; }
-  .readme-inner ul { padding-left:1.1rem; }
-  .readme-inner li { margin-bottom:3px; }
-  .readme-inner .param { font-family:'DM Mono',monospace; font-size:0.78rem; background:#3a3630; padding:1px 6px; border-radius:4px; color:#e8e4dc; }
-
-  /* 3 mode tabs */
-  .mode-tabs { display:flex; gap:0; margin-bottom:1.2rem; border-radius:9px; overflow:hidden; border:1px solid var(--border); }
-  .mode-btn { flex:1; padding:9px 6px; border:none; background:#f5f3ee; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted); border-right:1px solid var(--border); transition:all 0.15s; touch-action:manipulation; text-align:center; line-height:1.3; }
-  .mode-btn:last-child { border-right:none; }
-  .mode-btn:hover { background:#eceae4; }
-  .mode-btn.active { color:white; }
-  .mode-btn[data-mode="baseb"].active { background:var(--blue); }
-  .mode-btn[data-mode="log10"].active { background:var(--green); }
-  .mode-btn[data-mode="ln"].active    { background:var(--amber); }
-
-  .eq-display { font-family:'DM Mono',monospace; margin-bottom:1rem; padding:10px 14px; background:var(--card); border-radius:10px; border:1px solid var(--border); border-left:4px solid var(--blue); }
-  .eq-formula { font-size:1.15rem; color:#444; }
-  .eq-formula sub { font-size:0.65em; vertical-align:sub; }
-  .eq-current { font-size:0.85rem; color:var(--muted); margin-top:3px; font-family:'DM Mono',monospace; }
-  .eq-current sub { font-size:0.75em; }
-
-  .controls { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1rem; }
-  @media (max-width:440px) { .controls { grid-template-columns:1fr; } }
-
-  .group { background:var(--card); border-radius:10px; border:1px solid var(--border); padding:10px 12px; }
-  .group-label { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.06em; color:var(--muted); text-transform:uppercase; margin-bottom:7px; }
-  .sign-row { display:flex; gap:6px; margin-bottom:7px; }
-  .sign-btn { flex:1; padding:5px 6px; border-radius:6px; border:1px solid var(--border); background:transparent; cursor:pointer; font-size:11px; color:var(--muted); font-family:'DM Mono',monospace; touch-action:manipulation; }
-  .sign-btn.active { background:var(--blue); color:white; border-color:transparent; }
-  .ctrl-row { display:flex; align-items:center; gap:8px; }
-  .ctrl-row label { font-family:'DM Mono',monospace; font-size:1rem; color:var(--text); min-width:18px; }
-  .ctrl-row input[type=range] { flex:1; accent-color:var(--blue); cursor:pointer; touch-action:manipulation; height:22px; }
-  .val-display { font-family:'DM Mono',monospace; font-size:0.88rem; min-width:46px; text-align:right; color:var(--text); }
-
-  .b-group { display:none; }
-  .b-group.visible { display:block; }
-
-  .reset-btn { padding:7px 16px; border-radius:8px; border:1px solid var(--border); background:transparent; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--muted); margin-bottom:0.9rem; touch-action:manipulation; }
-  .reset-btn:hover { background:var(--card); }
-
-  .info-box { padding:9px 13px; border-radius:10px; background:var(--card); font-size:0.83rem; color:var(--muted); margin-bottom:0.9rem; line-height:1.7; border:1px solid var(--border); }
-  .info-box strong { color:var(--text); font-weight:500; }
-
-  canvas { width:100% !important; border-radius:10px; border:1px solid var(--border); display:block; touch-action:none; background:var(--card); }
-  .footer { margin-top:1rem; font-size:0.7rem; color:#888480; text-align:center; font-family:'DM Mono',monospace; }
+  .cat-tabs { display:flex; gap:1px; background:var(--border); border:1px solid var(--border); margin-bottom:1.25rem; }
+  .cat-tab {
+    flex:1; padding:0.55rem 0.5rem; font-size:11.5px; font-weight:500;
+    background:var(--surface); color:var(--muted); cursor:pointer; text-align:center;
+    border:none; transition:background 0.1s, color 0.1s; line-height:1.4;
+  }
+  .cat-tab:hover { background:var(--tag-bg); color:var(--text); }
+  .cat-tab.active { background:var(--blue-bg); color:var(--blue); }
 </style>
 </head>
 <body>
 
-<nav class="topbar">
-  <div class="topbar-main">
-    <a class="site-title" href="index.html">Ms. Liu · <em style="font-style:italic;">Math Tools</em></a>
-    <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-  <div class="nav-menu" id="navMenu">
-    <a href="index.html">Home</a>
-    <a href="linear_explorer.html">Linear &nbsp; y = mx + b</a>
-    <a href="quadratic_explorer.html">Quadratic &nbsp; y = a[k(x−d)]² + c</a>
-    <a href="exponential_explorer.html">Exponential &nbsp; y = a · b<sup style="font-size:0.65em;">x</sup></a>
-    <a href="log_explorer.html" class="active">Logarithm &nbsp; y = a · log<sub style="font-size:0.65em;">b</sub>(x)</a>
-    <a href="trig_explorer.html">Trig Ratios &nbsp; sin · cos · tan</a>
-  </div>
-</nav>
+<!-- MOBILE TOPBAR -->
+<div class="topbar">
+  <span class="topbar-brand">Ms. Liu <span>· Math Tools</span></span>
+  <button class="menu-btn" id="menu-btn" aria-label="Open menu"><span></span><span></span><span></span></button>
+</div>
 
-<div class="container">
+<!-- MOBILE BOTTOM SHEET -->
+<div class="sheet-overlay" id="sheet-overlay" style="display:none;"></div>
+<div class="sheet" id="nav-sheet" style="display:none;">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Navigation</div>
+  <div class="sheet-nav">
+    <div class="sheet-group">
+      <button class="sheet-group-btn"><span class="sheet-group-name">Middle School</span><span class="nav-group-pill pill-ms">6–8</span><span class="sheet-group-arrow">›</span></button>
+      <div class="sheet-sub">
+        <div class="sheet-sub-label">Number &amp; Operations</div>
+        <a href="fraction_concepts.html" class="sheet-item">Fraction Concepts</a>
+        <a href="#" class="sheet-item soon">Fraction Operations</a>
+      </div>
+    </div>
+    <div class="sheet-group">
+      <button class="sheet-group-btn"><span class="sheet-group-name">High School</span><span class="nav-group-pill pill-hs">9–12</span><span class="sheet-group-arrow">›</span></button>
+      <div class="sheet-sub">
+        <div class="sheet-sub-label">Functions</div>
+        <a href="linear_explorer.html" class="sheet-item">Linear</a>
+        <a href="quadratic_explorer.html" class="sheet-item">Quadratic</a>
+        <a href="sqrt_explorer.html" class="sheet-item">Square Root</a>
+        <a href="rational_explorer.html" class="sheet-item">Rational / Reciprocal</a>
+        <a href="exponential_explorer.html" class="sheet-item">Exponential</a>
+        <a href="log_explorer.html" class="sheet-item active">Logarithmic</a>
+        <div class="sheet-sub-label">Trigonometry</div>
+        <a href="trig_explorer.html" class="sheet-item">Trig Ratios</a>
+        <div class="sheet-sub-label">Financial Literacy</div>
+        <a href="interest_explorer.html" class="sheet-item">Interest &amp; Present Value</a>
+      </div>
+    </div>
+    <div class="sheet-group">
+      <button class="sheet-group-btn"><span class="sheet-group-name">University Math</span><span class="nav-group-pill pill-uni">Uni</span><span class="sheet-group-arrow">›</span></button>
+      <div class="sheet-sub"><a href="#" class="sheet-item soon">Coming soon</a></div>
+    </div>
+    <div class="sheet-group">
+      <button class="sheet-group-btn"><span class="sheet-group-name">Economic &amp; Financial</span><span class="nav-group-pill pill-eco">Eco</span><span class="sheet-group-arrow">›</span></button>
+      <div class="sheet-sub"><a href="#" class="sheet-item soon">Cobb-Douglas Utility</a></div>
+    </div>
+  </div>
+</div>
 
-  <div class="readme" id="readme">
-    <button class="readme-toggle" onclick="document.getElementById('readme').classList.toggle('open')">
-      <span>How to use this tool</span>
-      <span class="readme-arrow">▾</span>
-    </button>
-    <div class="readme-body">
-      <div class="readme-inner">
+<!-- APP SHELL -->
+<div class="app-shell">
+  <aside class="sidebar">
+    <a href="index.html" class="sidebar-brand"><span class="brand-title">Ms. Liu</span><span class="brand-sub">Math Tools</span></a>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-header"><span class="nav-group-label">Middle School</span><span class="nav-group-pill pill-ms">6–8</span><span class="nav-group-arrow">›</span></div>
+        <div class="nav-sub">
+          <div class="nav-sub-label">Number &amp; Ops</div>
+          <a href="fraction_concepts.html" class="nav-item">Fraction Concepts</a>
+          <a href="#" class="nav-item soon">Fraction Operations</a>
+          <a href="#" class="nav-item soon">Frac · Dec · Percent</a>
+          <a href="#" class="nav-item soon">Integer Operations</a>
+          <a href="#" class="nav-item soon">Ratios &amp; Proportions</a>
+          <a href="#" class="nav-item soon">Percent Problems</a>
+          <div class="nav-sub-label">Algebra</div>
+          <a href="#" class="nav-item soon">Order of Operations</a>
+          <a href="#" class="nav-item soon">Solving Equations</a>
+          <a href="#" class="nav-item soon">Inequalities</a>
+          <a href="#" class="nav-item soon">Coordinate Plane</a>
+          <div class="nav-sub-label">Geometry</div>
+          <a href="#" class="nav-item soon">Pythagorean Theorem</a>
+          <a href="#" class="nav-item soon">Area &amp; Perimeter</a>
+          <a href="#" class="nav-item soon">Volume &amp; Surface Area</a>
+          <a href="#" class="nav-item soon">Angle Relationships</a>
+          <div class="nav-sub-label">Stats &amp; Data</div>
+          <a href="#" class="nav-item soon">Probability Concepts</a>
+          <a href="#" class="nav-item soon">Tree Diagrams</a>
+          <a href="#" class="nav-item soon">Mean · Median · Mode</a>
+          <a href="#" class="nav-item soon">Data Displays</a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-header"><span class="nav-group-label">High School</span><span class="nav-group-pill pill-hs">9–12</span><span class="nav-group-arrow">›</span></div>
+        <div class="nav-sub">
+          <div class="nav-sub-label">Functions</div>
+          <a href="linear_explorer.html" class="nav-item">Linear</a>
+          <a href="quadratic_explorer.html" class="nav-item">Quadratic</a>
+          <a href="sqrt_explorer.html" class="nav-item">Square Root</a>
+          <a href="rational_explorer.html" class="nav-item">Rational / Reciprocal</a>
+          <a href="exponential_explorer.html" class="nav-item">Exponential</a>
+          <a href="log_explorer.html" class="nav-item active">Logarithmic</a>
+          <div class="nav-sub-label">Trigonometry</div>
+          <a href="trig_explorer.html" class="nav-item">Trig Ratios</a>
+          <div class="nav-sub-label">Financial Literacy</div>
+          <a href="interest_explorer.html" class="nav-item">Interest &amp; Present Value</a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-header"><span class="nav-group-label">University</span><span class="nav-group-pill pill-uni">Uni</span><span class="nav-group-arrow">›</span></div>
+        <div class="nav-sub"><a href="#" class="nav-item soon">Coming soon</a></div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-header"><span class="nav-group-label">Economic &amp; Financial</span><span class="nav-group-pill pill-eco">Eco</span><span class="nav-group-arrow">›</span></div>
+        <div class="nav-sub">
+          <a href="#" class="nav-item soon">Cobb-Douglas Utility</a>
+          <a href="#" class="nav-item soon">Supply &amp; Demand</a>
+          <a href="#" class="nav-item soon">Cost / Revenue / Profit</a>
+          <a href="#" class="nav-item soon">Logistic Growth</a>
+          <a href="#" class="nav-item soon">Average Cost</a>
+        </div>
+      </div>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <div class="page-header">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a><span class="breadcrumb-sep">·</span>
+        <span>High School Math</span><span class="breadcrumb-sep">·</span>
+        <span>Functions</span>
+      </div>
+      <h1 class="page-title">Logarithmic Functions</h1>
+      <p class="page-formula">y = a · log<sub>b</sub>(x)</p>
+    </div>
+
+    <div class="readme">
+      <div class="readme-header" id="readme-hdr" onclick="toggleReadme()">
+        <span class="readme-label">Read me first</span>
+        <span class="readme-hint">What this tool shows &amp; how to use it</span>
+        <span class="readme-arrow">▾</span>
+      </div>
+      <div class="readme-body" id="readme-body">
         <h3>Three modes</h3>
         <ul>
-          <li><span class="param">log base b</span> — explore any base from 0.01 to 10. Use a and b sliders.</li>
-          <li><span class="param">log₁₀</span> — common logarithm (base 10). Only a slider needed.</li>
-          <li><span class="param">ln</span> — natural logarithm (base e ≈ 2.718). Only a slider needed.</li>
+          <li><strong>log base b</strong> — explore any base. Adjust a and b sliders.</li>
+          <li><strong>log₁₀</strong> — common logarithm (base 10). Only a slider active.</li>
+          <li><strong>ln</strong> — natural logarithm (base e ≈ 2.718). Only a slider active.</li>
         </ul>
         <h3>Parameters</h3>
         <ul>
-          <li><span class="param">a</span> — vertical stretch/compression. Negative a flips the curve.</li>
-          <li><span class="param">b</span> — base (only in log base b mode). b &gt; 1 = increasing curve, 0 &lt; b &lt; 1 = decreasing curve. b cannot equal 1.</li>
+          <li><strong>a — vertical stretch/compression.</strong> Negative a flips the curve below the x-axis.</li>
+          <li><strong>b — base</strong> (log base b mode only). b &gt; 1 = increasing curve, 0 &lt; b &lt; 1 = decreasing. b ≠ 1.</li>
         </ul>
         <h3>Key concepts</h3>
         <ul>
-          <li>Domain: x &gt; 0. Vertical asymptote always at x = 0.</li>
-          <li>Always passes through (1, 0) since log of 1 = 0 for any base.</li>
-          <li>Red dot = (1, 0) &nbsp;·&nbsp; Green dot = (b, a) key point.</li>
-          <li>log₁₀(10) = 1 &nbsp;·&nbsp; ln(e) = 1 &nbsp;·&nbsp; log<sub>b</sub>(b) = 1</li>
+          <li>Domain: x &gt; 0 only — log of a negative number is undefined</li>
+          <li><strong>Vertical asymptote: x = 0</strong> — the curve approaches but never crosses the y-axis</li>
+          <li>Always passes through (1, 0) since log of 1 = 0 for any base</li>
+          <li>Red dot = (1, 0) &nbsp;·&nbsp; Green dot = (b, a) key point &nbsp;·&nbsp; purple dashed line = vertical asymptote x = 0</li>
         </ul>
         <h3>Try this</h3>
         <ul>
-          <li>In base b mode: set b = 10 — matches log₁₀ tab exactly</li>
-          <li>Set b = 2.72 ≈ e — matches ln tab closely</li>
-          <li>Set b between 0 and 1 — what direction does the curve go?</li>
+          <li>In base b mode: set b = 10 — matches the log₁₀ tab exactly</li>
+          <li>Set b = 2.718 ≈ e — matches the ln tab closely</li>
+          <li>Set 0 &lt; b &lt; 1 — which direction does the curve go?</li>
           <li>Make a negative — how does the curve flip?</li>
         </ul>
       </div>
     </div>
-  </div>
 
-  <!-- 3 mode tabs -->
-  <div class="mode-tabs">
-    <button class="mode-btn active" data-mode="baseb" onclick="setMode('baseb')">log base b<br><span style="font-size:0.65em;opacity:0.8;">y = a · log<sub>b</sub>(x)</span></button>
-    <button class="mode-btn" data-mode="log10" onclick="setMode('log10')">log₁₀<br><span style="font-size:0.65em;opacity:0.8;">y = a · log₁₀(x)</span></button>
-    <button class="mode-btn" data-mode="ln" onclick="setMode('ln')">ln<br><span style="font-size:0.65em;opacity:0.8;">y = a · ln(x)</span></button>
-  </div>
+    <div class="tool-body">
 
-  <div class="eq-display" id="eqDisplay">
-    <div class="eq-formula" id="eqFormula">y = a · log<sub>b</sub>(x)</div>
-    <div class="eq-current" id="eqCurrent">current: y = 1.00 · log<sub>2.00</sub>(x)</div>
-  </div>
-
-  <div class="controls">
-    <div class="group">
-      <div class="group-label">a — multiplier</div>
-      <div class="sign-row">
-        <button class="sign-btn active" data-sign="pos">a &gt; 0</button>
-        <button class="sign-btn" data-sign="neg">a &lt; 0 (flip)</button>
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Equation</div>
+        <div class="eq-display">
+          <span class="eq-formula" id="eq-static">y = a · log<sub>b</sub>(x)</span>
+          <span class="eq-current" id="eq-live">current: y = 1.00 · log₂(x)</span>
+        </div>
       </div>
-      <div class="ctrl-row">
-        <label>a</label>
-        <input type="range" id="slA" min="10" max="500" step="1" value="100">
-        <span class="val-display" id="vA">1.00</span>
+
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Mode</div>
+        <div class="cat-tabs">
+          <button class="cat-tab active" id="tab-0" onclick="setMode(0)">log base b<br><small>y = a · log<sub>b</sub>(x)</small></button>
+          <button class="cat-tab" id="tab-1" onclick="setMode(1)">log₁₀<br><small>y = a · log₁₀(x)</small></button>
+          <button class="cat-tab" id="tab-2" onclick="setMode(2)">ln<br><small>y = a · ln(x)</small></button>
+        </div>
       </div>
+
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Parameters</div>
+        <div class="panel">
+          <div class="slider-row">
+            <span class="slider-label"><strong>a</strong> — vertical stretch/flip</span>
+            <input type="range" id="pa" min="-3" max="3" step="0.25" value="1" oninput="update()">
+            <span class="slider-val" id="a-val">1.00</span>
+          </div>
+          <div class="slider-row" id="b-row">
+            <span class="slider-label"><strong>b</strong> — base (≠ 1)</span>
+            <input type="range" id="pb" min="0.1" max="10" step="0.05" value="2" oninput="update()">
+            <span class="slider-val" id="b-val">2.00</span>
+          </div>
+          <button class="btn-reset" onclick="resetSliders()">↺ Reset</button>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-label">Graph</div>
+        <div class="graph-wrap"><canvas id="graph" width="460" height="460"></canvas></div>
+        <div class="facts">
+          <div class="fact"><div class="fact-label">Vertical asymptote</div><div class="fact-val" id="f-va">x = 0</div></div>
+          <div class="fact"><div class="fact-label">Domain</div><div class="fact-val" id="f-dom">x &gt; 0</div></div>
+          <div class="fact"><div class="fact-label">x-intercept (zero)</div><div class="fact-val" id="f-zero">(1, 0)</div></div>
+          <div class="fact"><div class="fact-label">Key point</div><div class="fact-val" id="f-key">(b, a)</div></div>
+        </div>
+      </div>
+
     </div>
-
-    <div class="group b-group visible" id="bGroup">
-      <div class="group-label">b — base (0.01 to 10, b ≠ 1)</div>
-      <div class="ctrl-row">
-        <label>b</label>
-        <input type="range" id="slB" min="1" max="1000" step="1" value="200">
-        <span class="val-display" id="vB">2.00</span>
-      </div>
-    </div>
-  </div>
-
-  <button class="reset-btn" id="resetBtn">↺ Reset</button>
-  <div class="info-box" id="info"></div>
-  <canvas id="c"></canvas>
-  <div class="footer">Ms. Liu · Logarithmic Functions</div>
+    <div class="page-footer">Ms. Liu · Logarithmic Functions</div>
+  </main>
 </div>
 
+<script src="nav.js"></script>
 <script>
-function toggleNav() {
-  document.getElementById('hamburger').classList.toggle('open');
-  document.getElementById('navMenu').classList.toggle('open');
-}
-
-let signA = 1;
-let mode = 'baseb';
-const modeColors = { baseb:'#185FA5', log10:'#0F6E56', ln:'#854F0B' };
-
-const canvas = document.getElementById('c');
-const DPR = window.devicePixelRatio || 1;
-
-function resizeCanvas() {
-  const w = canvas.parentElement.clientWidth - 24;
-  const h = Math.min(Math.round(w * 0.7), 400);
-  canvas.width = w * DPR; canvas.height = h * DPR;
-  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-  draw(getA(), getB());
-}
-
-function setMode(m) {
-  mode = m;
-  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.mode-btn[data-mode="${m}"]`).classList.add('active');
-  document.getElementById('bGroup').classList.toggle('visible', m === 'baseb');
-
-  // update border color
-  const colors = { baseb:'#185FA5', log10:'#0F6E56', ln:'#854F0B' };
-  document.getElementById('eqDisplay').style.borderLeftColor = colors[m];
-
-  // update formula label
-  const formulas = {
-    baseb: 'y = a · log<sub>b</sub>(x)',
-    log10: 'y = a · log<sub>10</sub>(x)',
-    ln:    'y = a · ln(x)'
-  };
-  document.getElementById('eqFormula').innerHTML = formulas[m];
-  update();
-}
-
-function getA() { return signA * (+document.getElementById('slA').value / 100); }
-function getB() {
-  // slider 1-1000 → base 0.01 to 10, skipping exactly 1
-  const raw = +document.getElementById('slB').value / 100;
-  if (raw >= 0.99 && raw <= 1.01) return 1.02;
-  return Math.max(0.01, Math.min(10.0, raw));
-}
-
-function logFn(x) {
-  if (x <= 0) return null;
-  if (mode === 'log10') return Math.log10(x);
-  if (mode === 'ln')    return Math.log(x);
-  const b = getB();
-  if (b <= 0 || b === 1) return null;
-  return Math.log(x) / Math.log(b);
-}
-
-function updateLabels() {
-  const a = getA(), b = getB();
-  document.getElementById('vA').textContent = a.toFixed(2);
-  document.getElementById('vB').textContent = b.toFixed(2);
-
-  if (mode === 'baseb') {
-    document.getElementById('eqCurrent').innerHTML = `current: y = ${a.toFixed(2)} · log<sub>${b.toFixed(2)}</sub>(x)`;
-  } else if (mode === 'log10') {
-    document.getElementById('eqCurrent').innerHTML = `current: y = ${a.toFixed(2)} · log<sub>10</sub>(x)`;
-  } else {
-    document.getElementById('eqCurrent').textContent = `current: y = ${a.toFixed(2)} · ln(x)`;
+  function toggleReadme() {
+    const hdr=document.getElementById('readme-hdr'), body=document.getElementById('readme-body');
+    const open=body.classList.toggle('open'); hdr.classList.toggle('open',open);
   }
 
-  const flip = a < 0 ? ' · reflected below x-axis' : '';
-  const aDesc = Math.abs(a) > 1 ? 'vertical stretch' : 'vertical compression';
-  let bDesc = '';
-  if (mode === 'baseb') {
-    bDesc = b > 1 ? `b = ${b.toFixed(2)} > 1 — increasing curve` : `b = ${b.toFixed(2)} < 1 — decreasing curve`;
-  } else if (mode === 'log10') {
-    bDesc = 'base 10 — common logarithm';
-  } else {
-    bDesc = 'base e ≈ 2.718 — natural logarithm';
-  }
-  const keyB = mode === 'baseb' ? b : (mode === 'log10' ? 10 : Math.E);
-  document.getElementById('info').innerHTML =
-    `<strong>Domain:</strong> x &gt; 0 &nbsp;·&nbsp; <strong>Asymptote:</strong> x = 0 &nbsp;·&nbsp; <strong>Range:</strong> all reals<br>` +
-    `<strong>Key points:</strong> (1, 0) and (${keyB.toFixed(2)}, ${a.toFixed(2)})<br>` +
-    `${aDesc}${flip} &nbsp;·&nbsp; ${bDesc}`;
-}
+  let modeIdx = 0;
 
-function draw(a, b) {
-  const ctx = canvas.getContext('2d');
-  const CW = canvas.width/DPR, CH = canvas.height/DPR;
-  ctx.setTransform(DPR,0,0,DPR,0,0);
-  ctx.clearRect(0,0,CW,CH);
-  ctx.fillStyle='#fff'; ctx.fillRect(0,0,CW,CH);
-
-  const pad={l:44,r:16,t:16,b:34};
-  const xMin=-0.5, xMax=12, yMin=-20, yMax=20;
-  const W=CW-pad.l-pad.r, H=CH-pad.t-pad.b;
-  function sx(x){return pad.l+(x-xMin)/(xMax-xMin)*W;}
-  function sy(y){return pad.t+(yMax-y)/(yMax-yMin)*H;}
-
-  // grid
-  ctx.strokeStyle='rgba(0,0,0,0.06)'; ctx.lineWidth=0.5;
-  for(let x=0;x<=xMax;x++){ctx.beginPath();ctx.moveTo(sx(x),sy(yMin));ctx.lineTo(sx(x),sy(yMax));ctx.stroke();}
-  for(let y=yMin;y<=yMax;y+=4){ctx.beginPath();ctx.moveTo(sx(xMin),sy(y));ctx.lineTo(sx(xMax),sy(y));ctx.stroke();}
-
-  // axes
-  ctx.strokeStyle='rgba(0,0,0,0.45)'; ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.moveTo(sx(xMin),sy(0));ctx.lineTo(sx(xMax),sy(0));ctx.stroke();
-  ctx.beginPath();ctx.moveTo(sx(0),sy(yMin));ctx.lineTo(sx(0),sy(yMax));ctx.stroke();
-
-  ctx.fillStyle='#666'; ctx.font='10px DM Mono,monospace'; ctx.textAlign='center';
-  for(let x=1;x<=xMax;x++){if(x%2===0||x===1)ctx.fillText(x,sx(x),sy(0)+13);}
-  ctx.textAlign='right';
-  for(let y=yMin;y<=yMax;y+=4){if(y===0)continue;ctx.fillText(y,sx(0)-4,sy(y)+4);}
-  ctx.font='12px DM Sans,sans-serif';
-  ctx.textAlign='left'; ctx.fillText('y',sx(0)+5,sy(yMax)+4);
-  ctx.textAlign='center'; ctx.fillText('x',sx(xMax)+12,sy(0)+4);
-
-  // vertical asymptote
-  ctx.strokeStyle='rgba(163,45,45,0.4)'; ctx.lineWidth=1.5; ctx.setLineDash([5,4]);
-  ctx.beginPath();ctx.moveTo(sx(0),sy(yMin));ctx.lineTo(sx(0),sy(yMax));ctx.stroke();
-  ctx.setLineDash([]);
-
-  // curve color by mode
-  const col = modeColors[mode];
-  ctx.strokeStyle=col; ctx.lineWidth=2.5; ctx.lineJoin='round';
-  ctx.beginPath(); let pen=false;
-  for(let i=1;i<=800;i++){
-    const x=0.005+i*(xMax-0.005)/800;
-    const lv=logFn(x);
-    if(lv===null){pen=false;continue;}
-    const v=a*lv;
-    if(!isFinite(v)||v>yMax+1||v<yMin-1){pen=false;continue;}
-    const cv=Math.max(yMin,Math.min(yMax,v));
-    if(!pen){ctx.moveTo(sx(x),sy(cv));pen=true;}else ctx.lineTo(sx(x),sy(cv));
-  }
-  ctx.stroke();
-
-  // (1, 0) always on curve
-  if(1>=xMin&&1<=xMax){
-    ctx.beginPath();ctx.arc(sx(1),sy(0),5,0,Math.PI*2);
-    ctx.fillStyle='#e24b4a';ctx.fill();
-    ctx.fillStyle='#333';ctx.font='11px DM Sans,sans-serif';ctx.textAlign='left';
-    ctx.fillText('(1, 0)',sx(1)+8,sy(0)-7);
-  }
-
-  // key point (b, a)
-  const keyB = mode==='baseb'?b:(mode==='log10'?10:Math.E);
-  if(keyB>=xMin&&keyB<=xMax&&a>=yMin&&a<=yMax){
-    ctx.beginPath();ctx.arc(sx(keyB),sy(a),5,0,Math.PI*2);
-    ctx.fillStyle='#0F6E56';ctx.fill();
-    ctx.fillStyle='#333';ctx.font='11px DM Sans,sans-serif';
-    ctx.textAlign=keyB<xMax-2?'left':'right';
-    ctx.fillText(`(${keyB.toFixed(2)}, ${a.toFixed(2)})`,sx(keyB)+(keyB<xMax-2?8:-8),sy(a)-7);
-  }
-}
-
-function update(){updateLabels();draw(getA(),getB());}
-
-document.querySelectorAll('.sign-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.sign-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    signA=btn.dataset.sign==='pos'?1:-1;
+  function setMode(i) {
+    modeIdx = i;
+    [0,1,2].forEach(j => document.getElementById('tab-'+j).classList.toggle('active', j===i));
+    /* show/hide b slider */
+    document.getElementById('b-row').style.opacity = i===0 ? '1' : '0.35';
+    document.getElementById('pb').disabled = i !== 0;
     update();
-  });
-});
+  }
 
-document.getElementById('resetBtn').addEventListener('click',()=>{
-  signA=1; mode='baseb';
-  document.querySelectorAll('.sign-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelector('.sign-btn[data-sign="pos"]').classList.add('active');
-  document.getElementById('slA').value=100;
-  document.getElementById('slB').value=200;
-  setMode('baseb');
-});
+  function getBase() {
+    if (modeIdx === 1) return 10;
+    if (modeIdx === 2) return Math.E;
+    const b = parseFloat(document.getElementById('pb').value);
+    return Math.abs(b - 1) < 0.05 ? 1.05 : b; /* guard b≠1 */
+  }
 
-['slA','slB'].forEach(id=>document.getElementById(id).addEventListener('input',update));
-window.addEventListener('resize',resizeCanvas);
-resizeCanvas(); update();
+  function C() {
+    const dk = window.matchMedia('(prefers-color-scheme:dark)').matches;
+    return {
+      bg:    dk ? '#1c1b1a' : '#ffffff',
+      grid:  dk ? '#2c2b28' : '#e8e6e0',
+      axis:  dk ? '#4a4845' : '#c0bdb6',
+      axlbl: dk ? '#6a6865' : '#9a9890',
+      asym:  dk ? '#b07aee' : '#8040c0',
+      curve: dk ? '#6a9ef0' : '#2a5bd7',
+      rdot:  dk ? '#e07060' : '#c0392b',
+      gdot:  dk ? '#5ab87a' : '#27ae60',
+      qlbl:  dk ? '#2c2b28' : '#efefed',
+    };
+  }
+
+  function draw() {
+    const a   = parseFloat(document.getElementById('pa').value);
+    const b   = getBase();
+    const cv  = document.getElementById('graph'), W=cv.width, H=cv.height;
+    const ctx = cv.getContext('2d'), col=C();
+    ctx.clearRect(0,0,W,H); ctx.fillStyle=col.bg; ctx.fillRect(0,0,W,H);
+
+    const pad=36, inner=W-pad*2, range=6;
+    const sc=inner/(range*2);
+    const ox=pad+inner/2, oy=pad+inner/2;
+    const tx=v=>ox+v*sc, ty=v=>oy-v*sc;
+
+    /* grid — all 4 quadrants */
+    ctx.strokeStyle=col.grid; ctx.lineWidth=1;
+    for (let i=-range;i<=range;i++) {
+      ctx.beginPath(); ctx.moveTo(tx(i),pad); ctx.lineTo(tx(i),H-pad); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(pad,ty(i)); ctx.lineTo(W-pad,ty(i)); ctx.stroke();
+    }
+
+    /* axes */
+    ctx.strokeStyle=col.axis; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(pad,oy); ctx.lineTo(W-pad,oy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ox,pad); ctx.lineTo(ox,H-pad); ctx.stroke();
+
+    /* tick labels */
+    ctx.fillStyle=col.axlbl; ctx.font='10px Helvetica Neue,Arial,sans-serif';
+    for (let i=-range;i<=range;i++) {
+      if (i===0) continue;
+      ctx.textAlign='center'; ctx.fillText(i,tx(i),oy+13);
+      ctx.textAlign='right';  ctx.fillText(i,ox-5,ty(i)+4);
+    }
+    ctx.textAlign='center'; ctx.fillText('x',W-pad+14,oy+4);
+    ctx.textAlign='right';  ctx.fillText('y',ox-6,pad-4);
+
+    /* Q labels */
+    ctx.fillStyle=col.grid; ctx.font='11px Helvetica Neue,Arial,sans-serif'; ctx.textAlign='center';
+    ctx.fillText('Q1',tx(range/2),ty(range/2)); ctx.fillText('Q2',tx(-range/2),ty(range/2));
+    ctx.fillText('Q3',tx(-range/2),ty(-range/2)); ctx.fillText('Q4',tx(range/2),ty(-range/2));
+
+    ctx.save(); ctx.beginPath(); ctx.rect(pad,pad,inner,inner); ctx.clip();
+
+    /* vertical asymptote x = 0 */
+    ctx.strokeStyle=col.asym; ctx.lineWidth=1.3; ctx.setLineDash([6,4]);
+    ctx.beginPath(); ctx.moveTo(tx(0),pad); ctx.lineTo(tx(0),H-pad); ctx.stroke();
+    ctx.setLineDash([]);
+
+    /* log curve — only x > 0 */
+    const logBase = (x) => {
+      if (x <= 0) return null;
+      return a * Math.log(x) / Math.log(b);
+    };
+    ctx.strokeStyle=col.curve; ctx.lineWidth=2.5; ctx.lineJoin='round';
+    ctx.beginPath(); let first=true;
+    for (let px=ox+1; px<=W-pad; px++) {   /* start just right of y-axis */
+      const xv=(px-ox)/sc;
+      if (xv<=0){first=true;continue;}
+      const yv=logBase(xv);
+      if (yv===null||yv<-range-1||yv>range+1){first=true;continue;}
+      if(first){ctx.moveTo(px,ty(yv));first=false;}
+      else ctx.lineTo(px,ty(yv));
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    /* dots */
+    /* (1, 0) always */
+    ctx.beginPath(); ctx.arc(tx(1),ty(0),5,0,Math.PI*2);
+    ctx.fillStyle=col.rdot; ctx.fill();
+
+    /* (b, a) key point — only if in graph range */
+    if (b>0&&b<=range&&Math.abs(a)<=range) {
+      ctx.beginPath(); ctx.arc(tx(b),ty(a),5,0,Math.PI*2);
+      ctx.fillStyle=col.gdot; ctx.fill();
+    }
+
+    /* asymptote label */
+    ctx.fillStyle=col.asym; ctx.font='10px Helvetica Neue,Arial,sans-serif'; ctx.textAlign='left';
+    ctx.fillText('x = 0  (asymptote)', tx(0)+5, pad+14);
+  }
+
+  function update() {
+    const a = parseFloat(document.getElementById('pa').value);
+    const b = getBase();
+    const rawB = parseFloat(document.getElementById('pb').value);
+
+    document.getElementById('a-val').textContent = a.toFixed(2);
+    document.getElementById('b-val').textContent = rawB.toFixed(2);
+
+    /* equation display */
+    let eqStr;
+    if (modeIdx===1)      eqStr = 'current: y = ' + a.toFixed(2) + ' · log₁₀(x)';
+    else if (modeIdx===2) eqStr = 'current: y = ' + a.toFixed(2) + ' · ln(x)';
+    else                  eqStr = 'current: y = ' + a.toFixed(2) + ' · log' + b.toFixed(2) + '(x)';
+    document.getElementById('eq-live').textContent = eqStr;
+
+    /* facts */
+    document.getElementById('f-va').textContent   = 'x = 0';
+    document.getElementById('f-dom').textContent  = 'x > 0';
+    document.getElementById('f-zero').textContent = '(1, 0)  — always';
+    const keyLbl = modeIdx===0
+      ? '(' + b.toFixed(2) + ', ' + a.toFixed(2) + ')'
+      : modeIdx===1 ? '(10, ' + a.toFixed(2) + ')' : '(e, ' + a.toFixed(2) + ')';
+    document.getElementById('f-key').textContent = keyLbl;
+
+    draw();
+  }
+
+  function resetSliders() {
+    modeIdx=0; setMode(0);
+    document.getElementById('pa').value=1;
+    document.getElementById('pb').value=2;
+    update();
+  }
+
+  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change', draw);
+  update();
 </script>
 </body>
 </html>
